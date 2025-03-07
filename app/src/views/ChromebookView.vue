@@ -1,66 +1,105 @@
 <template>
-
-  <InputMicrophone :cta="'Start Recording'" :ctaStopped="'Stop Recording'" :language="'en-US'"
-    @input-microphone-clicked="handleInputMicrophoneClick" @input-microphone-result="handleInputMicrophoneResult"
-    @input-microphone-end="handleInputMicrophoneEnd" @input-microphone-start="handleInputMicrophoneStart" />
-
-  <div class="result">
-    <span contenteditable="true" id="text-input-editable" class="transition-text">{{ text }}</span>
+  <IconGC class="icon" />
+  <div class="button">
+    <VButton
+      text="How it works"
+      variant="outline"
+    />
   </div>
-
+  <div class="routes">
+    <component
+      v-for="route in activeRoutes"
+      :is="route"
+      ref="activeRoutesRef"
+      :key="route.__name"
+    />
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import InputMicrophone from "../components/InputMicrophone.vue"
+import { onMounted, shallowRef, nextTick, onUnmounted } from 'vue'
+import { useRouteManager } from '@/router/useRouteManager'
+import ChromebookIntroScreen from '../routes/ChromebookIntroScreen.vue'
+import { getQueryParam } from '@/utils/get-query-param'
+import IconGC from '@/components/icons/IconGC.vue'
+import ChromebookPromptScreen from '../routes/ChromebookPromptScreen.vue'
+import ChromebookFinalScreen from '../routes/ChromebookFinalScreen.vue'
+import VButton from '@/components/VButton.vue'
 
-const text = ref('');
-const handleInputMicrophoneClick = () => {
-  text.value = '';
-}
-const handleInputMicrophoneEnd = () => {
-  text.value = '';
-}
-const handleInputMicrophoneStart = () => {
-  text.value = '';
-}
-const handleInputMicrophoneResult = ({ speechText }) => {
-  text.value = speechText;
+const activeRoutes = shallowRef([])
+const activeRoutesRef = shallowRef([])
+
+const routes = {
+  intro: ChromebookIntroScreen,
+  prompt: ChromebookPromptScreen,
+  final: ChromebookFinalScreen,
 }
 
+const routeKeys = Object.keys(routes)
+
+const {
+  registerRoutes,
+  navigateTo,
+  isTransitioning,
+  // Optional: Use this to customize how routes change behave
+  // onRouteChange,
+} = useRouteManager()
+
+window.navigateTo = navigateTo
+let index = 0
+function handleClick(e) {
+  e.preventDefault()
+  if (isTransitioning.value) return
+  if (index === routeKeys.length - 1) return
+  navigateTo(routeKeys[++index])
+}
+
+// Register routes with their animations
+onMounted(async () => {
+  registerRoutes(routes, activeRoutes, activeRoutesRef)
+
+  await nextTick()
+
+  const initialView = routeKeys.find((key) => getQueryParam('view', false) === key)
+  index = routeKeys.indexOf(initialView)
+  index = index === -1 ? 0 : index
+
+  navigateTo(initialView ?? 'intro')
+
+  if (!getQueryParam('lock')) {
+    document.body.addEventListener('click', handleClick)
+  }
+})
+
+onUnmounted(() => {
+  if (!getQueryParam('lock')) {
+    document.body.removeEventListener('click', handleClick)
+  }
+})
 </script>
 
-<style scoped>
-.input-microphone {
-  width: 100%;
-}
-
-.result {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-span.transition-text {
-  display: inline-block;
+<style lang="scss" scoped>
+.routes > * {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  max-width: 50%;
-  margin-top: 50px;
-  border: none;
-  background-color: #f0f0f0;
-  border-radius: 20px;
-  padding: 20px 80px;
-  color: #000;
-  font-size: 32px;
-  font-family: "Open Sans", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings:
-    "wdth" 100;
-  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 1);
+  overflow: hidden;
+}
+
+.icon {
+  position: absolute;
+  top: px-to-vw(48);
+  left: px-to-vw(48);
+  width: px-to-vw(68);
+  height: auto;
+}
+
+.button {
+  position: absolute;
+  top: px-to-vw(48);
+  right: px-to-vw(48);
+  z-index: 100;
 }
 </style>

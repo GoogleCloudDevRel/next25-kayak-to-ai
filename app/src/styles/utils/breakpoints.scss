@@ -1,6 +1,9 @@
 @use 'sass:list';
 @use 'sass:map';
 @use 'sass:meta';
+
+@import './polyFluidSizing/fluid';
+
 /* stylelint-disable media-feature-name-blacklist */
 $breakpoints: (
   'xxs': 320,
