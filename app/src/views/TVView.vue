@@ -11,26 +11,24 @@
 </template>
 
 <script setup>
-import { onMounted, shallowRef, nextTick, onUnmounted } from 'vue'
-import { useRouteManager } from '@/router/useRouteManager'
-import TvIntroScreen from '../routes/TvIntroScreen.vue'
-import { getQueryParam } from '@/utils/get-query-param'
-import TvLocationListScreen from '../routes/TvLocationListScreen.vue'
-import TvRecoScreen from '../routes/TvRecoScreen.vue'
-import TvFinalScreen from '../routes/TvFinalScreen.vue'
-import IconGC from '@/components/icons/IconGC.vue'
+import { onMounted, shallowRef, nextTick, onUnmounted } from "vue";
+import { useRouteManager } from "@/router/useRouteManager";
+import TvIntroScreen from "../routes/TvIntroScreen.vue";
+import { getQueryParam } from "@/utils/get-query-param";
+import TvLocationListScreen from "../routes/TvLocationListScreen.vue";
+import TvFinalScreen from "../routes/TvFinalScreen.vue";
+import IconGC from "@/components/icons/IconGC.vue";
 
-const activeRoutes = shallowRef([])
-const activeRoutesRef = shallowRef([])
+const activeRoutes = shallowRef([]);
+const activeRoutesRef = shallowRef([]);
 
 const routes = {
   intro: TvIntroScreen,
   locations: TvLocationListScreen,
-  reco: TvRecoScreen,
   final: TvFinalScreen,
-}
+};
 
-const routeKeys = Object.keys(routes)
+const routeKeys = Object.keys(routes);
 
 const {
   registerRoutes,
@@ -38,36 +36,38 @@ const {
   isTransitioning,
   // Optional: Use this to customize how routes change behave
   // onRouteChange,
-} = useRouteManager()
+} = useRouteManager();
 
-let index = 0
+let index = 0;
 function handleClick(e) {
-  e.preventDefault()
-  if (isTransitioning.value) return
-  if (index === routeKeys.length - 1) return
-  navigateTo(routeKeys[++index])
+  e.preventDefault();
+  if (isTransitioning.value) return;
+  if (index === routeKeys.length - 1) return;
+  navigateTo(routeKeys[++index]);
 }
 
-window.navigateTo = navigateTo
+window.navigateTo = navigateTo;
 
 // Register routes with their animations
 onMounted(async () => {
-  registerRoutes(routes, activeRoutes, activeRoutesRef)
+  registerRoutes(routes, activeRoutes, activeRoutesRef);
 
-  await nextTick()
+  await nextTick();
 
-  const initialView = routeKeys.find((key) => getQueryParam('view', false) === key)
-  index = routeKeys.indexOf(initialView)
-  index = index === -1 ? 0 : index
+  const initialView = routeKeys.find(
+    (key) => getQueryParam("view", false) === key
+  );
+  index = routeKeys.indexOf(initialView);
+  index = index === -1 ? 0 : index;
 
-  navigateTo(initialView ?? 'intro')
+  navigateTo(initialView ?? "intro");
 
-  document.body.addEventListener('click', handleClick)
-})
+  document.body.addEventListener("click", handleClick);
+});
 
 onUnmounted(() => {
-  document.body.removeEventListener('click', handleClick)
-})
+  document.body.removeEventListener("click", handleClick);
+});
 </script>
 
 <style lang="scss" scoped>

@@ -4,6 +4,7 @@ export const useKayakStore = defineStore('kayak', {
   state: () => ({
     isMoving: false,
     isArrived: false,
+    location: null,
     prompt: 'Prompt selected previously',
     code: /*python */ `
 # Example 1: List comprehension and string manipulation
@@ -33,14 +34,19 @@ print(f"Even numbers: {even_numbers}")`,
       this.prompt = prompt
       this.isMoving = false
       this.isArrived = false
+      this.location = null
     },
     setArrived(isArrived) {
       this.isArrived = isArrived
+    },
+    setLocation(location) {
+      this.location = location
     },
     reset() {
       this.isMoving = false
       this.isArrived = false
       this.prompt = 'Prompt selected previously'
+      this.location = null
     },
   },
 })

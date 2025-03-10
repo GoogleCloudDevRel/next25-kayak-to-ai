@@ -2,16 +2,25 @@
   <div class="wrapper" ref="wrapperRef">
     <div class="content" ref="contentRef">
       <div class="title">
-        <TitleWithIcon
-          ref="subtitleRef"
-          icon="gemini"
-          :title="subtitle"
-          variant="medium-18"
-        />
-        <VText ref="titleRef" text="Name of the Location" variant="medium-80" />
+        <div class="subtitle-container">
+          <div class="skeleton" :ref="setSkeletonRef" />
+          <TitleWithIcon
+            ref="subtitleRef"
+            icon="gemini"
+            title="Recommended Location"
+            variant="medium-18"
+          />
+        </div>
+        <div class="title-container">
+          <div class="skeleton" :ref="setSkeletonRef" />
+          <VText ref="titleRef" :text="locationName" variant="medium-80" />
+        </div>
       </div>
       <div class="image">
-        <img src="/images/kayak/image-grid-1.jpg" alt="Kayak" />
+        <div class="image-container" ref="imageRef">
+          <img :src="locationImage" :alt="locationName" />
+        </div>
+        <div class="skeleton" :ref="setSkeletonRef" />
       </div>
     </div>
     <div class="collapse" ref="collapseRef">
@@ -60,10 +69,7 @@
     <div class="collapse" ref="collapse3Ref">
       <div class="collapse-content">
         <div class="divider"></div>
-        <VText
-          text="With over 70 miles of rugged coastline with beaches, tidepools, and sea stacks when kayaking in Olympic National Park, you might see a variety of wildlife, including sea otters, seals, sea lions, and whales!<br><br>Olympic National Park is a wilderness park in Washington state that's known for its diverse ecosystems, including rainforests, mountains, and coastline."
-          variant="body-24"
-        />
+        <VText :text="locationDescription" variant="body-24" />
       </div>
     </div>
   </div>
@@ -72,7 +78,7 @@
 <script setup>
 import VText from "@/components/VText.vue";
 import { gsap } from "@/utils/gsap";
-import { ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import VButton from "./VButton.vue";
 import IconPin from "@/components/icons/IconPin.vue";
 import { useKayakStore } from "@/store";
@@ -89,12 +95,76 @@ const collapse3Ref = ref(null);
 const contentRef = ref(null);
 const wrapperRef = ref(null);
 const subtitleRef = ref(null);
-const subtitle = ref("Recommended Location");
+const imageRef = ref(null);
+const skeletonRef = ref([]);
+
+const setSkeletonRef = (el) => {
+  if (el) {
+    skeletonRef.value.push(el);
+  }
+};
+
 const kayakStore = useKayakStore();
 
-const { isMoving, isArrived } = storeToRefs(kayakStore);
+const { isMoving, isArrived, location } = storeToRefs(kayakStore);
+
+const locationName = computed(() => {
+  return location.value?.name || "Name of the Location";
+});
+
+const locationDescription = computed(() => {
+  return location.value?.description || "Description of the Location";
+});
+
+const locationImage = computed(() => {
+  return location.value?.image || "/images/kayak/image-grid-1.jpg";
+});
 
 const { navigateTo } = useRouteManager();
+
+watch(
+  () => location.value,
+  async () => {
+    if (!location.value) return;
+
+    await nextTick();
+
+    await Promise.all([
+      titleRef.value.animateIn(),
+      subtitleRef.value.animateIn(),
+      gsap.to(imageRef.value, {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: "power2.inOut",
+      }),
+      gsap.to(skeletonRef.value, {
+        opacity: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      }),
+    ]);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    gsap.to(contentRef.value, {
+      height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
+      duration: 1,
+      ease: "power2.inOut",
+    });
+
+    gsap.to(collapseRef.value, {
+      height: collapseRef.value.scrollHeight,
+      duration: 1,
+      ease: "power2.inOut",
+      onComplete: () => {
+        gsap.set(collapseRef.value, {
+          height: "auto",
+        });
+      },
+    });
+  }
+);
 
 watch(
   () => isMoving.value,
@@ -110,10 +180,11 @@ watch(
         duration: 1,
         ease: "power2.inOut",
       });
+
       gsap.to(collapse2Ref.value, {
         height: collapse2Ref.value.scrollHeight,
-        duration: 1,
-        ease: "power2.inOut",
+        duration: 0.3,
+        ease: "power2.out",
         onComplete: () => {
           gsap.set(collapse2Ref.value, {
             height: "auto",
@@ -138,6 +209,7 @@ watch(
         duration: 1,
         ease: "power2.inOut",
       });
+
       gsap.to(collapse3Ref.value, {
         height: collapse3Ref.value.scrollHeight,
         duration: 1,
@@ -160,34 +232,29 @@ defineExpose({
       gsap.set(wrapperRef.value, {
         clipPath: `inset(50% round ${pxToVw(32)})`,
       }),
+      gsap.set(imageRef.value, {
+        opacity: 0,
+        scale: 1.2,
+      }),
+      ...skeletonRef.value.map((el) =>
+        gsap.set(el, { height: el.scrollHeight })
+      ),
     ]);
   },
   animateIn: async (delay = 0) => {
-    await Promise.all([
-      titleRef.value.animateIn(delay),
-      subtitleRef.value.animateIn(delay),
-      gsap.to(wrapperRef.value, {
-        clipPath: `inset(0% round ${pxToVw(32)})`,
-        duration: 1,
-        ease: "power2.inOut",
-        delay,
-      }),
-    ]);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    gsap.to(contentRef.value, {
-      height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
+    await gsap.to(wrapperRef.value, {
+      clipPath: `inset(0% round ${pxToVw(32)})`,
       duration: 1,
       ease: "power2.inOut",
+      delay,
     });
-    gsap.to(collapseRef.value, {
-      height: collapseRef.value.scrollHeight,
-      duration: 1,
-      ease: "power2.inOut",
-      onComplete: () => {
-        gsap.set(collapseRef.value, {
-          height: "auto",
-        });
-      },
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    useKayakStore().setLocation({
+      name: "Name of the Location",
+      description: "Location Description",
+      image: "/images/kayak/image-grid-1.jpg",
     });
   },
   animateOut: async () => {
@@ -225,6 +292,7 @@ defineExpose({
   }
 
   .title {
+    position: relative;
     flex: 1 1;
 
     & > * + * {
@@ -242,6 +310,7 @@ defineExpose({
   }
 
   .image {
+    position: relative;
     flex: 0.95;
     overflow: hidden;
     height: 100%;
@@ -249,6 +318,12 @@ defineExpose({
     align-items: center;
     justify-content: center;
     border-radius: px-to-vw(32);
+  }
+
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
   }
 
   img {
@@ -331,6 +406,29 @@ defineExpose({
         transform-origin: left;
       }
     }
+  }
+
+  .title-container,
+  .subtitle-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .subtitle-container {
+    width: max-content;
+  }
+
+  .skeleton {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      58.9deg,
+      rgba(230, 244, 234, 0.6) 7%,
+      rgba(52, 168, 83, 0.6) 120%
+    );
+    border-radius: px-to-vw(32);
+    z-index: 10;
   }
 }
 </style>
