@@ -32,6 +32,11 @@ npm run build
 npm run lint
 ```
 
+### Run Node.js WSS 
+```sh
+npm run dev:server
+```
+
 ## App Routes
   - `http://localhost:3000/!#/`: Tv 55"
   - `http://localhost:3000/!#/chromebook`: Chromebook

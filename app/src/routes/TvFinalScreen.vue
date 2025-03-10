@@ -71,12 +71,15 @@ watch(
           });
         },
       });
+
       codeBlockRef.value.animateIn(0.5);
 
-      // TODO: change final reveal logic
-      setTimeout(() => {
-        kayakStore.setArrived(true);
-      }, 3000);
+      if (!kayakStore.connected) {
+        // TODO: change final reveal logic
+        setTimeout(() => {
+          kayakStore.setArrived(true);
+        }, 3000);
+      }
     }
   }
 );
@@ -104,18 +107,20 @@ defineExpose({
       recoBoxPromptRef.value.el(),
     ]);
 
-    // TODO: implement this
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!kayakStore.connected) {
+      // TODO: implement this
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    useKayakStore().setLocation({
-      name: "Name of the Location",
-      description: "Location Description",
-      image: "/images/kayak/image-grid-1.jpg",
-    });
+      useKayakStore().setLocation({
+        name: "Name of the Location",
+        description: "Location Description",
+        image: "/images/kayak/image-grid-1.jpg",
+      });
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    useKayakStore().setIsMoving(true);
+      useKayakStore().setIsMoving(true);
+    }
   },
   animateOut: async () => {
     await Promise.all([

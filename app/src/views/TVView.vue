@@ -62,11 +62,15 @@ onMounted(async () => {
 
   navigateTo(initialView ?? "intro");
 
-  document.body.addEventListener("click", handleClick);
+  if (!getQueryParam("lock")) {
+    document.body.addEventListener("click", handleClick);
+  }
 });
 
 onUnmounted(() => {
-  document.body.removeEventListener("click", handleClick);
+  if (!getQueryParam("lock")) {
+    document.body.removeEventListener("click", handleClick);
+  }
 });
 </script>
 

@@ -31,27 +31,44 @@
 </template>
 
 <script setup>
-import ImageGrid from '@/components/image-grid/ImageGrid.vue'
-import VText from '@/components/VText.vue'
-import { ref } from 'vue'
+import ImageGrid from "@/components/image-grid/ImageGrid.vue";
+import VText from "@/components/VText.vue";
+import { ref, watch } from "vue";
+import { useKayakStore } from "@/store";
+import { storeToRefs } from "pinia";
+import { useRouteManager } from "@/router/useRouteManager";
 
-const imageGridRef = ref(null)
-const titleRef = ref(null)
+const imageGridRef = ref(null);
+const titleRef = ref(null);
+
+const kayakStore = useKayakStore();
+const { prompt } = storeToRefs(kayakStore);
+const { navigateTo } = useRouteManager();
+
+watch(
+  () => prompt.value,
+  (value) => {
+    console.log("prompt", value);
+    if (value) {
+      navigateTo("final");
+    }
+  }
+);
 
 defineExpose({
   animateSet: async () => {
-    titleRef.value.prepare()
+    titleRef.value.prepare();
   },
   animateIn: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    imageGridRef.value.animateIn()
-    titleRef.value.animateIn()
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    imageGridRef.value.animateIn();
+    titleRef.value.animateIn();
   },
   animateOut: () => {
-    imageGridRef.value.animateOut()
-    titleRef.value.animateOut()
+    imageGridRef.value.animateOut();
+    titleRef.value.animateOut();
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>

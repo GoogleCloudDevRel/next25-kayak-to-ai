@@ -22,7 +22,12 @@
         ref="buttonRef"
         text="Start Adventure"
         variant="primary"
-        :onClick="() => navigateTo('prompt')"
+        :onClick="
+          () => {
+            navigateTo('prompt');
+            useKayakStore().setIsStarted(true);
+          }
+        "
       />
     </div>
   </div>
@@ -33,7 +38,7 @@ import VText from "@/components/VText.vue";
 import { ref } from "vue";
 import { useRouteManager } from "@/router/useRouteManager";
 import { gsap } from "@/utils/gsap";
-
+import { useKayakStore } from "@/store";
 const { navigateTo } = useRouteManager();
 
 const titleRef = ref(null);
