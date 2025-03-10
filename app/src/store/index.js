@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 export const useKayakStore = defineStore('kayak', {
   state: () => ({
     isMoving: false,
+    isArrived: false,
     prompt: 'Prompt selected previously',
     code: /*python */ `
 # Example 1: List comprehension and string manipulation
@@ -31,6 +32,15 @@ print(f"Even numbers: {even_numbers}")`,
     setPrompt(prompt) {
       this.prompt = prompt
       this.isMoving = false
+      this.isArrived = false
+    },
+    setArrived(isArrived) {
+      this.isArrived = isArrived
+    },
+    reset() {
+      this.isMoving = false
+      this.isArrived = false
+      this.prompt = 'Prompt selected previously'
     },
   },
 })

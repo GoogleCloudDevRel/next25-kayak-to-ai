@@ -1,13 +1,9 @@
 <template>
-  <div class="wrapper" ref="wrapperRef">
+  <div class="wrapper reco-box-prompt" ref="wrapperRef">
     <div class="title">
       <VText ref="titleRef" :text="prompt" variant="body-24" />
     </div>
-    <IconExit
-      v-if="!isMoving"
-      class="icon"
-      :onClick="() => navigateTo('prompt')"
-    />
+    <IconExit class="icon" :onClick="() => navigateTo('prompt')" />
   </div>
 </template>
 
@@ -25,7 +21,7 @@ const titleRef = ref(null);
 const wrapperRef = ref(null);
 const kayakStore = useKayakStore();
 
-const { prompt, isMoving } = storeToRefs(kayakStore);
+const { prompt } = storeToRefs(kayakStore);
 
 const { navigateTo } = useRouteManager();
 
@@ -54,6 +50,7 @@ defineExpose({
       ease: "power2.inOut",
     });
   },
+  el: () => wrapperRef.value,
 });
 </script>
 
@@ -70,6 +67,7 @@ defineExpose({
     (45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)),
     2px
   );
+  margin-bottom: px-to-vw(12);
 
   &::before {
     border-radius: px-to-vw(32);

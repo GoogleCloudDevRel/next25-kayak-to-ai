@@ -12,32 +12,26 @@
       :class="[backgroundColor ? `background-${backgroundColor}` : '']"
     />
     <div class="content">
-      <IconBase
-        v-if="iconLeft || size === 'icon'"
-        :variant="icon"
-      />
+      <IconBase v-if="iconLeft || size === 'icon'" :variant="icon" />
       <VText
         v-if="size !== 'icon'"
         :text="text"
         :variant="textVariant || 'medium-18'"
       />
-      <IconBase
-        v-if="iconRight"
-        :variant="icon"
-      />
+      <IconBase v-if="iconRight" :variant="icon" />
     </div>
   </button>
 </template>
 
 <script setup>
-import { gsap } from '@/utils/gsap'
-import IconBase from './IconBase.vue'
-import VText from './VText.vue'
+import { gsap } from "@/utils/gsap";
+import IconBase from "./IconBase.vue";
+import VText from "./VText.vue";
 
-import { defineProps, shallowRef } from 'vue'
+import { shallowRef } from "vue";
 
-const el = shallowRef(null)
-const bg = shallowRef(null)
+const el = shallowRef(null);
+const bg = shallowRef(null);
 
 const props = defineProps({
   text: {
@@ -47,7 +41,7 @@ const props = defineProps({
   variant: {
     type: String,
     // 'primary' | 'outline'
-    default: 'primary',
+    default: "primary",
   },
   textVariant: {
     type: String,
@@ -55,7 +49,7 @@ const props = defineProps({
   size: {
     type: String,
     // 'default' | 'icon' | 'large'
-    default: 'default',
+    default: "default",
   },
   onClick: {
     type: Function,
@@ -75,49 +69,47 @@ const props = defineProps({
   },
   icon: {
     type: String,
-    default: 'gemini',
+    default: "gemini",
   },
   backgroundColor: {
     type: String,
-    default: 'primary',
+    default: "primary",
   },
-})
+});
 
 const handleClick = (e) => {
-  e.preventDefault()
+  e.preventDefault();
   // Add any additional click handling logic here
-  props.onClick()
-}
+  props.onClick();
+};
 
 const handleHover = (isHovering) => {
   // Add any additional hover handling logic here
-  props.onHover(isHovering)
-}
+  props.onHover(isHovering);
+};
 
 defineExpose({
   animateSet: async () => {
-    await gsap.to(el.value, {
-      clipPath: 'inset(50% round 999px)',
-      duration: 0.6,
-      ease: 'power2.out',
-    })
+    gsap.set(el.value, {
+      clipPath: "inset(50% round 999px)",
+    });
   },
   animateIn: async (delay = 0) => {
     await gsap.to(el.value, {
-      clipPath: 'inset(0% round 999px)',
+      clipPath: "inset(0% round 999px)",
       duration: 0.6,
-      ease: 'power2.out',
+      ease: "power2.out",
       delay,
-    })
+    });
   },
   animateOut: async () => {
     await gsap.to(el.value, {
-      clipPath: 'inset(50% round 999px)',
+      clipPath: "inset(50% round 999px)",
       duration: 0.6,
-      ease: 'power2.out',
-    })
+      ease: "power2.out",
+    });
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -178,7 +170,7 @@ defineExpose({
 .drive {
   .VButton.outline {
     .bg::before {
-      content: '';
+      content: "";
       position: absolute;
       width: calc(100% - 4px);
       height: calc(100% - 4px);
@@ -192,7 +184,7 @@ defineExpose({
     }
 
     .bg::after {
-      content: '';
+      content: "";
       position: absolute;
       width: calc(100% - 4px);
       aspect-ratio: 1;
@@ -206,7 +198,7 @@ defineExpose({
 
   .VButton.primary {
     .bg::after {
-      content: '';
+      content: "";
       position: absolute;
       width: 100%;
       aspect-ratio: 1;
@@ -230,7 +222,11 @@ defineExpose({
     }
 
     .bg::after {
-      background: linear-gradient(70.04deg, #ffffff -100.01%, $brandBlue 182.1%);
+      background: linear-gradient(
+        70.04deg,
+        #ffffff -100.01%,
+        $brandBlue 182.1%
+      );
     }
 
     &:hover {
@@ -248,7 +244,11 @@ defineExpose({
     color: #2a2a2a;
 
     .bg {
-      background: linear-gradient(70.04deg, #ffffff -100.01%, $brandBlue 182.1%);
+      background: linear-gradient(
+        70.04deg,
+        #ffffff -100.01%,
+        $brandBlue 182.1%
+      );
 
       &::after {
         background: $brandBlue;
@@ -278,7 +278,11 @@ defineExpose({
     }
 
     .bg::after {
-      background: linear-gradient(77.26deg, #e6f4ea -40.68%, $brandGreen 106.27%);
+      background: linear-gradient(
+        77.26deg,
+        #e6f4ea -40.68%,
+        $brandGreen 106.27%
+      );
     }
 
     &:hover {
@@ -296,7 +300,11 @@ defineExpose({
     color: #2a2a2a;
 
     .bg {
-      background: linear-gradient(77.26deg, #e6f4ea -40.68%, $brandGreen 106.27%);
+      background: linear-gradient(
+        77.26deg,
+        #e6f4ea -40.68%,
+        $brandGreen 106.27%
+      );
 
       &::after {
         background: $brandGreen;

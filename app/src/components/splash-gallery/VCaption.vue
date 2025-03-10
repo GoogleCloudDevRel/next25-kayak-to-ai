@@ -1,25 +1,18 @@
 <template>
-  <div
-    class="vcaption text-bold-40"
-    ref="captionDiv"
-  >
-    <IconBase
-      ref="icon"
-      class="vcaption__icon"
-      variant="gemini"
-    />
+  <div class="vcaption text-bold-40" ref="captionDiv">
+    <IconBase ref="icon" class="vcaption__icon" variant="gemini" />
     <span class="vcaption__text">{{ caption }}</span>
   </div>
 </template>
 
 <script setup>
-import IconBase from '@/components/IconBase.vue'
-import gsap from 'gsap'
-import { onMounted, ref, defineExpose, nextTick } from 'vue'
+import IconBase from "@/components/IconBase.vue";
+import gsap from "gsap";
+import { onMounted, ref, nextTick } from "vue";
 
-const captionDiv = ref(null)
-const targetWidth = ref(0)
-const icon = ref(null)
+const captionDiv = ref(null);
+const targetWidth = ref(0);
+const icon = ref(null);
 const props = defineProps({
   caption: {
     type: String,
@@ -28,49 +21,49 @@ const props = defineProps({
   variant: {
     type: String,
     required: false,
-    default: 'default',
+    default: "default",
   },
-})
+});
 
 const animateIn = () => {
-  const tl = gsap.timeline()
+  const tl = gsap.timeline();
 
   tl.to(captionDiv.value, {
-    x: '50%',
+    x: "50%",
     scale: 1,
     duration: 0.75,
-    ease: 'power2.out',
+    ease: "power2.out",
   })
     .to(icon.value.$el, {
       rotate: 360,
       duration: 0.75,
-      ease: 'power2.inOut',
+      ease: "power2.inOut",
     })
     .to(captionDiv.value, {
       width: targetWidth.value,
       duration: 0.75,
-      ease: 'power2.inOut',
+      ease: "power2.inOut",
       onStart: () => {
-        captionDiv.value.classList.add('active')
+        captionDiv.value.classList.add("active");
       },
-    })
-}
+    });
+};
 
 defineExpose({
   animateIn,
-})
+});
 
 onMounted(async () => {
-  await nextTick()
-  targetWidth.value = captionDiv.value.offsetWidth
-  captionDiv.value.style.width = window.innerWidth > 1920 ? '130px' : '40px'
-  captionDiv.value.classList.add('init')
-  captionDiv.value.classList.add(`variant-${props.variant}`)
-  captionDiv.value.classList.add('hidden')
+  await nextTick();
+  targetWidth.value = captionDiv.value.offsetWidth;
+  captionDiv.value.style.width = window.innerWidth > 1920 ? "130px" : "40px";
+  captionDiv.value.classList.add("init");
+  captionDiv.value.classList.add(`variant-${props.variant}`);
+  captionDiv.value.classList.add("hidden");
   gsap.set(captionDiv.value, {
     scale: 0,
-  })
-})
+  });
+});
 </script>
 
 <style lang="scss">

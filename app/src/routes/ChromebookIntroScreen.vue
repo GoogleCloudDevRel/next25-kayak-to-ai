@@ -1,9 +1,6 @@
 <template>
   <div class="center">
-    <div
-      class="logo"
-      ref="logoRef"
-    />
+    <div class="logo" ref="logoRef" />
     <div class="title">
       <VText
         ref="titleRef"
@@ -31,38 +28,40 @@
   </div>
 </template>
 <script setup>
-import VButton from '@/components/VButton.vue'
-import VText from '@/components/VText.vue'
-import { ref } from 'vue'
-import { useRouteManager } from '@/router/useRouteManager'
-import { gsap } from '@/utils/gsap'
+import VButton from "@/components/VButton.vue";
+import VText from "@/components/VText.vue";
+import { ref } from "vue";
+import { useRouteManager } from "@/router/useRouteManager";
+import { gsap } from "@/utils/gsap";
+import { useKayakStore } from "@/store";
 
-const { navigateTo } = useRouteManager()
+const { navigateTo } = useRouteManager();
 
-const titleRef = ref(null)
-const subtitleRef = ref(null)
-const buttonRef = ref(null)
-const logoRef = ref(null)
+const titleRef = ref(null);
+const subtitleRef = ref(null);
+const buttonRef = ref(null);
+const logoRef = ref(null);
 defineExpose({
   animateSet: async () => {
-    buttonRef.value.animateSet()
-    await titleRef.value.prepare()
-    await subtitleRef.value.prepare()
+    useKayakStore().reset();
+    buttonRef.value.animateSet();
+    await titleRef.value.prepare();
+    await subtitleRef.value.prepare();
     gsap.set(logoRef.value, {
       scale: 0,
       rotate: 180,
-    })
+    });
   },
   animateIn: async () => {
     gsap.to(logoRef.value, {
       duration: 1,
-      ease: 'power2.inOut',
+      ease: "power2.inOut",
       scale: 1,
       rotate: 0,
-    })
-    titleRef.value.animateIn(0.3)
-    subtitleRef.value.animateIn(0.8)
-    buttonRef.value.animateIn(1.2)
+    });
+    titleRef.value.animateIn(0.3);
+    subtitleRef.value.animateIn(0.8);
+    buttonRef.value.animateIn(1.2);
   },
   animateOut: async () => {
     await Promise.all([
@@ -70,14 +69,14 @@ defineExpose({
         scale: 0,
         rotate: -180,
         duration: 1,
-        ease: 'power2.inOut',
+        ease: "power2.inOut",
       }),
       titleRef.value.animateOut(),
       subtitleRef.value.animateOut(),
       buttonRef.value.animateOut(),
-    ])
+    ]);
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>

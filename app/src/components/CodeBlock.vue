@@ -1,9 +1,6 @@
 <template>
   <div class="codeblock__wrapper">
-    <div
-      class="codeblock"
-      ref="codeBlockRef"
-    >
+    <div class="codeblock" ref="codeBlockRef">
       <div class="codeblock__title">
         <TitleWithIcon
           ref="titleRef"
@@ -18,164 +15,164 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue'
-import Prism from 'prismjs'
-import 'prismjs/components/prism-python'
-import 'prismjs/themes/prism.css' // You can choose different themes
-import 'prismjs/plugins/line-numbers/prism-line-numbers'
-import gsap from 'gsap'
-import TitleWithIcon from './TitleWithIcon.vue'
+import { nextTick, onMounted, ref, watch } from "vue";
+import Prism from "prismjs";
+import "prismjs/components/prism-python";
+import "prismjs/themes/prism.css"; // You can choose different themes
+import "prismjs/plugins/line-numbers/prism-line-numbers";
+import gsap from "gsap";
+import TitleWithIcon from "./TitleWithIcon.vue";
 
 const props = defineProps({
   language: {
     type: String,
-    default: 'python',
+    default: "python",
   },
   code: {
     type: String,
-    default: '',
+    default: "",
   },
-})
+});
 
-const codeBlockRef = ref(null)
-const titleRef = ref(null)
-const codeClass = `language-${props.language}`
-const animatedIn = ref(false)
-const hookAdded = ref(false)
-const tlRef = ref(null)
+const codeBlockRef = ref(null);
+const titleRef = ref(null);
+const codeClass = `language-${props.language}`;
+const animatedIn = ref(false);
+const hookAdded = ref(false);
+const tlRef = ref(null);
 const highlightCode = () => {
   // Now you can access the slot content
-  const codeEl = codeBlockRef.value.querySelector('code')
+  const codeEl = codeBlockRef.value.querySelector("code");
 
   if (!hookAdded.value) {
-    Prism.hooks.add('after-highlight', function (env) {
-      const code = env.element.innerHTML.split('\n')
+    Prism.hooks.add("after-highlight", function (env) {
+      const code = env.element.innerHTML.split("\n");
       env.element.innerHTML = code
         .map(
           (line, index) =>
-            /* html */ `<span class="line-wrapper" data-line="${index + 1}"><span class="line-text">${line}</span></span>`,
+            /* html */ `<span class="line-wrapper" data-line="${index + 1}"><span class="line-text">${line}</span></span>`
         )
-        .join('\n')
-    })
-    hookAdded.value = true
+        .join("\n");
+    });
+    hookAdded.value = true;
   }
 
   if (codeEl) {
     if (!codeEl.classList.contains(codeClass)) {
-      codeEl.classList.add(codeClass)
+      codeEl.classList.add(codeClass);
     }
-    Prism.highlightElement(codeEl)
+    Prism.highlightElement(codeEl);
   }
-}
+};
 
 onMounted(async () => {
-  await nextTick()
-  highlightCode()
-})
+  await nextTick();
+  highlightCode();
+});
 
 // Re-highlight when code changes
 watch(
   () => props.code,
   async () => {
-    await nextTick()
-    highlightCode()
+    await nextTick();
+    highlightCode();
     if (codeBlockRef.value) {
-      const preElement = codeBlockRef.value.querySelector('pre')
-      console.log('preElement', preElement.scrollHeight)
-      preElement.scrollTop = preElement.scrollHeight
+      const preElement = codeBlockRef.value.querySelector("pre");
+      console.log("preElement", preElement.scrollHeight);
+      preElement.scrollTop = preElement.scrollHeight;
     }
   },
-  { deep: true },
-)
+  { deep: true }
+);
 
 const revealCode = () => {
-  const lines = codeBlockRef.value.querySelectorAll('.line-wrapper')
+  const lines = codeBlockRef.value.querySelectorAll(".line-wrapper");
 
   // Reset any existing animations
   gsap.set(lines, {
-    '--line-mask': 0,
-    '--text-opacity': 0,
-    '--line-mask-origin': 'center left',
-  })
+    "--line-mask": 0,
+    "--text-opacity": 0,
+    "--line-mask-origin": "center left",
+  });
 
   gsap.to(lines, {
-    '--line-mask': 1,
+    "--line-mask": 1,
     duration: 0.5,
     stagger: {
       amount: 0.8,
-      from: 'start',
+      from: "start",
       onComplete: function () {
-        const target = this.targets()[0]
-        gsap.set(target, { '--line-mask-origin': 'center right' })
+        const target = this.targets()[0];
+        gsap.set(target, { "--line-mask-origin": "center right" });
         gsap.to(target, {
-          '--line-mask': 0,
-          '--text-opacity': 1,
+          "--line-mask": 0,
+          "--text-opacity": 1,
           duration: 0.5,
-          ease: 'power1.inOut',
-        })
+          ease: "power1.inOut",
+        });
       },
     },
-    ease: 'power1.inOut',
-  })
-}
+    ease: "power1.inOut",
+  });
+};
 
 const animateIn = (delay = 0) => {
   if (tlRef.value) {
-    tlRef.value.kill()
+    tlRef.value.kill();
   }
-  const tl = gsap.timeline()
-  tlRef.value = tl
+  const tl = gsap.timeline();
+  tlRef.value = tl;
   tl.to(codeBlockRef.value, {
     top: 0,
     delay,
     duration: 1,
-    ease: 'power4.out',
+    ease: "power4.out",
     onStart: () => {
       gsap.set(codeBlockRef.value, {
-        pointerEvents: 'auto',
-      })
+        pointerEvents: "auto",
+      });
       setTimeout(() => {
-        revealCode()
-        titleRef.value.animateIn()
-        animatedIn.value = true
-      }, 500)
+        revealCode();
+        titleRef.value.animateIn();
+        animatedIn.value = true;
+      }, 500);
     },
-  })
-}
+  });
+};
 
 const animateOut = () => {
   if (tlRef.value) {
-    tlRef.value.kill()
+    tlRef.value.kill();
   }
-  const tl = gsap.timeline()
-  tlRef.value = tl
+  const tl = gsap.timeline();
+  tlRef.value = tl;
   tl.to(codeBlockRef.value, {
-    top: '100%',
+    top: "100%",
     duration: 1,
-    ease: 'power4.out',
-  })
-}
+    ease: "power4.out",
+  });
+};
 
 const animateSet = async () => {
-  await titleRef.value.prepare()
+  await titleRef.value.prepare();
 
   gsap.set(codeBlockRef.value, {
-    top: '100%',
-  })
-  const lines = codeBlockRef.value.querySelectorAll('.line-wrapper')
+    top: "100%",
+  });
+  const lines = codeBlockRef.value.querySelectorAll(".line-wrapper");
   gsap.set(lines, {
-    '--line-mask': 0,
-    '--text-opacity': 0,
-    '--line-mask-origin': 'center left',
-  })
-}
+    "--line-mask": 0,
+    "--text-opacity": 0,
+    "--line-mask-origin": "center left",
+  });
+};
 
 defineExpose({
   animateIn,
   animateOut,
   animateSet,
   revealCode,
-})
+});
 </script>
 
 <style lang="scss">
@@ -183,14 +180,15 @@ defineExpose({
   height: 100%;
 
   &__title {
-    border-bottom: 1px solid rgba(38, 53, 47, 0.35);
-    @include fluid(
-      'padding-bottom',
-      (
-        xxl: 32px,
-        fourk: 114px,
-      )
-    );
+    height: 54px;
+    // @include fluid(
+    //   "margin-bottom",
+    //   (
+    //     xxl: 32px,
+    //     fourk: 114px,
+    //   )
+    // );
+    margin-bottom: px-to-vw(32);
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -207,19 +205,20 @@ defineExpose({
   }
 
   @include fluid(
-    'border-radius',
+    "border-radius",
     (
       xxl: 31px,
       fourk: 74px,
     )
   );
-  @include fluid(
-    'padding',
-    (
-      xxl: 48px 64px,
-      fourk: 192px 192px,
-    )
-  );
+  padding: px-to-vw(48);
+  // @include fluid(
+  //   "padding",
+  //   (
+  //     xxl: 48px 64px,
+  //     fourk: 192px 192px,
+  //   )
+  // );
 
   position: relative;
   width: 100%;
@@ -231,7 +230,7 @@ defineExpose({
 
   &:before {
     @include fluid(
-      'border-radius',
+      "border-radius",
       (
         xxl: 32px,
         fourk: 75px,
@@ -239,9 +238,14 @@ defineExpose({
     );
   }
 
-  @include gradient-border((45deg, rgba(120, 122, 121, 0.35), rgba(38, 53, 47, 0.35)), 1px);
+  @include gradient-border(
+    (45deg, rgba(120, 122, 121, 0.35), rgba(38, 53, 47, 0.35)),
+    1px
+  );
 
   pre {
+    border-top: 1px solid rgba(38, 53, 47, 0.35);
+
     margin: 0 !important;
     padding: 0 !important;
     overflow-x: hidden;
@@ -277,7 +281,7 @@ defineExpose({
       border-radius: 3px;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: calc(50%);
         transform-origin: var(--line-mask-origin);
@@ -321,11 +325,13 @@ defineExpose({
   Conversion: Bram de Haan (http://atelierbram.github.io/Base2Tone-prism/output/prism/prism-base2tone-sea-dark.css)
   Generated with Base16 Builder (https://github.com/base16-builder/base16-builder)
   */
-  code[class*='language-'],
-  pre[class*='language-'] {
-    font-family: Consolas, Menlo, Monaco, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
-      'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono',
-      'Nimbus Mono L', 'Courier New', Courier, monospace;
+  code[class*="language-"],
+  pre[class*="language-"] {
+    font-family:
+      Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono",
+      "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono",
+      "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L",
+      "Courier New", Courier, monospace;
     // @include fluid(
     //   'font-size',
     //   (
@@ -353,31 +359,31 @@ defineExpose({
     text-shadow: none !important;
   }
 
-  pre[class*='language-']::-moz-selection,
-  pre[class*='language-'] ::-moz-selection,
-  code[class*='language-']::-moz-selection,
-  code[class*='language-'] ::-moz-selection {
+  pre[class*="language-"]::-moz-selection,
+  pre[class*="language-"] ::-moz-selection,
+  code[class*="language-"]::-moz-selection,
+  code[class*="language-"] ::-moz-selection {
     text-shadow: none;
     background: #004a9e;
   }
 
-  pre[class*='language-']::selection,
-  pre[class*='language-'] ::selection,
-  code[class*='language-']::selection,
-  code[class*='language-'] ::selection {
+  pre[class*="language-"]::selection,
+  pre[class*="language-"] ::selection,
+  code[class*="language-"]::selection,
+  code[class*="language-"] ::selection {
     text-shadow: none;
     background: #004a9e;
   }
 
   /* Code blocks */
-  pre[class*='language-'] {
+  pre[class*="language-"] {
     padding: 1em;
     margin: 0.5em 0;
     overflow: auto;
   }
 
   /* Inline code */
-  :not(pre) > code[class*='language-'] {
+  :not(pre) > code[class*="language-"] {
     padding: 0.1em;
     border-radius: 0.3em;
   }
@@ -492,8 +498,16 @@ defineExpose({
   */
   .line-highlight.line-highlight {
     background: rgba(10, 163, 112, 0.2);
-    background: -webkit-linear-gradient(left, rgba(10, 163, 112, 0.2) 70%, rgba(10, 163, 112, 0));
-    background: linear-gradient(to right, rgba(10, 163, 112, 0.2) 70%, rgba(10, 163, 112, 0));
+    background: -webkit-linear-gradient(
+      left,
+      rgba(10, 163, 112, 0.2) 70%,
+      rgba(10, 163, 112, 0)
+    );
+    background: linear-gradient(
+      to right,
+      rgba(10, 163, 112, 0.2) 70%,
+      rgba(10, 163, 112, 0)
+    );
   }
 }
 </style>

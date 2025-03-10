@@ -1,7 +1,7 @@
-export function pxToVw(value) {
-  return (value / 3840) * 100 + 'vw'
+export function pxToVw(value, base = 1920) {
+  return (value / base) * 100 + 'vw'
 }
 
-export function pxToVh(value) {
-  return (value / 2160) * 100 + 'vh'
+export function pxToVh(value, base = 1080) {
+  return (value / base) * 100 + 'vh'
 }

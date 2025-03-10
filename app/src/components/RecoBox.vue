@@ -2,6 +2,12 @@
   <div class="wrapper" ref="wrapperRef">
     <div class="content" ref="contentRef">
       <div class="title">
+        <TitleWithIcon
+          ref="subtitleRef"
+          icon="gemini"
+          :title="subtitle"
+          variant="medium-18"
+        />
         <VText ref="titleRef" text="Name of the Location" variant="medium-80" />
       </div>
       <div class="image">
@@ -51,6 +57,15 @@
         </div>
       </div>
     </div>
+    <div class="collapse" ref="collapse3Ref">
+      <div class="collapse-content">
+        <div class="divider"></div>
+        <VText
+          text="With over 70 miles of rugged coastline with beaches, tidepools, and sea stacks when kayaking in Olympic National Park, you might see a variety of wildlife, including sea otters, seals, sea lions, and whales!<br><br>Olympic National Park is a wilderness park in Washington state that's known for its diverse ecosystems, including rainforests, mountains, and coastline."
+          variant="body-24"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,20 +79,32 @@ import { useKayakStore } from "@/store";
 import IconKayak from "@/components/icons/IconKayak.vue";
 import { pxToVw } from "@/utils/px";
 import { useRouteManager } from "@/router/useRouteManager";
+import { storeToRefs } from "pinia";
+import TitleWithIcon from "./TitleWithIcon.vue";
+
 const titleRef = ref(null);
 const collapseRef = ref(null);
 const collapse2Ref = ref(null);
+const collapse3Ref = ref(null);
 const contentRef = ref(null);
 const wrapperRef = ref(null);
-
+const subtitleRef = ref(null);
+const subtitle = ref("Recommended Location");
 const kayakStore = useKayakStore();
+
+const { isMoving, isArrived } = storeToRefs(kayakStore);
 
 const { navigateTo } = useRouteManager();
 
 watch(
-  () => kayakStore.isMoving,
+  () => isMoving.value,
   (isMoving) => {
     if (isMoving) {
+      subtitleRef.value.animateOut().then(async () => {
+        await subtitleRef.value.text().setText("Moving Kayak to:");
+        subtitleRef.value.animateIn();
+      });
+
       gsap.to(collapseRef.value, {
         height: 0,
         duration: 1,
@@ -97,16 +124,48 @@ watch(
   }
 );
 
+watch(
+  () => isArrived.value,
+  (isArrived) => {
+    if (isArrived) {
+      subtitleRef.value.animateOut().then(async () => {
+        await subtitleRef.value.text().setText("Arrived at:");
+        subtitleRef.value.animateIn();
+      });
+
+      gsap.to(collapse2Ref.value, {
+        height: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+      gsap.to(collapse3Ref.value, {
+        height: collapse3Ref.value.scrollHeight,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          gsap.set(collapse3Ref.value, {
+            height: "auto",
+          });
+        },
+      });
+    }
+  }
+);
+
 defineExpose({
   animateSet: async () => {
-    await titleRef.value.prepare();
-    gsap.set(wrapperRef.value, {
-      clipPath: `inset(50% round ${pxToVw(32)})`,
-    });
+    await Promise.all([
+      titleRef.value.prepare(),
+      subtitleRef.value.prepare(),
+      gsap.set(wrapperRef.value, {
+        clipPath: `inset(50% round ${pxToVw(32)})`,
+      }),
+    ]);
   },
   animateIn: async (delay = 0) => {
     await Promise.all([
       titleRef.value.animateIn(delay),
+      subtitleRef.value.animateIn(delay),
       gsap.to(wrapperRef.value, {
         clipPath: `inset(0% round ${pxToVw(32)})`,
         duration: 1,
@@ -138,6 +197,7 @@ defineExpose({
       ease: "power2.inOut",
     });
   },
+  el: () => wrapperRef.value,
 });
 </script>
 
@@ -161,11 +221,24 @@ defineExpose({
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: px-to-vw(54);
+    gap: px-to-vw(32);
   }
 
   .title {
     flex: 1 1;
+
+    & > * + * {
+      margin-top: px-to-vw(16);
+    }
+
+    .title-with-icon {
+      color: $brandGreen;
+
+      :deep(svg) {
+        width: px-to-vw(16);
+        height: px-to-vw(16);
+      }
+    }
   }
 
   .image {
@@ -206,6 +279,11 @@ defineExpose({
     justify-content: center;
     padding: px-to-vw(54) 0 0;
     gap: px-to-vw(54);
+
+    .text-body-24 {
+      text-align: left;
+      text-wrap: auto;
+    }
   }
 
   .group {

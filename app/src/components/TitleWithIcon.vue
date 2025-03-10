@@ -1,15 +1,7 @@
 <template>
   <div class="title-with-icon">
-    <IconBase
-      v-if="icon"
-      :variant="icon"
-      ref="iconRef"
-    />
-    <VText
-      ref="textRef"
-      :text="title"
-      :variant="textVariant"
-    />
+    <IconBase v-if="icon" :variant="icon" ref="iconRef" />
+    <VText ref="textRef" :text="title" :variant="textVariant" />
   </div>
 </template>
 
@@ -25,48 +17,45 @@ defineProps({
   },
   textVariant: {
     type: String,
-    default: 'text-bold-24',
+    default: "text-bold-24",
   },
-})
+});
 
-import { onMounted, ref } from 'vue'
-import IconBase from './IconBase.vue'
-import VText from './VText.vue'
+import { onMounted, ref } from "vue";
+import IconBase from "./IconBase.vue";
+import VText from "./VText.vue";
 
-const textRef = ref(null)
-const iconRef = ref(null)
-const animateIn = () => {
-  console.log('animateIn')
-  textRef.value.animateIn()
-  iconRef.value.$el.classList.remove('hidden')
-}
+const textRef = ref(null);
+const iconRef = ref(null);
+const animateIn = (delay = 0) => {
+  textRef.value.animateIn(delay);
+  iconRef.value.$el.classList.remove("hidden");
+};
 
-const animateOut = () => {
-  console.log('animateOut')
-  textRef.value.animateOut()
-}
+const animateOut = async (delay = 0) => {
+  await textRef.value.animateOut(delay);
+};
 
 const animateSet = () => {
-  console.log('animateSet')
-  textRef.value.animateSet()
-  iconRef.value.$el.classList.add('hidden')
-}
+  textRef.value.animateSet();
+  iconRef.value.$el.classList.add("hidden");
+};
 
 const prepare = async () => {
-  console.trace('prepare')
-  await textRef.value.prepare()
-}
+  await textRef.value.prepare();
+};
 
 onMounted(() => {
-  iconRef.value.$el.classList.add('hidden')
-})
+  iconRef.value.$el.classList.add("hidden");
+});
 
 defineExpose({
   animateIn,
   animateOut,
   animateSet,
   prepare,
-})
+  text: () => textRef.value,
+});
 </script>
 
 <style lang="scss" scoped>

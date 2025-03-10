@@ -1,27 +1,32 @@
 <template>
   <div
-    :class="['VText', variant ? `text-${variant}` : '', { gradient: gradient }, { center: center }]"
+    :class="[
+      'VText',
+      variant ? `text-${variant}` : '',
+      { gradient: gradient },
+      { center: center },
+    ]"
     ref="el"
     v-html="innerText"
   />
 </template>
 
 <script setup>
-import SplitText from '@activetheory/split-text'
-import { isFontReady } from '@activetheory/split-text'
-import { gsap, waitUntil } from '@/utils/gsap'
-import { onMounted, ref, onUnmounted, watch, shallowRef, nextTick } from 'vue'
+import SplitText from "@activetheory/split-text";
+import { isFontReady } from "@activetheory/split-text";
+import { gsap, waitUntil } from "@/utils/gsap";
+import { onMounted, ref, onUnmounted, watch, shallowRef, nextTick } from "vue";
 
 const props = defineProps({
   text: String,
   variant: String,
   splitType: {
     type: String,
-    default: 'words, lines',
+    default: "words, lines",
   },
   animateBy: {
     type: String,
-    default: 'words',
+    default: "words",
   },
   type: {
     type: String,
@@ -50,75 +55,77 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-const el = ref(null)
-const splitText = shallowRef(null)
-const text = String(props.text)
-const innerText = shallowRef(text)
-const prepared = shallowRef(false)
-const isPreparing = shallowRef(false)
-const isAnimated = shallowRef(false)
+const el = ref(null);
+const splitText = shallowRef(null);
+const text = String(props.text);
+const innerText = shallowRef(text);
+const prepared = shallowRef(false);
+const isPreparing = shallowRef(false);
+const isAnimated = shallowRef(false);
 
-let splitType = props.splitType || 'words, lines'
+let splitType = props.splitType || "words, lines";
 
 const handleGradient = () => {
   if (props.gradient) {
-    const lines = splitText.value.lines
+    const lines = splitText.value.lines;
     lines.forEach((line) => {
       line.__words.forEach((word) => {
         gsap.set(word, {
           backgroundSize: `${line.clientWidth}px 100%`,
           backgroundPosition: `${line.clientWidth - word.offsetLeft}px 0%`,
-        })
-      })
-    })
+        });
+      });
+    });
   }
-}
+};
 
-let setOpts = {}
+let setOpts = {};
 const prepare = async (force = true, opts) => {
-  setOpts = opts
-  if (prepared.value) return animateSet(force, setOpts)
-  isPreparing.value = true
-  await isFontReady()
+  setOpts = opts;
+  if (prepared.value) return animateSet(force, setOpts);
+  isPreparing.value = true;
+  await isFontReady();
   splitText.value = new SplitText(el.value, {
     type: splitType,
     balanceRatio: props.balanceRatio,
     useBalance: props.useBalance,
-  })
+  });
 
-  handleGradient()
+  handleGradient();
 
-  if (props.forceSet) animateSet(true, setOpts)
-  window.addEventListener('resize', handleResize)
-  prepared.value = true
-  isPreparing.value = false
+  if (props.forceSet) animateSet(true, setOpts);
+  window.addEventListener("resize", handleResize);
+  prepared.value = true;
+  isPreparing.value = false;
 
-  await animateSet(force, setOpts)
-}
+  await animateSet(force, setOpts);
+};
 
 const animateSet = async (force = true, { yPercent = 115 } = {}) => {
-  await waitUntil(() => !isPreparing.value && prepared.value)
-  isAnimated.value = force ? false : isAnimated.value
+  await waitUntil(() => !isPreparing.value && prepared.value);
+  isAnimated.value = force ? false : isAnimated.value;
 
-  for (const item of splitText.value[props.animateBy === 'lines' ? 'words' : props.animateBy]) {
+  for (const item of splitText.value[
+    props.animateBy === "lines" ? "words" : props.animateBy
+  ]) {
     gsap.set(item, {
       yPercent: force ? yPercent : 0,
-    })
+    });
   }
-}
+};
 
 const animateIn = async (
   delay = 0,
-  { ease = 'power2.inOut', duration = 0.7, stagger = 0.1, yPercent = 115 } = {},
+  { ease = "power2.inOut", duration = 0.7, stagger = 0.1, yPercent = 115 } = {}
 ) => {
-  if (isAnimated.value) return
-  isAnimated.value = true
+  if (isAnimated.value) return;
+  isAnimated.value = true;
 
-  await waitUntil(() => !isPreparing.value && prepared.value)
+  await waitUntil(() => !isPreparing.value && prepared.value);
 
-  if (props.animateBy === 'lines') {
+  if (props.animateBy === "lines") {
     return await Promise.all(
       splitText.value.lines.map((line, i) => {
         return gsap.fromTo(
@@ -131,10 +138,10 @@ const animateIn = async (
             ease,
             duration,
             delay: delay + i * 0.1,
-          },
-        )
-      }),
-    )
+          }
+        );
+      })
+    );
   }
 
   await gsap.fromTo(
@@ -148,20 +155,20 @@ const animateIn = async (
       duration,
       stagger,
       delay,
-    },
-  )
-}
+    }
+  );
+};
 
 const animateOut = async (
   delay = 0,
-  { ease = 'power2.inOut', duration = 0.7, stagger = 0.1, yPercent = -115 } = {},
+  { ease = "power2.inOut", duration = 0.7, stagger = 0.1, yPercent = -115 } = {}
 ) => {
-  if (!isAnimated.value) return
-  isAnimated.value = false
+  if (!isAnimated.value) return;
+  isAnimated.value = false;
 
-  await waitUntil(() => !isPreparing.value && prepared.value)
+  await waitUntil(() => !isPreparing.value && prepared.value);
 
-  if (props.animateBy === 'lines') {
+  if (props.animateBy === "lines") {
     return await Promise.all(
       splitText.value.lines.map((line, i) => {
         return gsap.to(line.__words, {
@@ -169,9 +176,9 @@ const animateOut = async (
           ease,
           duration,
           delay: delay + i * 0.1,
-        })
-      }),
-    )
+        });
+      })
+    );
   }
 
   await gsap.to(splitText.value[props.animateBy], {
@@ -180,46 +187,50 @@ const animateOut = async (
     duration,
     stagger,
     delay: delay,
-  })
-}
+  });
+};
 
 const handleResize = () => {
-  splitText.value.revert()
-  splitText.value.split()
-  handleGradient()
-  animateSet(!isAnimated.value, setOpts)
-}
+  splitText.value.revert();
+  splitText.value.split();
+  handleGradient();
+  animateSet(!isAnimated.value, setOpts);
+};
+
+const setText = async (text) => {
+  if (prepared.value) {
+    isPreparing.value = true;
+    el.value.style.opacity = 0;
+    splitText.value.revert();
+    innerText.value = text;
+    await nextTick();
+    splitText.value.split();
+    handleGradient();
+    isPreparing.value = false;
+    await animateSet(!isAnimated.value, setOpts);
+    el.value.style.opacity = 1;
+  } else {
+    innerText.value = props.text;
+  }
+};
 
 watch(
   () => props.text,
-  async () => {
-    if (prepared.value) {
-      isPreparing.value = true
-      el.value.style.opacity = 0
-      splitText.value.revert()
-      innerText.value = props.text
-      await nextTick()
-      splitText.value.split()
-      handleGradient()
-      isPreparing.value = false
-      await animateSet(!isAnimated.value, setOpts)
-      el.value.style.opacity = 1
-    } else {
-      innerText.value = props.text
-    }
-  },
-)
+  async (value) => {
+    await setText(value);
+  }
+);
 
 onMounted(async () => {
   if (props.icon) {
-    console.log('icon', props.icon)
-    el.value.classList.add('icon')
+    console.log("icon", props.icon);
+    el.value.classList.add("icon");
   }
-})
+});
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-})
+  window.removeEventListener("resize", handleResize);
+});
 
 defineExpose({
   prepare,
@@ -227,8 +238,9 @@ defineExpose({
   animateIn,
   animateOut,
   splitText,
+  setText,
   ready: () => waitUntil(() => !isPreparing.value && prepared.value),
-})
+});
 </script>
 
 <style lang="scss">

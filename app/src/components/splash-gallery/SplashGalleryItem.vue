@@ -1,80 +1,70 @@
 <template>
-  <div
-    ref="imageContainer"
-    class="splash-gallery-item"
-  >
-    <VCaption
-      ref="captionRef"
-      :caption="caption"
-    />
-    <div
-      ref="imageInner"
-      class="splash-gallery-item__inner"
-    >
-      <img
-        ref="image"
-        :src="src"
-      />
+  <div ref="imageContainer" class="splash-gallery-item">
+    <VCaption ref="captionRef" :caption="caption" />
+    <div ref="imageInner" class="splash-gallery-item__inner">
+      <img ref="image" :src="src" />
     </div>
   </div>
 </template>
 
 <script setup>
-import gsap from 'gsap'
-import { onMounted, ref, defineExpose } from 'vue'
-import VCaption from '@/components/splash-gallery/VCaption.vue'
+import gsap from "gsap";
+import { onMounted, ref } from "vue";
+import VCaption from "@/components/splash-gallery/VCaption.vue";
 
-const image = ref(null)
-const imageContainer = ref(null)
-const imageInner = ref(null)
-const captionRef = ref(null)
-const tlRef = gsap.timeline()
+const image = ref(null);
+const imageContainer = ref(null);
+const imageInner = ref(null);
+const captionRef = ref(null);
+const tlRef = gsap.timeline();
 onMounted(() => {
   // set style of image
-  imageContainer.value.style.left = `${props.position.left}`
-  imageContainer.value.style.top = `${props.position.top}`
-  imageContainer.value.style.right = `${props.position.right}`
-  imageContainer.value.style.bottom = `${props.position.bottom}`
+  imageContainer.value.style.left = `${props.position.left}`;
+  imageContainer.value.style.top = `${props.position.top}`;
+  imageContainer.value.style.right = `${props.position.right}`;
+  imageContainer.value.style.bottom = `${props.position.bottom}`;
 
   if (props.animate) {
-    initAnimate()
+    initAnimate();
   }
-})
+});
 function animateIn() {
-  captionRef.value.animateIn()
+  captionRef.value.animateIn();
 }
 
 function animateOut() {
   if (tlRef.value) {
-    tlRef.value.kill()
+    tlRef.value.kill();
   }
   gsap.to(imageContainer.value, {
     z: imageContainer.value.style.z + 500,
     opacity: 0,
     duration: 1,
-  })
+  });
 }
 
 defineExpose({
   animateIn,
   animateOut,
-})
+});
 
 function initAnimate() {
-  const x = props.position.left === 'auto' ? -Math.random() * 50 : Math.random() * 50
-  const y = props.position.top === 'auto' ? -Math.random() * 50 : Math.random() * 50
+  const x =
+    props.position.left === "auto" ? -Math.random() * 50 : Math.random() * 50;
+  const y =
+    props.position.top === "auto" ? -Math.random() * 50 : Math.random() * 50;
 
   const tl = gsap.timeline({
     defaults: {
-      ease: 'power1.out',
+      ease: "power1.out",
     },
     onComplete: () => {
       // remove this component from the parent
-      imageContainer.value.remove()
+      imageContainer.value.remove();
     },
-  })
+  });
 
-  tlRef.value = tl
+  tlRef.value = tl;
 
   tl.set(imageContainer.value, {
     x: `${x}%`,
@@ -92,23 +82,23 @@ function initAnimate() {
       {
         scale: 1,
         duration: 2,
-        ease: 'power1.out',
+        ease: "power1.out",
       },
-      '<',
+      "<"
     )
     .to(
       image.value,
       {
         scale: 1,
         duration: 2,
-        ease: 'power1.out',
+        ease: "power1.out",
         onStart: () => {
           setTimeout(() => {
-            captionRef.value.animateIn()
-          }, 1500)
+            captionRef.value.animateIn();
+          }, 1500);
         },
       },
-      '<',
+      "<"
     )
     .to(
       imageContainer.value,
@@ -116,7 +106,7 @@ function initAnimate() {
         z: 50,
         duration: 10,
       },
-      '<',
+      "<"
     )
     .to(
       image.value,
@@ -125,7 +115,7 @@ function initAnimate() {
         duration: 15,
         delay: 2,
       },
-      '<',
+      "<"
     )
     .to(
       imageContainer.value,
@@ -134,8 +124,8 @@ function initAnimate() {
         duration: 3,
         delay: 6,
       },
-      '<',
-    )
+      "<"
+    );
 }
 
 const props = defineProps({
@@ -159,9 +149,9 @@ const props = defineProps({
   caption: {
     type: String,
     required: false,
-    default: 'Testing',
+    default: "Testing",
   },
-})
+});
 </script>
 
 <style lang="scss" scoped>
@@ -172,7 +162,7 @@ const props = defineProps({
   transform-style: preserve-3d;
 
   @include fluid(
-    'width',
+    "width",
     (
       xxl: 200px,
       fourk: 624px,
@@ -180,7 +170,7 @@ const props = defineProps({
   );
 
   @include fluid(
-    'height',
+    "height",
     (
       xxl: 200px,
       fourk: 624px,
@@ -188,7 +178,7 @@ const props = defineProps({
   );
 
   @include fluid(
-    'border-radius',
+    "border-radius",
     (
       xxl: 10px,
       fourk: 32px,
