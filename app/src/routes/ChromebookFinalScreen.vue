@@ -128,6 +128,15 @@ defineExpose({
       recoBoxPromptRef.value.el(),
       recoGroupRef.value,
     ]);
+
+    // TODO: implement this
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    useKayakStore().setLocation({
+      name: "Name of the Location",
+      description: "Location Description",
+      image: "/images/kayak/image-grid-1.jpg",
+    });
   },
   animateOut: async () => {
     await Promise.all([

@@ -1,9 +1,13 @@
 <template>
   <div class="wrapper reco-box-prompt" ref="wrapperRef">
     <div class="title">
-      <VText ref="titleRef" :text="prompt" variant="body-24" />
+      <VText
+        ref="titleRef"
+        :text="prompt"
+        :variant="isTv ? 'tv-body-48' : 'body-24'"
+      />
     </div>
-    <IconExit class="icon" :onClick="() => navigateTo('prompt')" />
+    <IconExit v-if="!isTv" class="icon" :onClick="() => navigateTo('prompt')" />
   </div>
 </template>
 
@@ -24,6 +28,13 @@ const kayakStore = useKayakStore();
 const { prompt } = storeToRefs(kayakStore);
 
 const { navigateTo } = useRouteManager();
+
+defineProps({
+  isTv: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 defineExpose({
   animateSet: async () => {

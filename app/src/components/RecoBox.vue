@@ -8,12 +8,16 @@
             ref="subtitleRef"
             icon="gemini"
             title="Recommended Location"
-            variant="medium-18"
+            :variant="isTv ? 'tv-medium-34' : 'medium-18'"
           />
         </div>
         <div class="title-container">
           <div class="skeleton" :ref="setSkeletonRef" />
-          <VText ref="titleRef" :text="locationName" variant="medium-80" />
+          <VText
+            ref="titleRef"
+            :text="locationName"
+            :variant="isTv ? 'tv-bold-120' : 'medium-80'"
+          />
         </div>
       </div>
       <div class="image">
@@ -23,7 +27,7 @@
         <div class="skeleton" :ref="setSkeletonRef" />
       </div>
     </div>
-    <div class="collapse" ref="collapseRef">
+    <div class="collapse" ref="collapseRef" v-if="!isTv">
       <div class="collapse-content">
         <div class="divider"></div>
         <VText
@@ -104,6 +108,13 @@ const setSkeletonRef = (el) => {
   }
 };
 
+const props = defineProps({
+  isTv: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const kayakStore = useKayakStore();
 
 const { isMoving, isArrived, location } = storeToRefs(kayakStore);
@@ -145,24 +156,26 @@ watch(
       }),
     ]);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!props.isTv) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    gsap.to(contentRef.value, {
-      height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
-      duration: 1,
-      ease: "power2.inOut",
-    });
+      gsap.to(contentRef.value, {
+        height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
+        duration: 1,
+        ease: "power2.inOut",
+      });
 
-    gsap.to(collapseRef.value, {
-      height: collapseRef.value.scrollHeight,
-      duration: 1,
-      ease: "power2.inOut",
-      onComplete: () => {
-        gsap.set(collapseRef.value, {
-          height: "auto",
-        });
-      },
-    });
+      gsap.to(collapseRef.value, {
+        height: collapseRef.value.scrollHeight,
+        duration: 1,
+        ease: "power2.inOut",
+        onComplete: () => {
+          gsap.set(collapseRef.value, {
+            height: "auto",
+          });
+        },
+      });
+    }
   }
 );
 
@@ -175,11 +188,22 @@ watch(
         subtitleRef.value.animateIn();
       });
 
-      gsap.to(collapseRef.value, {
-        height: 0,
-        duration: 1,
-        ease: "power2.inOut",
-      });
+      if (props.isTv) {
+        gsap.to(contentRef.value, {
+          height:
+            contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
+          duration: 1,
+          ease: "power2.inOut",
+        });
+      } else {
+        gsap.to(collapseRef.value, {
+          height: 0,
+          duration: 1,
+          ease: "power2.inOut",
+        });
+      }
+
+      console.log(collapse2Ref.value.scrollHeight);
 
       gsap.to(collapse2Ref.value, {
         height: collapse2Ref.value.scrollHeight,
@@ -236,9 +260,7 @@ defineExpose({
         opacity: 0,
         scale: 1.2,
       }),
-      ...skeletonRef.value.map((el) =>
-        gsap.set(el, { height: el.scrollHeight })
-      ),
+      gsap.set(skeletonRef.value, { height: (_, el) => el.scrollHeight }),
     ]);
   },
   animateIn: async (delay = 0) => {
@@ -247,14 +269,6 @@ defineExpose({
       duration: 1,
       ease: "power2.inOut",
       delay,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    useKayakStore().setLocation({
-      name: "Name of the Location",
-      description: "Location Description",
-      image: "/images/kayak/image-grid-1.jpg",
     });
   },
   animateOut: async () => {

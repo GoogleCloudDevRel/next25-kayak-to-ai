@@ -98,11 +98,32 @@
     letter-spacing: -0.05em;
   }
 
+  .text-tv-bold-120 {
+    font-weight: 700;
+    font-size: px-to-vw(120, 4k);
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
   .text-tv-bold-100 {
     font-weight: 700;
     font-size: px-to-vw(100, 4k);
     line-height: 1;
     letter-spacing: -0.05em;
+  }
+
+  .text-tv-body-48 {
+    font-weight: 400;
+    font-size: px-to-vw(48, 4k);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .text-tv-medium-34 {
+    font-weight: 500;
+    font-size: px-to-vw(34, 4k);
+    line-height: 1;
+    letter-spacing: -0.03em;
   }
 
   .text-bold-192 {

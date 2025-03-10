@@ -1,18 +1,9 @@
 <template>
   <div class="input-microphone-wrapper">
-    <div
-      ref="containerRef"
-      class="input-microphone"
-    >
+    <div ref="containerRef" class="input-microphone">
       <div class="input-microphone__text">
-        <IconGemini
-          ref="iconGeminiRef"
-          class="input-microphone__gemini"
-        />
-        <p
-          ref="textRef"
-          class="text-body-24"
-        >
+        <IconGemini ref="iconGeminiRef" class="input-microphone__gemini" />
+        <p ref="textRef" class="text-body-24">
           {{ speechText || props.cta }}
         </p>
       </div>
@@ -37,103 +28,104 @@
 </template>
 
 <script setup>
-import IconBase from '../IconBase.vue'
+import IconBase from "../IconBase.vue";
 const emit = defineEmits([
-  'input-microphone-clicked',
-  'input-microphone-result',
-  'input-microphone-end',
-  'input-microphone-start',
-])
+  "input-microphone-clicked",
+  "input-microphone-result",
+  "input-microphone-end",
+  "input-microphone-start",
+]);
 
 const props = defineProps({
   cta: {
     type: String,
-    default: '',
+    default: "",
   },
   language: {
     type: String,
-    default: 'en-US',
+    default: "en-US",
   },
-})
+});
 
-import { ref, onMounted } from 'vue'
-import IconGemini from '../icons/IconGemini.vue'
-import gsap from 'gsap'
-const currentCta = ref('')
-const speechText = ref('')
-const recognition = ref(null)
-const recording = ref(false)
-const ended = ref(false)
-const containerRef = ref(null)
-const iconGeminiRef = ref(null)
-const textRef = ref(null)
-const iconRecordRef = ref(null)
-const iconSendRef = ref(null)
-const tlRef = gsap.timeline()
+import { ref, onMounted } from "vue";
+import IconGemini from "../icons/IconGemini.vue";
+import gsap from "gsap";
+const currentCta = ref("");
+const speechText = ref("");
+const recognition = ref(null);
+const recording = ref(false);
+const ended = ref(false);
+const containerRef = ref(null);
+const iconGeminiRef = ref(null);
+const textRef = ref(null);
+const iconRecordRef = ref(null);
+const iconSendRef = ref(null);
+const tlRef = gsap.timeline();
 const initRecorder = () => {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    console.error('SpeechRecognition not supported')
-    return
+    console.error("SpeechRecognition not supported");
+    return;
   }
-  recognition.value = new SpeechRecognition()
-  recognition.value.lang = props.language
-  recognition.value.interimResults = true
-  recognition.value.continuous = true
-  initRecognitionEvents()
-}
+  recognition.value = new SpeechRecognition();
+  recognition.value.lang = props.language;
+  recognition.value.interimResults = true;
+  recognition.value.continuous = true;
+  initRecognitionEvents();
+};
 
 const initRecognitionEvents = () => {
   recognition.value.onstart = () => {
-    recording.value = true
-    speechText.value = 'Listening...'
-    emit('input-microphone-start')
-  }
+    recording.value = true;
+    speechText.value = "Listening...";
+    emit("input-microphone-start");
+  };
 
   recognition.value.onend = () => {
-    ended.value = true
-    emit('input-microphone-end')
-  }
+    ended.value = true;
+    emit("input-microphone-end");
+  };
 
   recognition.value.onresult = (event) => {
-    let text = ''
+    let text = "";
     for (let i = event.resultIndex; i < event.results.length; ++i) {
       if (event.results[i].isFinal) {
-        text = event.results[i][0].transcript
+        text = event.results[i][0].transcript;
       } else {
-        text += event.results[i][0].transcript
+        text += event.results[i][0].transcript;
       }
     }
-    handleOnResult(text)
-  }
-}
+    handleOnResult(text);
+  };
+};
 
 const handleOnResult = (text) => {
-  speechText.value = text
-  emit('input-microphone-result', { speechText: text })
-}
+  speechText.value = text;
+  emit("input-microphone-result", { speechText: text });
+};
 
 const handleEndedClick = () => {
   // send the data!!\
-  speechText.value = props.cta
-  ended.value = false
-}
+  speechText.value = props.cta;
+  ended.value = false;
+};
 
 const handleClick = () => {
-  recording.value = !recording.value
-  console.log('recording.value', recording.value)
+  recording.value = !recording.value;
+  console.log("recording.value", recording.value);
   //emit('input-microphone-clicked', { recordingState: recording.value })
-  recording.value ? recognition.value.start() : recognition.value.stop()
-}
+  recording.value ? recognition.value.start() : recognition.value.stop();
+};
 
 const animateIn = (delay = 0) => {
-  const tl = gsap.timeline()
-  tlRef.value = tl
+  const tl = gsap.timeline();
+  tlRef.value = tl;
   tl.to(containerRef.value, {
     opacity: 1,
     duration: 1,
     z: 0,
-    ease: 'power2.out',
+    ease: "power2.out",
     delay,
   })
     .to(
@@ -141,9 +133,9 @@ const animateIn = (delay = 0) => {
       {
         opacity: 1,
         duration: 2,
-        ease: 'power2.inOut',
+        ease: "power2.inOut",
       },
-      '<',
+      "<"
     )
     .to(
       textRef.value,
@@ -151,67 +143,67 @@ const animateIn = (delay = 0) => {
         opacity: 1,
         duration: 2,
       },
-      '-=1',
+      "-=1"
     )
     .to(
       iconRecordRef.value.$el,
       {
         opacity: 1,
         duration: 2,
-        ease: 'power2.inOut',
+        ease: "power2.inOut",
       },
-      '<',
-    )
-}
+      "<"
+    );
+};
 
 const animateOut = () => {
   if (tlRef.value) {
-    tlRef.value.kill()
+    tlRef.value.kill();
   }
-  tlRef.value = gsap.timeline()
+  tlRef.value = gsap.timeline();
   tlRef.value.to(containerRef.value, {
     opacity: 0,
     duration: 1,
-  })
+  });
   tlRef.value.to(iconGeminiRef.value.$el, {
     opacity: 0,
     duration: 1,
-  })
+  });
   tlRef.value.to(textRef.value, {
     opacity: 0,
-  })
-}
+  });
+};
 const animateSet = () => {
   if (tlRef.value) {
-    tlRef.value.kill()
+    tlRef.value.kill();
   }
   gsap.set(containerRef.value, {
     opacity: 0,
     z: -100,
-  })
+  });
   gsap.set(iconGeminiRef.value.$el, {
     opacity: 0,
-  })
+  });
   gsap.set(textRef.value, {
     opacity: 0,
-  })
+  });
   gsap.set(iconRecordRef.value.$el, {
     opacity: 0,
-  })
-}
+  });
+};
 
 defineExpose({
   animateIn,
   animateOut,
   animateSet,
-})
+});
 
 // Initialize on component creation
 onMounted(() => {
-  animateSet()
-  currentCta.value = props.cta
-  initRecorder()
-})
+  animateSet();
+  currentCta.value = props.cta;
+  initRecorder();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -257,21 +249,13 @@ onMounted(() => {
     background: rgba(230, 244, 234, 0.1);
     backdrop-filter: blur(10px);
 
-    &:before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      height: calc(100% - 1px);
-      border-radius: 70px;
-      border: 1px solid transparent;
-      background: linear-gradient(45deg, #e1e1e1, #333333) border-box;
-      mask:
-        linear-gradient(#000 0 0) padding-box,
-        linear-gradient(#000 0 0);
-      mask-composite: exclude;
+    @include gradient-border(
+      (45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)),
+      1px
+    );
+
+    &::before {
+      border-radius: 2em;
     }
   }
 }

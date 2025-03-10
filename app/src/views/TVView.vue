@@ -1,6 +1,6 @@
 <template>
   <IconGC class="icon" />
-  <div class="routes">
+  <div class="routes is-tv">
     <component
       v-for="route in activeRoutes"
       :is="route"

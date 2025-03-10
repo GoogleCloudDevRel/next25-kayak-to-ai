@@ -42,7 +42,7 @@ Responsive hover
 // height: px-to-vh(108, 'chromebook'); // This will output: height: 5vh;
 @function px-to-vh($pixels, $device: 'chromebook') {
   @if $device != 'chromebook' {
-    $vh-value: calc($pixels / 2160) * 100;
+    $vh-value: calc($pixels / 2917) * 100;
     @return #{$vh-value}vh;
   } @else {
     $vh-value: calc($pixels / 1080) * 100;
@@ -54,7 +54,7 @@ Responsive hover
 // width: px-to-vw(108, 'chromebook'); // This will output: 5.625vw;
 @function px-to-vw($pixels, $device: 'chromebook') {
   @if $device != 'chromebook' {
-    $vw-value: calc($pixels / 3840) * 100;
+    $vw-value: calc($pixels / 4752) * 100;
     @return #{$vw-value}vw;
   } @else {
     $vw-value: calc($pixels / 1920) * 100;
