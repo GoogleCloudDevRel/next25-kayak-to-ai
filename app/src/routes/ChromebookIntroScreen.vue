@@ -33,7 +33,6 @@ import VText from "@/components/VText.vue";
 import { ref } from "vue";
 import { useRouteManager } from "@/router/useRouteManager";
 import { gsap } from "@/utils/gsap";
-import { useKayakStore } from "@/store";
 
 const { navigateTo } = useRouteManager();
 
@@ -43,7 +42,6 @@ const buttonRef = ref(null);
 const logoRef = ref(null);
 defineExpose({
   animateSet: async () => {
-    useKayakStore().reset();
     buttonRef.value.animateSet();
     await titleRef.value.prepare();
     await subtitleRef.value.prepare();

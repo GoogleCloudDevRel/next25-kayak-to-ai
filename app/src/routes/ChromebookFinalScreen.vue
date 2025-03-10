@@ -137,6 +137,7 @@ defineExpose({
       moveAgainButtonRef.value.animateOut(),
       finishButtonRef.value.animateOut(),
     ]);
+    kayakStore.reset();
   },
 });
 </script>
