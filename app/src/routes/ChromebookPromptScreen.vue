@@ -40,6 +40,7 @@
         ref="inputMicrophoneRef"
         cta="I want to ..."
         language="en-US"
+        @input-microphone-send="handleInputMicrophoneSend"
       />
     </div>
   </div>
@@ -61,6 +62,11 @@ const { navigateTo } = useRouteManager();
 
 const handleSelectionChange = ({ label }) => {
   useKayakStore().setPrompt(label);
+  navigateTo("final");
+};
+
+const handleInputMicrophoneSend = ({ speechText }) => {
+  useKayakStore().setPrompt(speechText);
   navigateTo("final");
 };
 

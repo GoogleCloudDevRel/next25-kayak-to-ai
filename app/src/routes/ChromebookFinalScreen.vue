@@ -42,6 +42,7 @@ import { Flip, gsap } from "@/utils/gsap";
 import { storeToRefs } from "pinia";
 import VButton from "@/components/VButton.vue";
 import { useRouteManager } from "@/router/useRouteManager";
+import { sendPrompt } from "@/utils/api";
 
 const recoBoxRef = ref(null);
 const recoBoxPromptRef = ref(null);
@@ -100,7 +101,7 @@ watch(
         height: recoGroupRef.value.scrollHeight + 2,
         duration: 1,
         ease: "power2.inOut",
-        delay: 2,
+        delay: 3,
       });
     }
   }
@@ -129,14 +130,7 @@ defineExpose({
       recoGroupRef.value,
     ]);
 
-    // TODO: implement this
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    useKayakStore().setLocation({
-      name: "Name of the Location",
-      description: "Location Description",
-      image: "/images/kayak/image-grid-1.jpg",
-    });
+    await sendPrompt();
   },
   animateOut: async () => {
     await Promise.all([

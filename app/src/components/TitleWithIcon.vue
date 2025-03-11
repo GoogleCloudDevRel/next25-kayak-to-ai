@@ -62,7 +62,7 @@ defineExpose({
 .title-with-icon {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: px-to-vw(10);
 }
 
 .iconBase {

@@ -8,17 +8,20 @@
             ref="subtitleRef"
             icon="gemini"
             title="Recommended Location"
-            :variant="isTv ? 'tv-medium-34' : 'medium-18'"
-            v-once
+            :textVariant="isTv ? 'tv-medium-34' : 'medium-18'"
           />
         </div>
-        <div class="title-container">
+        <div
+          :class="[
+            'title-container',
+            isTv ? 'text-tv-bold-120' : 'text-medium-80',
+          ]"
+        >
           <div class="skeleton" :ref="setSkeletonRef" />
           <VText
             ref="titleRef"
             :text="locationName"
             :variant="isTv ? 'tv-bold-120' : 'medium-80'"
-            v-once
           />
         </div>
       </div>
@@ -140,6 +143,7 @@ watch(
   async () => {
     if (!location.value) return;
 
+    await titleRef.value.ready();
     await nextTick();
 
     await Promise.all([
@@ -431,7 +435,10 @@ defineExpose({
     position: relative;
     width: 100%;
   }
-
+  .title-container {
+    max-height: 2em;
+    height: 2em;
+  }
   .subtitle-container {
     width: max-content;
   }

@@ -107,13 +107,12 @@ const animateSet = async (force = true, { yPercent = 115 } = {}) => {
   await waitUntil(() => !isPreparing.value && prepared.value);
   isAnimated.value = force ? false : isAnimated.value;
 
-  for (const item of splitText.value[
-    props.animateBy === "lines" ? "words" : props.animateBy
-  ]) {
-    gsap.set(item, {
+  gsap.set(
+    splitText.value[props.animateBy === "lines" ? "words" : props.animateBy],
+    {
       yPercent: force ? yPercent : 0,
-    });
-  }
+    }
+  );
 };
 
 const animateIn = async (
@@ -199,6 +198,7 @@ const handleResize = () => {
 
 const setText = async (text) => {
   if (prepared.value) {
+    console.log("setText", text);
     isPreparing.value = true;
     el.value.style.opacity = 0;
     splitText.value.revert();

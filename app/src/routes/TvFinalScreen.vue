@@ -35,7 +35,7 @@ import VText from "@/components/VText.vue";
 import { useKayakStore } from "@/store";
 import { Flip, gsap } from "@/utils/gsap";
 import { storeToRefs } from "pinia";
-
+import { sendPrompt } from "@/utils/api";
 const recoBoxRef = ref(null);
 const recoBoxPromptRef = ref(null);
 const recoWrapperRef = ref(null);
@@ -125,14 +125,7 @@ defineExpose({
     ]);
 
     if (!kayakStore.connected) {
-      // TODO: implement this
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      useKayakStore().setLocation({
-        name: "Name of the Location",
-        description: "Location Description",
-        image: "/images/kayak/image-grid-1.jpg",
-      });
+      await sendPrompt();
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
 

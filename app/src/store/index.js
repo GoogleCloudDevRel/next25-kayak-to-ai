@@ -26,7 +26,7 @@ const connectWebSocket = (store) => {
     try {
       const data = JSON.parse(event.data);
       console.log('Message from server:', data);
-      
+
       // Handle different types of messages
       if (data.type === 'stateUpdate') {
         // Update store state without triggering another sync
@@ -81,31 +81,31 @@ export const useKayakStore = defineStore('kayak', {
     location: null,
     prompt: 'Prompt selected previously',
     code: /*python */ `
-# Example 1: List comprehension and string manipulation
-names = ['alice', 'bob', 'charlie']
-capitalized = [name.title() for name in names]
-print(f"Capitalized names: {capitalized}")
+      # Example 1: List comprehension and string manipulation
+      names = ['alice', 'bob', 'charlie']
+      capitalized = [name.title() for name in names]
+      print(f"Capitalized names: {capitalized}")
 
-# Example 2: Working with dictionaries
-student_scores = {
-    'Alice': 95,
-    'Bob': 87,
-    'Charlie': 92
-}
-avg_score = sum(student_scores.values()) / len(student_scores)
-print(f"Average score: {avg_score:.2f}")
+      # Example 2: Working with dictionaries
+      student_scores = {
+          'Alice': 95,
+          'Bob': 87,
+          'Charlie': 92
+      }
+      avg_score = sum(student_scores.values()) / len(student_scores)
+      print(f"Average score: {avg_score:.2f}")
 
-# Example 3: Using lambda and filter
-numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
-print(f"Even numbers: {even_numbers}")`,
+      # Example 3: Using lambda and filter
+      numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
+      print(f"Even numbers: {even_numbers}")`,
   }),
   actions: {
     // Initialize WebSocket connection
     initWebSocket() {
       connectWebSocket(this);
     },
-    
+
     // Update state from server without triggering sync
     updateFromServer(state) {
       if (state.route !== undefined) this.route = state.route;
@@ -114,12 +114,12 @@ print(f"Even numbers: {even_numbers}")`,
       if (state.location !== undefined) this.location = state.location;
       if (state.prompt !== undefined) this.prompt = state.prompt;
     },
-    
+
     setIsMoving(isMoving) {
       this.isMoving = isMoving;
       syncWithServer(this);
     },
-    
+
     setPrompt(prompt) {
       this.prompt = prompt;
       this.isMoving = false;
@@ -127,12 +127,12 @@ print(f"Even numbers: {even_numbers}")`,
       this.location = null;
       syncWithServer(this);
     },
-    
+
     setArrived(isArrived) {
       this.isArrived = isArrived;
       syncWithServer(this);
     },
-    
+
     setLocation(location) {
       this.location = location;
       syncWithServer(this);
@@ -142,7 +142,7 @@ print(f"Even numbers: {even_numbers}")`,
       this.route = route;
       syncWithServer(this);
     },
-    
+
     reset() {
       this.isMoving = false;
       this.isArrived = false;

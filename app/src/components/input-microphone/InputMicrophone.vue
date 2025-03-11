@@ -3,9 +3,12 @@
     <div ref="containerRef" class="input-microphone">
       <div class="input-microphone__text">
         <IconGemini ref="iconGeminiRef" class="input-microphone__gemini" />
-        <p ref="textRef" class="text-body-24">
-          {{ speechText || props.cta }}
-        </p>
+        <p
+          ref="textRef"
+          class="text-body-24"
+          contenteditable="true"
+          @keydown.enter.prevent="handleEnter"
+        ></p>
       </div>
       <IconBase
         v-if="!ended"
@@ -34,6 +37,7 @@ const emit = defineEmits([
   "input-microphone-result",
   "input-microphone-end",
   "input-microphone-start",
+  "input-microphone-send",
 ]);
 
 const props = defineProps({
@@ -79,6 +83,7 @@ const initRecognitionEvents = () => {
   recognition.value.onstart = () => {
     recording.value = true;
     speechText.value = "Listening...";
+    textRef.value.innerHTML = speechText.value;
     emit("input-microphone-start");
   };
 
@@ -100,15 +105,28 @@ const initRecognitionEvents = () => {
   };
 };
 
+const handleEnter = (e) => {
+  speechText.value = textRef.value.textContent;
+  if (
+    e.key === "Enter" &&
+    !e.shiftKey &&
+    speechText.value.length > 0 &&
+    speechText.value !== props.cta
+  ) {
+    e.preventDefault();
+    handleEndedClick();
+  }
+};
+
 const handleOnResult = (text) => {
   speechText.value = text;
+  textRef.value.innerHTML = text;
   emit("input-microphone-result", { speechText: text });
 };
 
 const handleEndedClick = () => {
   // send the data!!\
-  speechText.value = props.cta;
-  ended.value = false;
+  emit("input-microphone-send", { speechText: textRef.value.textContent });
 };
 
 const handleClick = () => {
@@ -174,6 +192,8 @@ const animateOut = () => {
   });
 };
 const animateSet = () => {
+  speechText.value = props.cta;
+  textRef.value.innerHTML = speechText.value;
   if (tlRef.value) {
     tlRef.value.kill();
   }
@@ -256,6 +276,7 @@ onMounted(() => {
 
     &::before {
       border-radius: 2em;
+      pointer-events: none;
     }
   }
 }
