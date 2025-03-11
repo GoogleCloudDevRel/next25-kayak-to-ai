@@ -11,22 +11,27 @@
 </template>
 
 <script setup>
-import { onMounted, shallowRef, nextTick, onUnmounted } from "vue";
+import { onMounted, shallowRef, nextTick, onUnmounted, watch } from "vue";
 import { useRouteManager } from "@/router/useRouteManager";
-import TvIntroScreen from "../routes/TvIntroScreen.vue";
+import TvIntroScreen from "@/routes/TvIntroScreen.vue";
 import { getQueryParam } from "@/utils/get-query-param";
-import TvLocationListScreen from "../routes/TvLocationListScreen.vue";
-import TvFinalScreen from "../routes/TvFinalScreen.vue";
+import TvPromptScreen from "@/routes/TvPromptScreen.vue";
+import TvFinalScreen from "@/routes/TvFinalScreen.vue";
 import IconGC from "@/components/icons/IconGC.vue";
+import { useKayakStore } from "@/store";
+import { storeToRefs } from "pinia";
 
 const activeRoutes = shallowRef([]);
 const activeRoutesRef = shallowRef([]);
 
 const routes = {
   intro: TvIntroScreen,
-  locations: TvLocationListScreen,
+  prompt: TvPromptScreen,
   final: TvFinalScreen,
 };
+
+const kayakStore = useKayakStore();
+const { route } = storeToRefs(kayakStore);
 
 const routeKeys = Object.keys(routes);
 
@@ -35,7 +40,6 @@ const {
   navigateTo,
   isTransitioning,
   // Optional: Use this to customize how routes change behave
-  // onRouteChange,
 } = useRouteManager();
 
 let index = 0;
@@ -45,6 +49,14 @@ function handleClick(e) {
   if (index === routeKeys.length - 1) return;
   navigateTo(routeKeys[++index]);
 }
+
+watch(
+  () => route.value,
+  (value) => {
+    console.log("route", value);
+    navigateTo(value);
+  }
+);
 
 window.navigateTo = navigateTo;
 

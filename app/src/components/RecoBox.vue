@@ -265,7 +265,7 @@ defineExpose({
   },
   animateIn: async (delay = 0) => {
     await gsap.to(wrapperRef.value, {
-      clipPath: `inset(0% round ${pxToVw(32)})`,
+      clipPath: `inset(-1px round ${pxToVw(32)})`,
       duration: 1,
       ease: "power2.inOut",
       delay,

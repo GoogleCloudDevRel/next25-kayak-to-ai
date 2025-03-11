@@ -62,7 +62,7 @@ const syncWithServer = (state) => {
     socket.send(JSON.stringify({
       type: 'stateUpdate',
       state: {
-        isStarted: state.isStarted,
+        route: state.route,
         isMoving: state.isMoving,
         isArrived: state.isArrived,
         location: state.location,
@@ -75,7 +75,7 @@ const syncWithServer = (state) => {
 export const useKayakStore = defineStore('kayak', {
   state: () => ({
     connected: false,
-    isStarted: false,
+    route: 'intro',
     isMoving: false,
     isArrived: false,
     location: null,
@@ -108,7 +108,7 @@ print(f"Even numbers: {even_numbers}")`,
     
     // Update state from server without triggering sync
     updateFromServer(state) {
-      if (state.isStarted !== undefined) this.isStarted = state.isStarted;
+      if (state.route !== undefined) this.route = state.route;
       if (state.isMoving !== undefined) this.isMoving = state.isMoving;
       if (state.isArrived !== undefined) this.isArrived = state.isArrived;
       if (state.location !== undefined) this.location = state.location;
@@ -138,8 +138,8 @@ print(f"Even numbers: {even_numbers}")`,
       syncWithServer(this);
     },
 
-    setIsStarted(isStarted) {
-      this.isStarted = isStarted;
+    setRoute(route) {
+      this.route = route;
       syncWithServer(this);
     },
     

@@ -33,27 +33,10 @@
 <script setup>
 import ImageGrid from "@/components/image-grid/ImageGrid.vue";
 import VText from "@/components/VText.vue";
-import { ref, watch } from "vue";
-import { useKayakStore } from "@/store";
-import { storeToRefs } from "pinia";
-import { useRouteManager } from "@/router/useRouteManager";
+import { ref } from "vue";
 
 const imageGridRef = ref(null);
 const titleRef = ref(null);
-
-const kayakStore = useKayakStore();
-const { prompt } = storeToRefs(kayakStore);
-const { navigateTo } = useRouteManager();
-
-watch(
-  () => prompt.value,
-  (value) => {
-    console.log("prompt", value);
-    if (value) {
-      navigateTo("final");
-    }
-  }
-);
 
 defineExpose({
   animateSet: async () => {
