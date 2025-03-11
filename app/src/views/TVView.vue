@@ -74,13 +74,13 @@ onMounted(async () => {
 
   navigateTo(initialView ?? "intro");
 
-  if (!getQueryParam("lock")) {
+  if (getQueryParam("manual")) {
     document.body.addEventListener("click", handleClick);
   }
 });
 
 onUnmounted(() => {
-  if (!getQueryParam("lock")) {
+  if (getQueryParam("manual")) {
     document.body.removeEventListener("click", handleClick);
   }
 });

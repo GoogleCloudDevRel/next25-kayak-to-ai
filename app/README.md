@@ -14,7 +14,7 @@ nvm use
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Compile and Hot-Reload for Development + run Node.js WSS
 
 ```sh
 npm run dev
