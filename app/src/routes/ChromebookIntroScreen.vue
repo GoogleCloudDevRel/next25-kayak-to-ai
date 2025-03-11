@@ -50,7 +50,10 @@ defineExpose({
       rotate: 180,
     });
   },
-  animateIn: async () => {
+  animateIn: async (to, from) => {
+    if (from?.id === "final") {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
     gsap.to(logoRef.value, {
       duration: 1,
       ease: "power2.inOut",

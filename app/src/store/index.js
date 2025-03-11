@@ -111,7 +111,9 @@ export const useKayakStore = defineStore('kayak', {
       if (state.route !== undefined) this.route = state.route;
       if (state.isMoving !== undefined) this.isMoving = state.isMoving;
       if (state.isArrived !== undefined) this.isArrived = state.isArrived;
-      if (state.location !== undefined) this.location = state.location;
+      if (state.location !== undefined && this.location === null) {
+        this.location = state.location;
+      }
       if (state.prompt !== undefined) this.prompt = state.prompt;
     },
 

@@ -13,8 +13,11 @@ import { ref } from "vue";
 const galleryRef = ref(null);
 
 defineExpose({
-  animateIn: async () => {
-    galleryRef.value.animateIn(0);
+  animateIn: async (to, from) => {
+    if (from?.id === "final") {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    galleryRef.value.animateIn();
   },
   animateOut: async () => {
     await galleryRef.value.animateOut();

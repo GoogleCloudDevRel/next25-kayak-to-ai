@@ -87,7 +87,7 @@
 <script setup>
 import VText from "@/components/VText.vue";
 import { gsap } from "@/utils/gsap";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import VButton from "./VButton.vue";
 import IconPin from "@/components/icons/IconPin.vue";
 import { useKayakStore } from "@/store";
@@ -128,12 +128,12 @@ const locationName = computed(() => {
   return location.value?.name || "Name of the Location";
 });
 
-const locationDescription = computed(() => {
-  return location.value?.description || "Description of the Location";
-});
-
 const locationImage = computed(() => {
   return location.value?.image || "/images/kayak/image-grid-1.jpg";
+});
+
+const locationDescription = computed(() => {
+  return location.value?.description || "Description of the Location";
 });
 
 const { navigateTo } = useRouteManager();
@@ -143,8 +143,7 @@ watch(
   async () => {
     if (!location.value) return;
 
-    await titleRef.value.ready();
-    await nextTick();
+    await titleRef.value.setText(location.value.name);
 
     await Promise.all([
       titleRef.value.animateIn(),
@@ -189,8 +188,8 @@ watch(
   () => isMoving.value,
   async (isMoving) => {
     if (!isMoving) return;
-
     const subtitle = subtitleRef.value.text();
+    await subtitle.prepare(false);
     await subtitle.animateSet(false);
     subtitle.animateOut().then(async () => {
       await subtitle.setText("Moving Kayak to:");
@@ -231,6 +230,7 @@ watch(
   async (isArrived) => {
     if (!isArrived) return;
     const subtitle = subtitleRef.value.text();
+    await subtitle.prepare(false);
     await subtitle.animateSet(false);
     subtitle.animateOut().then(async () => {
       await subtitle.setText("Arrived at:");

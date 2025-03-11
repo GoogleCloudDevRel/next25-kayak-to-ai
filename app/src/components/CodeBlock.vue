@@ -141,8 +141,6 @@ const animateOut = () => {
 };
 
 const animateSet = async () => {
-  await titleRef.value.prepare();
-
   gsap.set(codeBlockRef.value, {
     x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : "100%",
   });
@@ -152,6 +150,7 @@ const animateSet = async () => {
     "--text-opacity": 0,
     "--line-mask-origin": "center left",
   });
+  await titleRef.value.prepare();
 };
 
 defineExpose({
