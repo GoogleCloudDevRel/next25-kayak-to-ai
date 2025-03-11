@@ -14,7 +14,7 @@ const galleryRef = ref(null);
 
 defineExpose({
   animateIn: async () => {
-    await galleryRef.value.animateIn(0.5);
+    galleryRef.value.animateIn(0);
   },
   animateOut: async () => {
     await galleryRef.value.animateOut();

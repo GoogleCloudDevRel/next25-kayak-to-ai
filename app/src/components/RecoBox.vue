@@ -9,6 +9,7 @@
             icon="gemini"
             title="Recommended Location"
             :variant="isTv ? 'tv-medium-34' : 'medium-18'"
+            v-once
           />
         </div>
         <div class="title-container">
@@ -17,6 +18,7 @@
             ref="titleRef"
             :text="locationName"
             :variant="isTv ? 'tv-bold-120' : 'medium-80'"
+            v-once
           />
         </div>
       </div>
@@ -181,70 +183,72 @@ watch(
 
 watch(
   () => isMoving.value,
-  (isMoving) => {
-    if (isMoving) {
-      subtitleRef.value.animateOut().then(async () => {
-        await subtitleRef.value.text().setText("Moving Kayak to:");
-        subtitleRef.value.animateIn();
+  async (isMoving) => {
+    if (!isMoving) return;
+
+    const subtitle = subtitleRef.value.text();
+    await subtitle.animateSet(false);
+    subtitle.animateOut().then(async () => {
+      await subtitle.setText("Moving Kayak to:");
+      subtitle.animateIn();
+    });
+
+    if (props.isTv) {
+      gsap.to(contentRef.value, {
+        height: contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
+        duration: 1,
+        ease: "power2.inOut",
       });
-
-      if (props.isTv) {
-        gsap.to(contentRef.value, {
-          height:
-            contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
-          duration: 1,
-          ease: "power2.inOut",
-        });
-      } else {
-        gsap.to(collapseRef.value, {
-          height: 0,
-          duration: 1,
-          ease: "power2.inOut",
-        });
-      }
-
-      console.log(collapse2Ref.value.scrollHeight);
-
-      gsap.to(collapse2Ref.value, {
-        height: collapse2Ref.value.scrollHeight,
-        duration: 0.3,
-        ease: "power2.out",
-        onComplete: () => {
-          gsap.set(collapse2Ref.value, {
-            height: "auto",
-          });
-        },
+    } else {
+      gsap.to(collapseRef.value, {
+        height: 0,
+        duration: 1,
+        ease: "power2.inOut",
       });
     }
+
+    console.log(collapse2Ref.value.scrollHeight);
+
+    gsap.to(collapse2Ref.value, {
+      height: collapse2Ref.value.scrollHeight,
+      duration: 0.3,
+      ease: "power2.out",
+      onComplete: () => {
+        gsap.set(collapse2Ref.value, {
+          height: "auto",
+        });
+      },
+    });
   }
 );
 
 watch(
   () => isArrived.value,
-  (isArrived) => {
-    if (isArrived) {
-      subtitleRef.value.animateOut().then(async () => {
-        await subtitleRef.value.text().setText("Arrived at:");
-        subtitleRef.value.animateIn();
-      });
+  async (isArrived) => {
+    if (!isArrived) return;
+    const subtitle = subtitleRef.value.text();
+    await subtitle.animateSet(false);
+    subtitle.animateOut().then(async () => {
+      await subtitle.setText("Arrived at:");
+      subtitle.animateIn();
+    });
 
-      gsap.to(collapse2Ref.value, {
-        height: 0,
-        duration: 1,
-        ease: "power2.inOut",
-      });
+    gsap.to(collapse2Ref.value, {
+      height: 0,
+      duration: 1,
+      ease: "power2.inOut",
+    });
 
-      gsap.to(collapse3Ref.value, {
-        height: collapse3Ref.value.scrollHeight,
-        duration: 1,
-        ease: "power2.inOut",
-        onComplete: () => {
-          gsap.set(collapse3Ref.value, {
-            height: "auto",
-          });
-        },
-      });
-    }
+    gsap.to(collapse3Ref.value, {
+      height: collapse3Ref.value.scrollHeight,
+      duration: 1,
+      ease: "power2.inOut",
+      onComplete: () => {
+        gsap.set(collapse3Ref.value, {
+          height: "auto",
+        });
+      },
+    });
   }
 );
 

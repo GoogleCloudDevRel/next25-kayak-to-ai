@@ -8,12 +8,12 @@
         gradient
       />
       <div class="box">
-        <RecoBoxPrompt ref="recoBoxPromptRef" :is-tv="true" />
-        <RecoBox ref="recoBoxRef" :is-tv="true" />
+        <RecoBoxPrompt ref="recoBoxPromptRef" :is-tv="true" v-once />
+        <RecoBox ref="recoBoxRef" :is-tv="true" v-once />
       </div>
     </div>
     <div class="code-block">
-      <CodeBlock ref="codeBlockRef" language="python">
+      <CodeBlock ref="codeBlockRef" language="python" :is-tv="true">
         <template #default>
           <pre class="line-numbers">
             <code ref="code" v-html="execCode"></code>
@@ -45,42 +45,59 @@ const titleRef = ref(null);
 
 const kayakStore = useKayakStore();
 
-const { isMoving, code: execCode } = storeToRefs(kayakStore);
+const { isMoving, code: execCode, isArrived } = storeToRefs(kayakStore);
 
 let recoState = null;
 
 watch(
   () => isMoving.value,
   (value) => {
-    if (value) {
-      centerRef.value.classList.add("reco-with-code-exec");
-      Flip.from(recoState, {
-        duration: 1,
-        ease: "power2.inOut",
-        onLeave: (elements) => {
-          gsap.set(elements, {
-            display: "inherit",
-            position: "absolute",
-          });
-          gsap.to(elements, {
-            opacity: 0,
-            y: (_, el) => -1.125 * el.clientHeight,
-            display: "none",
-            duration: 1,
-            ease: "power2.inOut",
-          });
-        },
-      });
+    if (!value) return;
 
-      codeBlockRef.value.animateIn(0.5);
+    centerRef.value.classList.add("reco-with-code-exec");
+    Flip.from(recoState, {
+      duration: 1,
+      ease: "power2.inOut",
+      onLeave: (elements) => {
+        gsap.set(elements, {
+          display: "inherit",
+          position: "absolute",
+        });
+        gsap.to(elements, {
+          opacity: 0,
+          y: (_, el) => -1.125 * el.clientHeight,
+          display: "none",
+          duration: 1,
+          ease: "power2.inOut",
+        });
+      },
+    });
 
-      if (!kayakStore.connected) {
-        // TODO: change final reveal logic
-        setTimeout(() => {
-          kayakStore.setArrived(true);
-        }, 3000);
-      }
+    titleRef.value.animateOut().then(async () => {
+      await titleRef.value.setText("Moving Kayak with AI");
+      titleRef.value.animateIn();
+    });
+
+    codeBlockRef.value.animateIn(0.5);
+
+    if (!kayakStore.connected) {
+      // TODO: change final reveal logic
+      setTimeout(() => {
+        kayakStore.setArrived(true);
+      }, 3000);
     }
+  }
+);
+
+watch(
+  () => isArrived.value,
+  (value) => {
+    if (!value) return;
+
+    titleRef.value.animateOut().then(async () => {
+      await titleRef.value.setText("Kayak moved with AI");
+      titleRef.value.animateIn();
+    });
   }
 );
 
@@ -127,6 +144,7 @@ defineExpose({
       recoBoxRef.value.animateOut(),
       recoBoxPromptRef.value.animateOut(),
       codeBlockRef.value.animateOut(),
+      titleRef.value.animateOut(),
     ]);
     kayakStore.reset();
   },
@@ -157,10 +175,10 @@ defineExpose({
 
   .code-block {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: px-to-vw(144, 4k);
+    right: px-to-vw(144, 4k);
+    bottom: px-to-vw(144, 4k);
     width: 35vw;
-    height: 100%;
     z-index: -1;
   }
 

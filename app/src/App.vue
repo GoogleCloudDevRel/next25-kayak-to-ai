@@ -46,37 +46,35 @@
     />
   </BackgroundBase>
   <main class="kayak">
-    <component
-      :is="currentRoute"
-      ref="currentRouteRef"
-    />
+    <component :is="currentRoute" ref="currentRouteRef" />
   </main>
 </template>
 
 <script setup>
-import '@/styles/global.scss'
+import "@/styles/global.scss";
 
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 
-import TvView from './views/TvView.vue'
-import ChromebookView from './views/ChromebookView.vue'
-import NotFoundView from './views/NotFoundView.vue'
-import BackgroundBase from '@/components/background/BackgroundBase.vue'
-import BackgroundGradient from '@/components/background/BackgroundGradient.vue'
+import TvView from "@/views/TvView.vue";
+import ChromebookView from "@/views/ChromebookView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
+import BackgroundBase from "@/components/background/BackgroundBase.vue";
+import BackgroundGradient from "@/components/background/BackgroundGradient.vue";
+
 const routes = {
-  '/': TvView,
-  '/chromebook': ChromebookView,
-}
+  "/": TvView,
+  "/chromebook": ChromebookView,
+};
 
-const currentPath = ref(window.location.hash)
+const currentPath = ref(window.location.hash);
 
-window.addEventListener('hashchange', () => {
-  currentPath.value = window.location.hash
-})
+window.addEventListener("hashchange", () => {
+  currentPath.value = window.location.hash;
+});
 
 const currentRoute = computed(() => {
-  return routes[currentPath.value.slice(1) || '/'] || NotFoundView
-})
+  return routes[currentPath.value.slice(1) || "/"] || NotFoundView;
+});
 </script>
 
 <style lang="scss">

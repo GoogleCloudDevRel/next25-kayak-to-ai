@@ -1,7 +1,7 @@
 <template>
   <div class="title-with-icon">
     <IconBase v-if="icon" :variant="icon" ref="iconRef" />
-    <VText ref="textRef" :text="title" :variant="textVariant" />
+    <VText ref="textRef" :text="title" :variant="textVariant" v-once />
   </div>
 </template>
 

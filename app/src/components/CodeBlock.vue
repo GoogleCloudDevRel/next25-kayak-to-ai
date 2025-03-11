@@ -1,27 +1,23 @@
 <template>
-  <div class="codeblock__wrapper">
-    <div class="codeblock" ref="codeBlockRef">
-      <div class="codeblock__title">
-        <TitleWithIcon
-          ref="titleRef"
-          icon="gemini"
-          textVariant="bold-24"
-          title="Code Execution"
-        />
-      </div>
-      <slot></slot>
+  <div class="codeblock" ref="codeBlockRef">
+    <div class="codeblock__title">
+      <TitleWithIcon
+        ref="titleRef"
+        icon="gemini"
+        textVariant="bold-24"
+        title="Code Execution"
+      />
     </div>
+    <slot></slot>
   </div>
 </template>
 
 <script setup>
 import { nextTick, onMounted, ref, watch } from "vue";
-import Prism from "prismjs";
-import "prismjs/components/prism-python";
-import "prismjs/themes/prism.css"; // You can choose different themes
-import "prismjs/plugins/line-numbers/prism-line-numbers";
+import Prism from "@/utils/prism";
 import gsap from "gsap";
 import TitleWithIcon from "./TitleWithIcon.vue";
+import { pxToVw4k } from "@/utils/px";
 
 const props = defineProps({
   language: {
@@ -32,30 +28,21 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  isTv: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const codeBlockRef = ref(null);
 const titleRef = ref(null);
 const codeClass = `language-${props.language}`;
 const animatedIn = ref(false);
-const hookAdded = ref(false);
 const tlRef = ref(null);
+
 const highlightCode = () => {
   // Now you can access the slot content
   const codeEl = codeBlockRef.value.querySelector("code");
-
-  if (!hookAdded.value) {
-    Prism.hooks.add("after-highlight", function (env) {
-      const code = env.element.innerHTML.split("\n");
-      env.element.innerHTML = code
-        .map(
-          (line, index) =>
-            /* html */ `<span class="line-wrapper" data-line="${index + 1}"><span class="line-text">${line}</span></span>`
-        )
-        .join("\n");
-    });
-    hookAdded.value = true;
-  }
 
   if (codeEl) {
     if (!codeEl.classList.contains(codeClass)) {
@@ -123,7 +110,7 @@ const animateIn = (delay = 0) => {
   const tl = gsap.timeline();
   tlRef.value = tl;
   tl.to(codeBlockRef.value, {
-    top: 0,
+    x: 0,
     delay,
     duration: 1,
     ease: "power4.out",
@@ -147,7 +134,7 @@ const animateOut = () => {
   const tl = gsap.timeline();
   tlRef.value = tl;
   tl.to(codeBlockRef.value, {
-    top: "100%",
+    x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : "100%",
     duration: 1,
     ease: "power4.out",
   });
@@ -157,7 +144,7 @@ const animateSet = async () => {
   await titleRef.value.prepare();
 
   gsap.set(codeBlockRef.value, {
-    top: "100%",
+    x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : "100%",
   });
   const lines = codeBlockRef.value.querySelectorAll(".line-wrapper");
   gsap.set(lines, {
@@ -176,18 +163,21 @@ defineExpose({
 </script>
 
 <style lang="scss">
+.is-tv {
+  .codeblock {
+    border-radius: px-to-vw(32);
+
+    &:before {
+      border-radius: px-to-vw(32);
+    }
+  }
+}
+
 .codeblock {
   height: 100%;
 
   &__title {
     height: 54px;
-    // @include fluid(
-    //   "margin-bottom",
-    //   (
-    //     xxl: 32px,
-    //     fourk: 114px,
-    //   )
-    // );
     margin-bottom: px-to-vw(32);
     display: flex;
     justify-content: flex-start;
@@ -198,28 +188,10 @@ defineExpose({
     }
   }
 
-  &__wrapper {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  @include fluid(
-    "border-radius",
-    (
-      xxl: 31px,
-      fourk: 74px,
-    )
-  );
+  border-radius: px-to-vw(32);
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
   padding: px-to-vw(48);
-  // @include fluid(
-  //   "padding",
-  //   (
-  //     xxl: 48px 64px,
-  //     fourk: 192px 192px,
-  //   )
-  // );
-
   position: relative;
   width: 100%;
   margin: 0 auto;
@@ -229,13 +201,9 @@ defineExpose({
   color: white;
 
   &:before {
-    @include fluid(
-      "border-radius",
-      (
-        xxl: 32px,
-        fourk: 75px,
-      )
-    );
+    border-radius: px-to-vw(32);
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
   }
 
   @include gradient-border(

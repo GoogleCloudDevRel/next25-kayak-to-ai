@@ -1,12 +1,6 @@
 import express from 'express';
 import { createServer } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Get current directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Initialize Express app
 const app = express();
@@ -31,7 +25,7 @@ wss.on('connection', (ws) => {
     try {
       const data = JSON.parse(message.toString());
       console.log('Received:', data);
-      
+
       // Broadcast to all other clients
       wss.clients.forEach((client) => {
         console.log('Sending to client', client !== ws, client.readyState === WebSocket.OPEN);
@@ -53,15 +47,6 @@ wss.on('connection', (ws) => {
   // Send initial connection confirmation
   ws.send(JSON.stringify({ type: 'connected', message: 'Connected to WebSocket server' }));
 });
-
-// Serve static files from the 'app' directory in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'app/dist')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'app/dist/index.html'));
-  });
-}
 
 // Start the server
 server.listen(port, () => {

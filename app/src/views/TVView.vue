@@ -8,6 +8,7 @@
       :key="route.__name"
     />
   </div>
+  <QRCode :value="'https://www.google.com'" />
 </template>
 
 <script setup>
@@ -20,6 +21,7 @@ import TvFinalScreen from "@/routes/TvFinalScreen.vue";
 import IconGC from "@/components/icons/IconGC.vue";
 import { useKayakStore } from "@/store";
 import { storeToRefs } from "pinia";
+import QRCode from "@/components/QRCode.vue";
 
 const activeRoutes = shallowRef([]);
 const activeRoutesRef = shallowRef([]);
@@ -74,13 +76,13 @@ onMounted(async () => {
 
   navigateTo(initialView ?? "intro");
 
-  if (getQueryParam("manual")) {
+  if (getQueryParam("lock")) {
     document.body.addEventListener("click", handleClick);
   }
 });
 
 onUnmounted(() => {
-  if (getQueryParam("manual")) {
+  if (getQueryParam("lock")) {
     document.body.removeEventListener("click", handleClick);
   }
 });

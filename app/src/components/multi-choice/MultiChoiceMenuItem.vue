@@ -85,7 +85,7 @@ const animateIn = (delay) => {
 const animateOut = (delay) => {
   gsap.to(innerItem.value, {
     y: "105%",
-    duration: 0.3,
+    duration: 0.5,
     ease: "power2.out",
     delay,
   });

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="imageGridItem"
-    ref="imageGridItem"
-  >
+  <div class="imageGridItem" ref="imageGridItem">
     <div
       class="imageGridItem__image"
       :style="{ backgroundImage: `url(${image})` }"
@@ -15,23 +12,20 @@
       class="imageGridItem__text text-bold-40"
       ref="captionDiv"
     >
-      <IconBase
-        class="imageGridItem__icon"
-        variant="gemini"
-      />
+      <IconBase class="imageGridItem__icon" variant="gemini" />
       <span>{{ caption }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import IconBase from '@/components/IconBase.vue'
-import gsap from 'gsap'
-import { ref } from 'vue'
+import IconBase from "@/components/IconBase.vue";
+import gsap from "gsap";
+import { ref } from "vue";
 
-const imageGridItem = ref(null)
-const imageDiv = ref(null)
-const captionDiv = ref(null)
+const imageGridItem = ref(null);
+const imageDiv = ref(null);
+const captionDiv = ref(null);
 
 defineProps({
   image: {
@@ -42,7 +36,7 @@ defineProps({
     type: String,
     required: false,
   },
-})
+});
 
 const animateSet = () => {
   // gsap.set(imageGridItem.value, {
@@ -50,52 +44,52 @@ const animateSet = () => {
   // })
   gsap.set(imageDiv.value, {
     opacity: 0,
-    clipPath: 'inset(30% 30% round 26.1%)',
-  })
+    clipPath: "inset(30% 30% round 26.1%)",
+  });
   gsap.set(captionDiv.value, {
     opacity: 0,
-    y: '5vh',
-  })
-}
+    y: "5vh",
+  });
+};
 
 const animateIn = (delay) => {
-  animateSet()
+  animateSet();
   gsap.to(imageDiv.value, {
     opacity: 1,
-    clipPath: 'inset(0% 0% round 6.1%)',
+    clipPath: "inset(0% 0% round 6.1%)",
     duration: 0.8,
-    ease: 'power2.out',
+    ease: "power2.out",
     delay,
-  })
+  });
   gsap.to(captionDiv.value, {
     opacity: 1,
     y: 0,
     duration: 0.5,
-    ease: 'power2.out',
+    ease: "power2.out",
     delay: delay - 0.05,
-  })
-}
+  });
+};
 
 const animateOut = (delay) => {
   gsap.to(captionDiv.value, {
     opacity: 0,
-    duration: 0.3,
-    ease: 'power2.out',
+    duration: 0.5,
+    ease: "power2.out",
     delay: delay - 0.05,
-  })
+  });
   gsap.to(imageDiv.value, {
-    clipPath: 'inset(30% 30% round 6.1%)',
-    duration: 0.3,
+    clipPath: "inset(30% 30% round 6.1%)",
+    duration: 0.5,
     opacity: 0,
-    ease: 'power2.out',
+    ease: "power2.out",
     delay,
-  })
-}
+  });
+};
 
 defineExpose({
   animateIn,
   animateOut,
-})
+});
 </script>
 
 <style lang="scss">
