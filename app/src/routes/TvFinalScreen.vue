@@ -67,7 +67,11 @@ watch(
   () => isMoving.value,
   (value) => {
     if (!value) return
-
+    recoState = Flip.getState([
+      recoWrapperRef.value,
+      recoBoxRef.value.el(),
+      recoBoxPromptRef.value.el(),
+    ])
     centerRef.value.classList.add('reco-with-code-exec')
     Flip.from(recoState, {
       duration: 1,
@@ -132,12 +136,6 @@ defineExpose({
       recoBoxRef.value.animateIn(0.4),
     ])
 
-    recoState = Flip.getState([
-      recoWrapperRef.value,
-      recoBoxRef.value.el(),
-      recoBoxPromptRef.value.el(),
-    ])
-
     if (!kayakStore.connected) {
       await sendPrompt()
 
@@ -186,6 +184,7 @@ defineExpose({
     right: px-to-vw(144, 4k);
     bottom: px-to-vw(144, 4k);
     width: 35vw;
+    pointer-events: none;
   }
 
   &.reco-with-code-exec,

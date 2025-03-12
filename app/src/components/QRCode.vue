@@ -1,28 +1,37 @@
 <template>
-  <div class="qr-code" ref="qrCodeRef">
-    <img :src="src" alt="QR Code" />
-    <VText text="Learn more" variant="tv-bold-40" />
+  <div
+    class="qr-code"
+    ref="qrCodeRef"
+  >
+    <img
+      :src="src"
+      alt="QR Code"
+    />
+    <VText
+      text="Learn more"
+      variant="tv-bold-40"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { generateQR } from "@/utils/qr";
-import VText from "./VText.vue";
-const qrCodeRef = ref(null);
+import { ref, onMounted } from 'vue'
+import { generateQR } from '@/utils/qr'
+import VText from './VText.vue'
+const qrCodeRef = ref(null)
 
 const props = defineProps({
   value: {
     type: String,
     required: true,
   },
-});
+})
 
-const src = ref(null);
+const src = ref(null)
 
 onMounted(async () => {
-  src.value = await generateQR(props.value);
-});
+  src.value = await generateQR(props.value)
+})
 </script>
 
 <style lang="scss">

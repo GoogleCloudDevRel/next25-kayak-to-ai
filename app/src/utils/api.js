@@ -4,8 +4,8 @@ import { deferred } from "./deferred";
 const locationNames = [
   "Lake Union",
   "Green Lake",
-  "Lake Washington (Seward Park)",
-  "Lake Washington (Matthews Beach Park)",
+  "Seward Park",
+  "Matthews Beach Park",
   "Lake Sammamish"
 ];
 
@@ -34,7 +34,7 @@ export const sendPrompt = async () => {
 
   useKayakStore().setLocation({
     name: locationName,
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     image: "/images/kayak/image-grid-1.jpg",
   });
 

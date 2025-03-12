@@ -72,7 +72,12 @@ watch(
   () => isMoving.value,
   (value) => {
     if (!value) return
-
+    recoState = Flip.getState([
+      recoWrapperRef.value,
+      recoBoxRef.value.el(),
+      recoBoxPromptRef.value.el(),
+      recoGroupRef.value,
+    ])
     centerRef.value.classList.add('reco-with-code-exec')
     Flip.from(recoState, {
       duration: 1,
@@ -125,14 +130,7 @@ defineExpose({
   animateIn: async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
     await Promise.all([recoBoxPromptRef.value.animateIn(0), recoBoxRef.value.animateIn(0.2)])
-    recoState = Flip.getState([
-      recoWrapperRef.value,
-      recoBoxRef.value.el(),
-      recoBoxPromptRef.value.el(),
-      recoGroupRef.value,
-    ])
-
-    await sendPrompt()
+    sendPrompt()
   },
   animateOut: async () => {
     await Promise.all([
@@ -169,6 +167,7 @@ defineExpose({
     right: 0;
     width: 35vw;
     height: 100%;
+    pointer-events: none;
   }
 
   .reco-group {

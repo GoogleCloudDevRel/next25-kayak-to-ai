@@ -1,5 +1,8 @@
 <template>
-  <div class="wrapper reco-box-prompt" ref="wrapperRef">
+  <div
+    class="wrapper reco-box-prompt"
+    ref="wrapperRef"
+  >
     <div class="title">
       <VText
         ref="titleRef"
@@ -7,41 +10,45 @@
         :variant="isTv ? 'tv-body-48' : 'body-24'"
       />
     </div>
-    <IconExit v-if="!isTv" class="icon" :onClick="() => navigateTo('prompt')" />
+    <IconExit
+      v-if="!isTv"
+      class="icon"
+      :onClick="() => navigateTo('prompt')"
+    />
   </div>
 </template>
 
 <script setup>
-import VText from "@/components/VText.vue";
-import { ref } from "vue";
-import IconExit from "./icons/IconExit.vue";
-import { useKayakStore } from "@/store";
-import { gsap } from "@/utils/gsap";
-import { pxToVw } from "@/utils/px";
-import { useRouteManager } from "@/router/useRouteManager";
-import { storeToRefs } from "pinia";
+import VText from '@/components/VText.vue'
+import { ref } from 'vue'
+import IconExit from './icons/IconExit.vue'
+import { useKayakStore } from '@/store'
+import { gsap } from '@/utils/gsap'
+import { pxToVw } from '@/utils/px'
+import { useRouteManager } from '@/router/useRouteManager'
+import { storeToRefs } from 'pinia'
 
-const titleRef = ref(null);
-const wrapperRef = ref(null);
-const kayakStore = useKayakStore();
+const titleRef = ref(null)
+const wrapperRef = ref(null)
+const kayakStore = useKayakStore()
 
-const { prompt } = storeToRefs(kayakStore);
+const { prompt } = storeToRefs(kayakStore)
 
-const { navigateTo } = useRouteManager();
+const { navigateTo } = useRouteManager()
 
 defineProps({
   isTv: {
     type: Boolean,
     default: false,
   },
-});
+})
 
 defineExpose({
   animateSet: async () => {
-    await titleRef.value.prepare();
+    await titleRef.value.prepare()
     gsap.set(wrapperRef.value, {
       clipPath: `inset(50% round ${pxToVw(32)})`,
-    });
+    })
   },
   animateIn: async (delay = 0) => {
     await Promise.all([
@@ -49,20 +56,20 @@ defineExpose({
       gsap.to(wrapperRef.value, {
         clipPath: `inset(-1px round ${pxToVw(32)})`,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
         delay,
       }),
-    ]);
+    ])
   },
   animateOut: async () => {
-    gsap.to(wrapperRef.value, {
+    await gsap.to(wrapperRef.value, {
       clipPath: `inset(50% round ${pxToVw(32)})`,
       duration: 1,
-      ease: "power2.inOut",
-    });
+      ease: 'power2.inOut',
+    })
   },
   el: () => wrapperRef.value,
-});
+})
 </script>
 
 <style lang="scss" scoped>
@@ -74,10 +81,7 @@ defineExpose({
   padding: px-to-vw(36) px-to-vw(54);
   border-radius: px-to-vw(32);
   background: rgba(230, 244, 234, 0.1);
-  @include gradient-border(
-    (45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)),
-    2px
-  );
+  @include gradient-border((45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)), 2px);
   margin-bottom: px-to-vw(12);
 
   &::before {

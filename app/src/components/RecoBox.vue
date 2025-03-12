@@ -29,6 +29,7 @@
             ref="titleRef"
             :text="locationName"
             :variant="isTv ? 'tv-bold-120' : 'medium-80'"
+            :min-lines="2"
           />
         </div>
       </div>
@@ -213,7 +214,10 @@ watch(
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       gsap.to(contentRef.value, {
-        height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
+        height: Math.max(
+          contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
+          (300 / 1920) * window.innerWidth,
+        ),
         duration: 1,
         ease: 'power2.inOut',
       })
@@ -348,7 +352,7 @@ defineExpose({
     })
   },
   animateOut: async () => {
-    gsap.to(wrapperRef.value, {
+    await gsap.to(wrapperRef.value, {
       clipPath: `inset(50% round ${pxToVw(32)})`,
       duration: 1,
       ease: 'power2.inOut',
@@ -401,16 +405,19 @@ defineExpose({
     flex: 0.95;
     overflow: hidden;
     height: 100%;
+    border-radius: px-to-vw(32);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: px-to-vw(32);
   }
 
   .image-container {
     position: relative;
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   img {
