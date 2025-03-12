@@ -1,9 +1,18 @@
 <template>
-  <div class="center" ref="centerRef">
-    <div class="reco" ref="recoWrapperRef">
+  <div
+    class="center"
+    ref="centerRef"
+  >
+    <div
+      class="reco"
+      ref="recoWrapperRef"
+    >
       <RecoBoxPrompt ref="recoBoxPromptRef" />
       <RecoBox ref="recoBoxRef" />
-      <div class="reco-group" ref="recoGroupRef">
+      <div
+        class="reco-group"
+        ref="recoGroupRef"
+      >
         <VButton
           ref="moveAgainButtonRef"
           text="Move Again"
@@ -19,79 +28,75 @@
       </div>
     </div>
     <div class="code-block">
-      <CodeBlock ref="codeBlockRef" language="python">
-        <template #default>
-          <pre class="line-numbers">
-            <code ref="code" v-html="execCode"></code>
-          </pre>
-        </template>
-      </CodeBlock>
+      <CodeBlock
+        ref="codeBlockRef"
+        language="python"
+        :codeSnippet="execCode"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch } from 'vue'
 
-import RecoBox from "@/components/RecoBox.vue";
-import RecoBoxPrompt from "@/components/RecoBoxPrompt.vue";
-import CodeBlock from "@/components/CodeBlock.vue";
+import RecoBox from '@/components/RecoBox.vue'
+import RecoBoxPrompt from '@/components/RecoBoxPrompt.vue'
+import CodeBlock from '@/components/CodeBlock.vue'
 
-import { useKayakStore } from "@/store";
-import { Flip, gsap } from "@/utils/gsap";
-import { storeToRefs } from "pinia";
-import VButton from "@/components/VButton.vue";
-import { useRouteManager } from "@/router/useRouteManager";
-import { sendPrompt } from "@/utils/api";
+import { useKayakStore } from '@/store'
+import { Flip, gsap } from '@/utils/gsap'
+import { storeToRefs } from 'pinia'
+import VButton from '@/components/VButton.vue'
+import { useRouteManager } from '@/router/useRouteManager'
+import { sendPrompt, checkIfKayakArrived } from '@/utils/api'
 
-const recoBoxRef = ref(null);
-const recoBoxPromptRef = ref(null);
-const recoWrapperRef = ref(null);
-const centerRef = ref(null);
-const codeBlockRef = ref(null);
-const recoGroupRef = ref(null);
-const moveAgainButtonRef = ref(null);
-const finishButtonRef = ref(null);
+const recoBoxRef = ref(null)
+const recoBoxPromptRef = ref(null)
+const recoWrapperRef = ref(null)
+const centerRef = ref(null)
+const codeBlockRef = ref(null)
+const recoGroupRef = ref(null)
+const moveAgainButtonRef = ref(null)
+const finishButtonRef = ref(null)
 
-const kayakStore = useKayakStore();
+const kayakStore = useKayakStore()
 
-const { isMoving, code: execCode, isArrived } = storeToRefs(kayakStore);
+const { isMoving, code: execCode, isArrived } = storeToRefs(kayakStore)
 
-const { navigateTo } = useRouteManager();
+const { navigateTo } = useRouteManager()
 
-let recoState = null;
+let recoState = null
 
 watch(
   () => isMoving.value,
   (value) => {
-    if (value) {
-      centerRef.value.classList.add("reco-with-code-exec");
-      Flip.from(recoState, {
-        duration: 1,
-        ease: "power2.inOut",
-        onLeave: (elements) => {
-          gsap.set(elements, {
-            display: "inherit",
-            position: "absolute",
-          });
-          gsap.to(elements, {
-            opacity: 0,
-            y: (_, el) => -1.125 * el.clientHeight,
-            display: "none",
-            duration: 1,
-            ease: "power2.inOut",
-          });
-        },
-      });
-      codeBlockRef.value.animateIn(0.5);
+    if (!value) return
 
-      // TODO: change final reveal logic
-      setTimeout(() => {
-        kayakStore.setArrived(true);
-      }, 3000);
-    }
-  }
-);
+    centerRef.value.classList.add('reco-with-code-exec')
+    Flip.from(recoState, {
+      duration: 1,
+      ease: 'power2.inOut',
+      onLeave: (elements) => {
+        gsap.set(elements, {
+          display: 'inherit',
+          position: 'absolute',
+        })
+        gsap.to(elements, {
+          opacity: 0,
+          y: (_, el) => -1.125 * el.clientHeight,
+          display: 'none',
+          duration: 1,
+          ease: 'power2.inOut',
+        })
+      },
+    })
+
+    codeBlockRef.value.animateIn(0.5)
+
+    checkIfKayakArrived()
+  },
+)
 
 watch(
   () => isArrived.value,
@@ -100,12 +105,12 @@ watch(
       gsap.to(recoGroupRef.value, {
         height: recoGroupRef.value.scrollHeight + 2,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
         delay: 3,
-      });
+      })
     }
-  }
-);
+  },
+)
 defineExpose({
   animateSet: async () => {
     await Promise.all([
@@ -115,22 +120,19 @@ defineExpose({
       gsap.set(recoGroupRef.value, {
         height: 0,
       }),
-    ]);
+    ])
   },
   animateIn: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    await Promise.all([
-      recoBoxPromptRef.value.animateIn(0),
-      recoBoxRef.value.animateIn(0.2),
-    ]);
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await Promise.all([recoBoxPromptRef.value.animateIn(0), recoBoxRef.value.animateIn(0.2)])
     recoState = Flip.getState([
       recoWrapperRef.value,
       recoBoxRef.value.el(),
       recoBoxPromptRef.value.el(),
       recoGroupRef.value,
-    ]);
+    ])
 
-    await sendPrompt();
+    await sendPrompt()
   },
   animateOut: async () => {
     await Promise.all([
@@ -139,10 +141,10 @@ defineExpose({
       codeBlockRef.value.animateOut(),
       moveAgainButtonRef.value.animateOut(),
       finishButtonRef.value.animateOut(),
-    ]);
-    kayakStore.reset();
+    ])
+    kayakStore.reset()
   },
-});
+})
 </script>
 
 <style lang="scss" scoped>
@@ -167,7 +169,6 @@ defineExpose({
     right: 0;
     width: 35vw;
     height: 100%;
-    z-index: -1;
   }
 
   .reco-group {

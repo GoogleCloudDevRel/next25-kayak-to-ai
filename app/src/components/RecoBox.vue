@@ -1,9 +1,18 @@
 <template>
-  <div class="wrapper" ref="wrapperRef">
-    <div class="content" ref="contentRef">
+  <div
+    class="wrapper"
+    ref="wrapperRef"
+  >
+    <div
+      class="content"
+      ref="contentRef"
+    >
       <div class="title">
         <div class="subtitle-container">
-          <div class="skeleton" :ref="setSkeletonRef" />
+          <div
+            class="skeleton"
+            :ref="setSkeletonRef"
+          />
           <TitleWithIcon
             ref="subtitleRef"
             icon="gemini"
@@ -11,13 +20,11 @@
             :textVariant="isTv ? 'tv-medium-34' : 'medium-18'"
           />
         </div>
-        <div
-          :class="[
-            'title-container',
-            isTv ? 'text-tv-bold-120' : 'text-medium-80',
-          ]"
-        >
-          <div class="skeleton" :ref="setSkeletonRef" />
+        <div :class="['title-container', isTv ? 'text-tv-bold-120' : 'text-medium-80']">
+          <div
+            class="skeleton"
+            :ref="setSkeletonRef"
+          />
           <VText
             ref="titleRef"
             :text="locationName"
@@ -26,13 +33,26 @@
         </div>
       </div>
       <div class="image">
-        <div class="image-container" ref="imageRef">
-          <img :src="locationImage" :alt="locationName" />
+        <div
+          class="image-container"
+          ref="imageRef"
+        >
+          <img
+            :src="locationImage"
+            :alt="locationName"
+          />
         </div>
-        <div class="skeleton" :ref="setSkeletonRef" />
+        <div
+          class="skeleton"
+          :ref="setSkeletonRef"
+        />
       </div>
     </div>
-    <div class="collapse" ref="collapseRef" v-if="!isTv">
+    <div
+      class="collapse"
+      ref="collapseRef"
+      v-if="!isTv"
+    >
       <div class="collapse-content">
         <div class="divider"></div>
         <VText
@@ -53,12 +73,15 @@
             variant="primary"
             text-variant="bold-24"
             size="large"
-            :onClick="() => kayakStore.setIsMoving(true)"
+            :onClick="moveKayakAndGetCode"
           />
         </div>
       </div>
     </div>
-    <div class="collapse" ref="collapse2Ref">
+    <div
+      class="collapse"
+      ref="collapse2Ref"
+    >
       <div class="collapse-content text-color-gray">
         <div class="divider"></div>
         <VText
@@ -67,83 +90,108 @@
         />
         <div class="progress-group">
           <IconPin class="pin" />
-          <IconKayak class="kayak" />
+          <IconKayak
+            class="kayak"
+            ref="kayakIconRef"
+          />
           <div class="progress-bar">
-            <div class="progress-bar-fill" />
+            <div
+              class="progress-bar-fill"
+              ref="progressRef"
+            />
           </div>
           <IconPin class="pin pin-right" />
         </div>
       </div>
     </div>
-    <div class="collapse" ref="collapse3Ref">
+    <div
+      class="collapse"
+      ref="collapse3Ref"
+    >
       <div class="collapse-content">
         <div class="divider"></div>
-        <VText :text="locationDescription" variant="body-24" />
+        <VText
+          :text="locationDescription"
+          variant="body-24"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import VText from "@/components/VText.vue";
-import { gsap } from "@/utils/gsap";
-import { computed, ref, watch } from "vue";
-import VButton from "./VButton.vue";
-import IconPin from "@/components/icons/IconPin.vue";
-import { useKayakStore } from "@/store";
-import IconKayak from "@/components/icons/IconKayak.vue";
-import { pxToVw } from "@/utils/px";
-import { useRouteManager } from "@/router/useRouteManager";
-import { storeToRefs } from "pinia";
-import TitleWithIcon from "./TitleWithIcon.vue";
+import VText from '@/components/VText.vue'
+import { gsap } from '@/utils/gsap'
+import { computed, ref, watch } from 'vue'
+import VButton from './VButton.vue'
+import IconPin from '@/components/icons/IconPin.vue'
+import { useKayakStore } from '@/store'
+import IconKayak from '@/components/icons/IconKayak.vue'
+import { pxToVw } from '@/utils/px'
+import { useRouteManager } from '@/router/useRouteManager'
+import { storeToRefs } from 'pinia'
+import TitleWithIcon from './TitleWithIcon.vue'
+import { moveKayakAndGetCode } from '@/utils/api'
+const titleRef = ref(null)
+const collapseRef = ref(null)
+const collapse2Ref = ref(null)
+const collapse3Ref = ref(null)
+const contentRef = ref(null)
+const wrapperRef = ref(null)
+const subtitleRef = ref(null)
+const imageRef = ref(null)
+const progressRef = ref(null)
+const kayakIconRef = ref(null)
 
-const titleRef = ref(null);
-const collapseRef = ref(null);
-const collapse2Ref = ref(null);
-const collapse3Ref = ref(null);
-const contentRef = ref(null);
-const wrapperRef = ref(null);
-const subtitleRef = ref(null);
-const imageRef = ref(null);
-const skeletonRef = ref([]);
+const skeletonRef = ref([])
 
 const setSkeletonRef = (el) => {
   if (el) {
-    skeletonRef.value.push(el);
+    skeletonRef.value.push(el)
   }
-};
+}
 
 const props = defineProps({
   isTv: {
     type: Boolean,
     default: false,
   },
-});
+})
 
-const kayakStore = useKayakStore();
+const kayakStore = useKayakStore()
 
-const { isMoving, isArrived, location } = storeToRefs(kayakStore);
+const { isMoving, isArrived, location } = storeToRefs(kayakStore)
 
 const locationName = computed(() => {
-  return location.value?.name || "Name of the Location";
-});
+  return location.value?.name || 'Name of the Location'
+})
 
 const locationImage = computed(() => {
-  return location.value?.image || "/images/kayak/image-grid-1.jpg";
-});
+  return location.value?.image || '/images/kayak/image-grid-1.jpg'
+})
 
 const locationDescription = computed(() => {
-  return location.value?.description || "Description of the Location";
-});
+  return location.value?.description || 'Description of the Location'
+})
 
-const { navigateTo } = useRouteManager();
+const { navigateTo } = useRouteManager()
+
+async function changeSubtitle(text) {
+  const subtitle = subtitleRef.value.text()
+  await subtitle.prepare(false)
+  await subtitle.animateSet(false)
+  subtitle.animateOut().then(async () => {
+    await subtitle.setText(text)
+    subtitle.animateIn()
+  })
+}
 
 watch(
   () => location.value,
   async () => {
-    if (!location.value) return;
+    if (!location.value) return
 
-    await titleRef.value.setText(location.value.name);
+    await titleRef.value.setText(location.value.name)
 
     await Promise.all([
       titleRef.value.animateIn(),
@@ -152,109 +200,129 @@ watch(
         opacity: 1,
         scale: 1,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
       }),
       gsap.to(skeletonRef.value, {
         opacity: 0,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
       }),
-    ]);
+    ])
 
     if (!props.isTv) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
       gsap.to(contentRef.value, {
         height: contentRef.value.scrollHeight - collapseRef.value.scrollHeight,
         duration: 1,
-        ease: "power2.inOut",
-      });
+        ease: 'power2.inOut',
+      })
 
       gsap.to(collapseRef.value, {
         height: collapseRef.value.scrollHeight,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
         onComplete: () => {
           gsap.set(collapseRef.value, {
-            height: "auto",
-          });
+            height: 'auto',
+          })
         },
-      });
+      })
     }
-  }
-);
+  },
+)
 
 watch(
   () => isMoving.value,
   async (isMoving) => {
-    if (!isMoving) return;
-    const subtitle = subtitleRef.value.text();
-    await subtitle.prepare(false);
-    await subtitle.animateSet(false);
-    subtitle.animateOut().then(async () => {
-      await subtitle.setText("Moving Kayak to:");
-      subtitle.animateIn();
-    });
+    if (!isMoving) return
+    await changeSubtitle('Moving Kayak to:')
 
     if (props.isTv) {
       gsap.to(contentRef.value, {
         height: contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
         duration: 1,
-        ease: "power2.inOut",
-      });
+        ease: 'power2.inOut',
+      })
     } else {
       gsap.to(collapseRef.value, {
         height: 0,
         duration: 1,
-        ease: "power2.inOut",
-      });
+        ease: 'power2.inOut',
+      })
     }
-
-    console.log(collapse2Ref.value.scrollHeight);
 
     gsap.to(collapse2Ref.value, {
       height: collapse2Ref.value.scrollHeight,
       duration: 0.3,
-      ease: "power2.out",
+      ease: 'power2.out',
       onComplete: () => {
         gsap.set(collapse2Ref.value, {
-          height: "auto",
-        });
+          height: 'auto',
+        })
+
+        handleProgress()
       },
-    });
-  }
-);
+    })
+  },
+)
+
+const handleProgress = () => {
+  const progress = 0.7
+  gsap.to(progressRef.value, {
+    width: progress * 100 + '%',
+    duration: 5,
+    ease: 'power2.inOut',
+  })
+
+  gsap.to(kayakIconRef.value.ref(), {
+    left: progress * 100 - 12 + '%',
+    duration: 5,
+    ease: 'power2.inOut',
+  })
+}
 
 watch(
   () => isArrived.value,
   async (isArrived) => {
-    if (!isArrived) return;
-    const subtitle = subtitleRef.value.text();
-    await subtitle.prepare(false);
-    await subtitle.animateSet(false);
-    subtitle.animateOut().then(async () => {
-      await subtitle.setText("Arrived at:");
-      subtitle.animateIn();
-    });
+    if (!isArrived) return
+
+    gsap.killTweensOf(progressRef.value)
+    gsap.killTweensOf(kayakIconRef.value.ref())
+
+    await Promise.all([
+      gsap.to(progressRef.value, {
+        width: 100 + '%',
+        duration: 1,
+        ease: 'power2.inOut',
+      }),
+
+      gsap.to(kayakIconRef.value.ref(), {
+        left: 100 - 12 + '%',
+        duration: 1,
+        ease: 'power2.inOut',
+      }),
+      await changeSubtitle('Arrived at:'),
+    ])
 
     gsap.to(collapse2Ref.value, {
       height: 0,
       duration: 1,
-      ease: "power2.inOut",
-    });
+      ease: 'power2.inOut',
+    })
 
     gsap.to(collapse3Ref.value, {
       height: collapse3Ref.value.scrollHeight,
       duration: 1,
-      ease: "power2.inOut",
+      ease: 'power2.inOut',
       onComplete: () => {
         gsap.set(collapse3Ref.value, {
-          height: "auto",
-        });
+          height: 'auto',
+        })
       },
-    });
-  }
-);
+    })
+  },
+)
 
 defineExpose({
   animateSet: async () => {
@@ -269,25 +337,25 @@ defineExpose({
         scale: 1.2,
       }),
       gsap.set(skeletonRef.value, { height: (_, el) => el.scrollHeight }),
-    ]);
+    ])
   },
   animateIn: async (delay = 0) => {
     await gsap.to(wrapperRef.value, {
       clipPath: `inset(-1px round ${pxToVw(32)})`,
       duration: 1,
-      ease: "power2.inOut",
+      ease: 'power2.inOut',
       delay,
-    });
+    })
   },
   animateOut: async () => {
     gsap.to(wrapperRef.value, {
       clipPath: `inset(50% round ${pxToVw(32)})`,
       duration: 1,
-      ease: "power2.inOut",
-    });
+      ease: 'power2.inOut',
+    })
   },
   el: () => wrapperRef.value,
-});
+})
 </script>
 
 <style lang="scss" scoped>
@@ -297,10 +365,7 @@ defineExpose({
   padding: px-to-vw(54);
   border-radius: px-to-vw(32);
   background: rgba(230, 244, 234, 0.1);
-  @include gradient-border(
-    (45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)),
-    2px
-  );
+  @include gradient-border((45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)), 2px);
 
   &::before {
     border-radius: px-to-vw(32);
@@ -447,13 +512,14 @@ defineExpose({
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      58.9deg,
-      rgba(230, 244, 234, 0.6) 7%,
-      rgba(52, 168, 83, 0.6) 120%
-    );
+    background: linear-gradient(58.9deg, rgba(230, 244, 234, 0.6) 7%, rgba(52, 168, 83, 0.6) 120%);
     border-radius: px-to-vw(32);
     z-index: 10;
+  }
+
+  .pin {
+    width: px-to-vw(27);
+    height: auto;
   }
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
-  <div class="codeblock" ref="codeBlockRef">
+  <div
+    class="codeblock"
+    ref="codeBlockRef"
+  >
     <div class="codeblock__title">
       <TitleWithIcon
         ref="titleRef"
@@ -8,157 +11,103 @@
         title="Code Execution"
       />
     </div>
-    <slot></slot>
+    <pre class="line-numbers">
+      <code ref="codeRef" />
+    </pre>
   </div>
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue";
-import Prism from "@/utils/prism";
-import gsap from "gsap";
-import TitleWithIcon from "./TitleWithIcon.vue";
-import { pxToVw4k } from "@/utils/px";
+import { ref, watch } from 'vue'
+import Prism from '@/utils/prism'
+import gsap from 'gsap'
+import TitleWithIcon from './TitleWithIcon.vue'
+import { pxToVw4k } from '@/utils/px'
 
 const props = defineProps({
   language: {
     type: String,
-    default: "python",
+    default: 'python',
   },
-  code: {
+  codeSnippet: {
     type: String,
-    default: "",
+    default: '',
   },
   isTv: {
     type: Boolean,
     default: false,
   },
-});
+})
 
-const codeBlockRef = ref(null);
-const titleRef = ref(null);
-const codeClass = `language-${props.language}`;
-const animatedIn = ref(false);
-const tlRef = ref(null);
+const codeClass = `language-${props.language}`
 
-const highlightCode = () => {
-  // Now you can access the slot content
-  const codeEl = codeBlockRef.value.querySelector("code");
-
-  if (codeEl) {
-    if (!codeEl.classList.contains(codeClass)) {
-      codeEl.classList.add(codeClass);
-    }
-    Prism.highlightElement(codeEl);
-  }
-};
-
-onMounted(async () => {
-  await nextTick();
-  highlightCode();
-});
+const codeBlockRef = ref(null)
+const titleRef = ref(null)
+const codeRef = ref(null)
 
 // Re-highlight when code changes
 watch(
-  () => props.code,
+  () => props.codeSnippet,
   async () => {
-    await nextTick();
-    highlightCode();
-    if (codeBlockRef.value) {
-      const preElement = codeBlockRef.value.querySelector("pre");
-      console.log("preElement", preElement.scrollHeight);
-      preElement.scrollTop = preElement.scrollHeight;
+    if (!codeRef.value || !props.codeSnippet) return
+
+    if (!codeRef.value.classList.contains(codeClass)) {
+      codeRef.value.classList.add(codeClass)
     }
-  },
-  { deep: true }
-);
 
-const revealCode = () => {
-  const lines = codeBlockRef.value.querySelectorAll(".line-wrapper");
-
-  // Reset any existing animations
-  gsap.set(lines, {
-    "--line-mask": 0,
-    "--text-opacity": 0,
-    "--line-mask-origin": "center left",
-  });
-
-  gsap.to(lines, {
-    "--line-mask": 1,
-    duration: 0.5,
-    stagger: {
-      amount: 0.8,
-      from: "start",
-      onComplete: function () {
-        const target = this.targets()[0];
-        gsap.set(target, { "--line-mask-origin": "center right" });
-        gsap.to(target, {
-          "--line-mask": 0,
-          "--text-opacity": 1,
-          duration: 0.5,
-          ease: "power1.inOut",
-        });
+    gsap.to(codeRef.value, {
+      text: {
+        value: props.codeSnippet,
+        preserveSpaces: true,
+        speed: 8,
       },
-    },
-    ease: "power1.inOut",
-  });
-};
+      duration: 2,
+      ease: 'none',
+      onUpdate: () => {
+        Prism.highlightElement(codeRef.value)
+      },
+    })
+  },
+)
 
 const animateIn = (delay = 0) => {
-  if (tlRef.value) {
-    tlRef.value.kill();
-  }
-  const tl = gsap.timeline();
-  tlRef.value = tl;
-  tl.to(codeBlockRef.value, {
+  gsap.to(codeBlockRef.value, {
     x: 0,
     delay,
     duration: 1,
-    ease: "power4.out",
+    ease: 'power4.out',
     onStart: () => {
       gsap.set(codeBlockRef.value, {
-        pointerEvents: "auto",
-      });
-      setTimeout(() => {
-        revealCode();
-        titleRef.value.animateIn();
-        animatedIn.value = true;
-      }, 500);
+        pointerEvents: 'auto',
+      })
+      titleRef.value.animateIn()
     },
-  });
-};
+  })
+}
 
 const animateOut = () => {
-  if (tlRef.value) {
-    tlRef.value.kill();
-  }
-  const tl = gsap.timeline();
-  tlRef.value = tl;
-  tl.to(codeBlockRef.value, {
-    x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : "100%",
+  gsap.to(codeBlockRef.value, {
+    x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : '100%',
     duration: 1,
-    ease: "power4.out",
-  });
-};
+    ease: 'power4.out',
+  })
+  titleRef.value.animateOut()
+}
 
 const animateSet = async () => {
-  gsap.set(codeBlockRef.value, {
-    x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : "100%",
-  });
-  const lines = codeBlockRef.value.querySelectorAll(".line-wrapper");
-  gsap.set(lines, {
-    "--line-mask": 0,
-    "--text-opacity": 0,
-    "--line-mask-origin": "center left",
-  });
-  await titleRef.value.prepare();
-};
+  await Promise.all([
+    gsap.set(codeBlockRef.value, {
+      x: props.isTv ? codeBlockRef.value.offsetWidth + pxToVw4k(144) : '100%',
+    }),
+    titleRef.value.prepare(),
+  ])
+}
 
 defineExpose({
   animateIn,
   animateOut,
   animateSet,
-  revealCode,
-});
+})
 </script>
 
 <style lang="scss">
@@ -203,12 +152,10 @@ defineExpose({
     border-radius: px-to-vw(32);
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
+    z-index: -1;
   }
 
-  @include gradient-border(
-    (45deg, rgba(120, 122, 121, 0.35), rgba(38, 53, 47, 0.35)),
-    1px
-  );
+  @include gradient-border((45deg, rgba(120, 122, 121, 0.35), rgba(38, 53, 47, 0.35)), 1px);
 
   pre {
     border-top: 1px solid rgba(38, 53, 47, 0.35);
@@ -248,7 +195,7 @@ defineExpose({
       border-radius: 3px;
 
       &::before {
-        content: "";
+        content: '';
         position: absolute;
         top: calc(50%);
         transform-origin: var(--line-mask-origin);
@@ -292,13 +239,12 @@ defineExpose({
   Conversion: Bram de Haan (http://atelierbram.github.io/Base2Tone-prism/output/prism/prism-base2tone-sea-dark.css)
   Generated with Base16 Builder (https://github.com/base16-builder/base16-builder)
   */
-  code[class*="language-"],
-  pre[class*="language-"] {
+  code[class*='language-'],
+  pre[class*='language-'] {
     font-family:
-      Consolas, Menlo, Monaco, "Andale Mono WT", "Andale Mono",
-      "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono",
-      "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L",
-      "Courier New", Courier, monospace;
+      Consolas, Menlo, Monaco, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
+      'Lucida Sans Typewriter', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Liberation Mono',
+      'Nimbus Mono L', 'Courier New', Courier, monospace;
     // @include fluid(
     //   'font-size',
     //   (
@@ -326,31 +272,31 @@ defineExpose({
     text-shadow: none !important;
   }
 
-  pre[class*="language-"]::-moz-selection,
-  pre[class*="language-"] ::-moz-selection,
-  code[class*="language-"]::-moz-selection,
-  code[class*="language-"] ::-moz-selection {
+  pre[class*='language-']::-moz-selection,
+  pre[class*='language-'] ::-moz-selection,
+  code[class*='language-']::-moz-selection,
+  code[class*='language-'] ::-moz-selection {
     text-shadow: none;
     background: #004a9e;
   }
 
-  pre[class*="language-"]::selection,
-  pre[class*="language-"] ::selection,
-  code[class*="language-"]::selection,
-  code[class*="language-"] ::selection {
+  pre[class*='language-']::selection,
+  pre[class*='language-'] ::selection,
+  code[class*='language-']::selection,
+  code[class*='language-'] ::selection {
     text-shadow: none;
     background: #004a9e;
   }
 
   /* Code blocks */
-  pre[class*="language-"] {
+  pre[class*='language-'] {
     padding: 1em;
     margin: 0.5em 0;
     overflow: auto;
   }
 
   /* Inline code */
-  :not(pre) > code[class*="language-"] {
+  :not(pre) > code[class*='language-'] {
     padding: 0.1em;
     border-radius: 0.3em;
   }
@@ -465,16 +411,8 @@ defineExpose({
   */
   .line-highlight.line-highlight {
     background: rgba(10, 163, 112, 0.2);
-    background: -webkit-linear-gradient(
-      left,
-      rgba(10, 163, 112, 0.2) 70%,
-      rgba(10, 163, 112, 0)
-    );
-    background: linear-gradient(
-      to right,
-      rgba(10, 163, 112, 0.2) 70%,
-      rgba(10, 163, 112, 0)
-    );
+    background: -webkit-linear-gradient(left, rgba(10, 163, 112, 0.2) 70%, rgba(10, 163, 112, 0));
+    background: linear-gradient(to right, rgba(10, 163, 112, 0.2) 70%, rgba(10, 163, 112, 0));
   }
 }
 </style>

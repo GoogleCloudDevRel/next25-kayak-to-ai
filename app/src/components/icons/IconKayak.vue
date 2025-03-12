@@ -1,5 +1,6 @@
 <template>
   <svg
+    ref="svgRef"
     width="66"
     height="63"
     viewBox="0 0 66 63"
@@ -12,3 +13,11 @@
     />
   </svg>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+
+const svgRef = ref(null)
+
+defineExpose({ ref: () => svgRef.value })
+</script>
