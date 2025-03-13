@@ -22,9 +22,9 @@
     </div>
     <div class="splash-gallery">
       <SplashGalleryItem
-        v-for="(image, index) in images"
+        v-for="image in images"
+        :key="image.uniqueId"
         ref="galleryItemsRef"
-        :key="index"
         :src="image.src"
         :alt="image.alt"
         :position="image.position"
@@ -42,6 +42,7 @@ import SplashGalleryItem from './SplashGalleryItem.vue'
 import VText from '@/components/VText.vue'
 import gsap from 'gsap'
 const images = ref([])
+const imagesMap = ref(new Map())
 
 const count = ref(0)
 const intervalId = ref(null)
@@ -50,6 +51,8 @@ const titleRef = ref(null)
 const subTitleRef = ref(null)
 const logoRef = ref(null)
 const galleryItemsRef = ref([])
+const maxImagesDisplayed = ref(12)
+const uniqueIdCounter = ref(0)
 
 const props = defineProps({
   title: {
@@ -142,13 +145,25 @@ async function spawnImage() {
     count.value = 0
   }
 
+  if (imagesMap.value.size >= maxImagesDisplayed.value) {
+    return
+  }
+
+  const uniqueId = uniqueIdCounter.value++
+  const imageId = `img-${Date.now()}-${count.value}`
+
   const obj = {
     src: imageContentRef.value[count.value].src,
     position: imageContentRef.value[count.value].position,
-    id: count.value,
+    alt: imageContentRef.value[count.value].alt || '',
+    id: imageId,
+    uniqueId: uniqueId,
     caption: imageContentRef.value[count.value].caption,
   }
+
   images.value.push(obj)
+  imagesMap.value.set(imageId, obj)
+
   count.value++
 }
 
@@ -177,7 +192,18 @@ function handleVisibilityChange() {
 }
 
 function handleItemDone(id) {
-  images.value = images.value.filter((image) => image.id !== id)
+  imagesMap.value.delete(id)
+
+  const index = images.value.findIndex((image) => image.id === id)
+  if (index !== -1) {
+    images.value.splice(index, 1)
+  }
+
+  setTimeout(() => {
+    if (imagesMap.value.size < maxImagesDisplayed.value && intervalId.value) {
+      spawnImage()
+    }
+  }, 0)
 }
 
 async function animateIn(delay = 0) {
@@ -203,10 +229,21 @@ function animateOut() {
     z: (index) => 100 + index * 50,
     ease: 'power2.out',
   })
-  galleryItemsRef.value.forEach((item) => {
-    item.animateOut()
-  })
-  // animate out all the
+
+  // Animate out all gallery items
+  if (galleryItemsRef.value) {
+    // Convert to array if it's not already
+    const itemsArray = Array.isArray(galleryItemsRef.value)
+      ? galleryItemsRef.value
+      : Object.values(galleryItemsRef.value)
+
+    itemsArray.forEach((item) => {
+      if (item && typeof item.animateOut === 'function') {
+        item.animateOut()
+      }
+    })
+  }
+
   stopInterval()
 }
 
@@ -229,6 +266,8 @@ onMounted(() => {
 onUnmounted(() => {
   stopInterval()
   document.removeEventListener('visibilitychange', handleVisibilityChange)
+  images.value = []
+  imagesMap.value.clear()
 })
 </script>
 

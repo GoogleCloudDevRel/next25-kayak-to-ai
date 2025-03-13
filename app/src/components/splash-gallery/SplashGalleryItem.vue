@@ -21,37 +21,66 @@
 
 <script setup>
 import gsap from 'gsap'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
 import VCaption from '@/components/splash-gallery/VCaption.vue'
 
 const image = ref(null)
 const imageContainer = ref(null)
 const imageInner = ref(null)
 const captionRef = ref(null)
-const tlRef = gsap.timeline()
+const tlRef = ref(null)
+const isAnimatingOut = ref(false)
+
 onMounted(() => {
   // set style of image
-  imageContainer.value.style.left = `${props.position.left}`
-  imageContainer.value.style.top = `${props.position.top}`
-  imageContainer.value.style.right = `${props.position.right}`
-  imageContainer.value.style.bottom = `${props.position.bottom}`
+  if (imageContainer.value) {
+    imageContainer.value.style.left = `${props.position.left}`
+    imageContainer.value.style.top = `${props.position.top}`
+    imageContainer.value.style.right = `${props.position.right}`
+    imageContainer.value.style.bottom = `${props.position.bottom}`
 
-  if (props.animate) {
-    initAnimate()
+    if (props.animate) {
+      initAnimate()
+    }
   }
 })
-function animateIn() {
-  captionRef.value.animateIn()
-}
 
-function animateOut() {
+onBeforeUnmount(() => {
+  // Clean up any animations when component is unmounted
   if (tlRef.value) {
     tlRef.value.kill()
   }
-  gsap.to(imageContainer.value, {
-    z: imageContainer.value.style.z + 500,
+})
+
+function animateIn() {
+  if (captionRef.value) {
+    captionRef.value.animateIn()
+  }
+}
+
+function animateOut() {
+  // Prevent multiple animate out calls
+  if (isAnimatingOut.value) return
+  isAnimatingOut.value = true
+
+  if (tlRef.value) {
+    tlRef.value.kill()
+  }
+
+  if (!imageContainer.value) return
+
+  // Create a new timeline for the out animation
+  const outTl = gsap.timeline({
+    onComplete: () => {
+      emit('itemDone', props.id)
+    },
+  })
+
+  outTl.to(imageContainer.value, {
+    z: 500,
     opacity: 0,
     duration: 1,
+    ease: 'power2.in',
   })
 }
 
@@ -63,6 +92,8 @@ defineExpose({
 const emit = defineEmits(['itemDone'])
 
 function initAnimate() {
+  if (!imageContainer.value || !imageInner.value || !image.value) return
+
   const x = props.position.left === 'auto' ? -Math.random() * 50 : Math.random() * 50
   const y = props.position.top === 'auto' ? -Math.random() * 50 : Math.random() * 50
 
@@ -71,9 +102,10 @@ function initAnimate() {
       ease: 'power1.out',
     },
     onComplete: () => {
-      // remove this component from the parent
-      imageContainer.value.remove()
-      emit('itemDone', props.id)
+      if (!isAnimatingOut.value) {
+        isAnimatingOut.value = true
+        emit('itemDone', props.id)
+      }
     },
   })
 
@@ -83,6 +115,7 @@ function initAnimate() {
     x: `${x}%`,
     y: `${y}%`,
     z: -300,
+    opacity: 1,
   })
     .set(imageInner.value, {
       scale: 0,
@@ -106,9 +139,11 @@ function initAnimate() {
         duration: 2,
         ease: 'power1.out',
         onStart: () => {
-          setTimeout(() => {
-            captionRef.value.animateIn()
-          }, 1500)
+          if (captionRef.value) {
+            setTimeout(() => {
+              captionRef.value.animateIn()
+            }, 1500)
+          }
         },
       },
       '<',
@@ -151,7 +186,7 @@ const props = defineProps({
     required: true,
   },
   id: {
-    type: Number,
+    type: [Number, String],
     required: true,
   },
   animate: {
@@ -173,6 +208,9 @@ const props = defineProps({
   top: 0;
   left: 0;
   transform-style: preserve-3d;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 
   @include fluid(
     'width',
@@ -203,6 +241,9 @@ const props = defineProps({
     height: 100%;
     object-fit: cover;
     transform-origin: center;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   &__inner {
@@ -211,6 +252,9 @@ const props = defineProps({
     transform-origin: center;
     overflow: hidden;
     border-radius: inherit;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   .vcaption {
     position: absolute;
