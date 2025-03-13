@@ -12,80 +12,78 @@
 </template>
 
 <script setup>
-import { onMounted, shallowRef, nextTick, onUnmounted, watch } from "vue";
-import { useRouteManager } from "@/router/useRouteManager";
-import TvIntroScreen from "@/routes/TvIntroScreen.vue";
-import { getQueryParam } from "@/utils/get-query-param";
-import TvPromptScreen from "@/routes/TvPromptScreen.vue";
-import TvFinalScreen from "@/routes/TvFinalScreen.vue";
-import IconGC from "@/components/icons/IconGC.vue";
-import { useKayakStore } from "@/store";
-import { storeToRefs } from "pinia";
-import QRCode from "@/components/QRCode.vue";
+import { onMounted, shallowRef, nextTick, onUnmounted, watch } from 'vue'
+import { useRouteManager } from '@/router/useRouteManager'
+import TvIntroScreen from '@/routes/TvIntroScreen.vue'
+import { getQueryParam } from '@/utils/get-query-param'
+import TvPromptScreen from '@/routes/TvPromptScreen.vue'
+import TvFinalScreen from '@/routes/TvFinalScreen.vue'
+import IconGC from '@/components/icons/IconGC.vue'
+import { useKayakStore } from '@/store'
+import { storeToRefs } from 'pinia'
+import QRCode from '@/components/QRCode.vue'
 
-const activeRoutes = shallowRef([]);
-const activeRoutesRef = shallowRef([]);
+const activeRoutes = shallowRef([])
+const activeRoutesRef = shallowRef([])
 
 const routes = {
   intro: TvIntroScreen,
   prompt: TvPromptScreen,
   final: TvFinalScreen,
-};
+}
 
-const kayakStore = useKayakStore();
-const { route } = storeToRefs(kayakStore);
+const kayakStore = useKayakStore()
+const { route } = storeToRefs(kayakStore)
 
-const routeKeys = Object.keys(routes);
+const routeKeys = Object.keys(routes)
 
 const {
   registerRoutes,
   navigateTo,
   isTransitioning,
   // Optional: Use this to customize how routes change behave
-} = useRouteManager();
+} = useRouteManager()
 
-let index = 0;
+let index = 0
 function handleClick(e) {
-  e.preventDefault();
-  if (isTransitioning.value) return;
-  if (index === routeKeys.length - 1) return;
-  navigateTo(routeKeys[++index]);
+  e.preventDefault()
+  if (isTransitioning.value) return
+  if (index === routeKeys.length - 1) return
+  navigateTo(routeKeys[++index])
 }
 
 watch(
   () => route.value,
   (value) => {
-    console.log("route", value);
-    navigateTo(value);
-  }
-);
+    console.log('route', value)
+    navigateTo(value)
+  },
+)
 
-window.navigateTo = navigateTo;
+window.navigateTo = navigateTo
 
 // Register routes with their animations
 onMounted(async () => {
-  registerRoutes(routes, activeRoutes, activeRoutesRef);
+  registerRoutes(routes, activeRoutes, activeRoutesRef)
 
-  await nextTick();
+  await nextTick()
 
-  const initialView = routeKeys.find(
-    (key) => getQueryParam("view", false) === key
-  );
-  index = routeKeys.indexOf(initialView);
-  index = index === -1 ? 0 : index;
+  const initialView = routeKeys.find((key) => getQueryParam('view', false) === key)
+  index = routeKeys.indexOf(initialView)
+  index = index === -1 ? 0 : index
 
-  navigateTo(initialView ?? "intro");
+  navigateTo(initialView ?? 'intro')
 
-  if (getQueryParam("lock")) {
-    document.body.addEventListener("click", handleClick);
+  if (getQueryParam('manual')) {
+    document.body.addEventListener('click', handleClick)
   }
-});
+})
 
 onUnmounted(() => {
-  if (getQueryParam("lock")) {
-    document.body.removeEventListener("click", handleClick);
+  if (getQueryParam('manual')) {
+    document.body.removeEventListener('click', handleClick)
   }
-});
+})
 </script>
 
 <style lang="scss" scoped>

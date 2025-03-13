@@ -244,7 +244,10 @@ watch(
 
     if (props.isTv) {
       gsap.to(contentRef.value, {
-        height: contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
+        height: Math.max(
+          contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight,
+          (869 / 3840) * window.innerHeight,
+        ),
         duration: 1,
         ease: 'power2.inOut',
       })
@@ -329,6 +332,17 @@ watch(
 )
 
 defineExpose({
+  setProgressHeight: () => {
+    const padding = (54 / 1920) * window.innerWidth
+    const minHeight = (869 / 3840) * window.innerHeight
+    gsap.set(wrapperRef.value, {
+      height: props.isTv
+        ? Math.max(contentRef.value.scrollHeight - collapse2Ref.value.scrollHeight, minHeight) +
+          collapse2Ref.value.scrollHeight +
+          padding * 2
+        : contentRef.value.scrollHeight + collapse2Ref.value.scrollHeight + padding * 2,
+    })
+  },
   animateSet: async () => {
     await Promise.all([
       titleRef.value.prepare(),

@@ -73,6 +73,7 @@ watch(
       recoBoxPromptRef.value.el(),
     ])
     centerRef.value.classList.add('reco-with-code-exec')
+    recoBoxRef.value.setProgressHeight()
     Flip.from(recoState, {
       duration: 1,
       ease: 'power2.inOut',
@@ -87,6 +88,11 @@ watch(
           display: 'none',
           duration: 1,
           ease: 'power2.inOut',
+        })
+      },
+      onComplete: () => {
+        gsap.set(recoBoxRef.value.el(), {
+          clearProps: 'height',
         })
       },
     })

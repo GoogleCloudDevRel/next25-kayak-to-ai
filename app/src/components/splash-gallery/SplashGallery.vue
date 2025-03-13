@@ -223,6 +223,8 @@ async function animateIn(delay = 0) {
 }
 
 function animateOut() {
+  gsap.killTweensOf([logoRef.value, titleRef.value.$el, subTitleRef.value.$el])
+
   gsap.to([logoRef.value, titleRef.value.$el, subTitleRef.value.$el], {
     opacity: 0,
     duration: 1,
