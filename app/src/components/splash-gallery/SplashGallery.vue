@@ -1,7 +1,10 @@
 <template>
   <div class="splash-gallery-container">
     <div class="splash-gallery-title">
-      <div class="logo" ref="logoRef" />
+      <div
+        class="logo"
+        ref="logoRef"
+      />
       <VText
         ref="titleRef"
         :text="title"
@@ -34,109 +37,109 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
-import SplashGalleryItem from "./SplashGalleryItem.vue";
-import VText from "@/components/VText.vue";
-import gsap from "gsap";
-const images = ref([]);
+import { onMounted, onUnmounted, ref } from 'vue'
+import SplashGalleryItem from './SplashGalleryItem.vue'
+import VText from '@/components/VText.vue'
+import gsap from 'gsap'
+const images = ref([])
 
-const count = ref(0);
-const intervalId = ref(null);
-const isVisible = ref(true);
-const titleRef = ref(null);
-const subTitleRef = ref(null);
-const logoRef = ref(null);
-const galleryItemsRef = ref([]);
+const count = ref(0)
+const intervalId = ref(null)
+const isVisible = ref(true)
+const titleRef = ref(null)
+const subTitleRef = ref(null)
+const logoRef = ref(null)
+const galleryItemsRef = ref([])
 
 const props = defineProps({
   title: {
     type: String,
     required: false,
-    default: "Kayak to AI",
+    default: 'Kayak to AI',
   },
   subTitle: {
     type: String,
     required: false,
-    default: "Let Gemini guide your adventures",
+    default: 'Let Gemini guide your adventures',
   },
   imageContent: {
     type: Array,
     default: () => [
       {
-        src: "https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c",
-        alt: "Image 1",
-        caption: "Caption 1",
+        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        alt: 'Image 1',
+        caption: 'Caption 1',
         position: {
-          left: "10%",
-          top: "10%",
-          right: "auto",
-          bottom: "auto",
+          left: '10%',
+          top: '10%',
+          right: 'auto',
+          bottom: 'auto',
         },
       },
       {
-        src: "https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00",
-        alt: "Image 2",
-        caption: "Caption 2",
+        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
+        alt: 'Image 2',
+        caption: 'Caption 2',
         position: {
-          left: "auto",
-          top: "10%",
-          right: "10%",
-          bottom: "auto",
+          left: 'auto',
+          top: '10%',
+          right: '10%',
+          bottom: 'auto',
         },
       },
       {
-        src: "https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c",
-        alt: "Image 3",
-        caption: "Caption 3 testing long caption",
+        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        alt: 'Image 3',
+        caption: 'Caption 3 testing long caption',
         position: {
-          left: "10%",
-          right: "auto",
-          top: "auto",
-          bottom: "10%",
+          left: '10%',
+          right: 'auto',
+          top: 'auto',
+          bottom: '10%',
         },
       },
       {
-        src: "https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00",
-        alt: "Image 4",
-        caption: "Caption 4",
+        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
+        alt: 'Image 4',
+        caption: 'Caption 4',
         position: {
-          left: "auto",
-          top: "auto",
-          right: "10%",
-          bottom: "0%",
+          left: 'auto',
+          top: 'auto',
+          right: '10%',
+          bottom: '0%',
         },
       },
       {
-        src: "https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c",
-        alt: "Image 5",
-        caption: "Caption 5",
+        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        alt: 'Image 5',
+        caption: 'Caption 5',
         position: {
-          left: "auto",
-          top: "auto",
-          right: "30%",
-          bottom: "10%",
+          left: 'auto',
+          top: 'auto',
+          right: '30%',
+          bottom: '10%',
         },
       },
       {
-        src: "https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00",
-        alt: "Image 6",
-        caption: "Caption 6",
+        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
+        alt: 'Image 6',
+        caption: 'Caption 6',
         position: {
-          top: "0%",
-          left: "30%",
-          right: "auto",
-          bottom: "auto",
+          top: '0%',
+          left: '30%',
+          right: 'auto',
+          bottom: 'auto',
         },
       },
     ],
   },
-});
+})
 
-const imageContentRef = ref(props.imageContent);
+const imageContentRef = ref(props.imageContent)
 
 async function spawnImage() {
   if (count.value >= imageContentRef.value.length) {
-    count.value = 0;
+    count.value = 0
   }
 
   const obj = {
@@ -144,53 +147,53 @@ async function spawnImage() {
     position: imageContentRef.value[count.value].position,
     id: count.value,
     caption: imageContentRef.value[count.value].caption,
-  };
-  images.value.push(obj);
-  count.value++;
+  }
+  images.value.push(obj)
+  count.value++
 }
 
 function startInterval() {
   if (!intervalId.value) {
-    spawnImage();
-    intervalId.value = setInterval(spawnImage, 1500);
+    spawnImage()
+    intervalId.value = setInterval(spawnImage, 1500)
   }
 }
 
 function stopInterval() {
   if (intervalId.value) {
-    clearInterval(intervalId.value);
-    intervalId.value = null;
+    clearInterval(intervalId.value)
+    intervalId.value = null
   }
 }
 
 function handleVisibilityChange() {
   if (document.hidden) {
-    isVisible.value = false;
-    stopInterval();
+    isVisible.value = false
+    stopInterval()
   } else {
-    isVisible.value = true;
-    startInterval();
+    isVisible.value = true
+    startInterval()
   }
 }
 
 function handleItemDone(id) {
-  console.log("item done", id);
+  images.value = images.value.filter((image) => image.id !== id)
 }
 
 async function animateIn(delay = 0) {
-  startInterval();
-  document.addEventListener("visibilitychange", handleVisibilityChange);
+  startInterval()
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 
   await Promise.all([
     gsap.to([logoRef.value, titleRef.value.$el, subTitleRef.value.$el], {
       opacity: 1,
       duration: 3,
       z: 0,
-      ease: "power2.out",
+      ease: 'power2.out',
       delay: delay,
       stagger: 0.25,
     }),
-  ]);
+  ])
 }
 
 function animateOut() {
@@ -198,35 +201,35 @@ function animateOut() {
     opacity: 0,
     duration: 1,
     z: (index) => 100 + index * 50,
-    ease: "power2.out",
-  });
+    ease: 'power2.out',
+  })
   galleryItemsRef.value.forEach((item) => {
-    item.animateOut();
-  });
+    item.animateOut()
+  })
   // animate out all the
-  stopInterval();
+  stopInterval()
 }
 
 defineExpose({
   animateIn,
   animateOut,
-});
+})
 
 onMounted(() => {
-  imageContentRef.value = props.imageContent;
+  imageContentRef.value = props.imageContent
 
   gsap.set([logoRef.value, titleRef.value.$el, subTitleRef.value.$el], {
     opacity: 0,
     z: -100,
-  });
+  })
 
   //animateIn()
-});
+})
 
 onUnmounted(() => {
-  stopInterval();
-  document.removeEventListener("visibilitychange", handleVisibilityChange);
-});
+  stopInterval()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+})
 </script>
 
 <style lang="scss" scoped>
