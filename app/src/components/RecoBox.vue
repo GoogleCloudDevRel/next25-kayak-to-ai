@@ -275,15 +275,14 @@ watch(
 )
 
 const handleProgress = () => {
-  const progress = 0.7
+  const progress = 0.6
   gsap.to(progressRef.value, {
-    width: progress * 100 + '%',
+    width: progress * 72 + '%',
     duration: 5,
     ease: 'power2.inOut',
   })
-
   gsap.to(kayakIconRef.value.ref(), {
-    left: progress * 100 - 12 + '%',
+    left: progress * 68.35 + '%',
     duration: 5,
     ease: 'power2.inOut',
   })
@@ -299,13 +298,13 @@ watch(
 
     await Promise.all([
       gsap.to(progressRef.value, {
-        width: 100 + '%',
+        width: 72 + '%',
         duration: 1,
         ease: 'power2.inOut',
       }),
 
       gsap.to(kayakIconRef.value.ref(), {
-        left: 100 - 12 + '%',
+        left: 68.35 + '%',
         duration: 1,
         ease: 'power2.inOut',
       }),
@@ -483,10 +482,10 @@ defineExpose({
   .kayak {
     position: absolute;
     z-index: 2;
-    bottom: px-to-vw(-22.5);
-    width: px-to-vw(66);
+    bottom: px-to-vw(-25);
+    width: px-to-vw(287);
     height: auto;
-    left: 8%;
+    left: -10%;
   }
 
   .progress-group {
@@ -500,7 +499,7 @@ defineExpose({
       top: calc(100% + px-to-vw(16));
       position: absolute;
       width: 100%;
-      height: px-to-vw(10);
+      height: px-to-vw(8);
       background: rgba(255, 255, 255, 0.2);
       border-radius: px-to-vw(10);
       overflow: hidden;
