@@ -49,7 +49,8 @@ import VText from '@/components/VText.vue'
 import { useKayakStore } from '@/store'
 import { Flip, gsap } from '@/utils/gsap'
 import { storeToRefs } from 'pinia'
-import { sendPrompt } from '@/utils/api'
+import { checkIfKayakArrived, moveKayakAndGetCode, sendPrompt } from '@/utils/api'
+import { getQueryParam } from '@/utils/get-query-param'
 const recoBoxRef = ref(null)
 const recoBoxPromptRef = ref(null)
 const recoWrapperRef = ref(null)
@@ -104,11 +105,8 @@ watch(
 
     codeBlockRef.value.animateIn(0.5)
 
-    if (!kayakStore.connected) {
-      // TODO: change final reveal logic
-      setTimeout(() => {
-        kayakStore.setArrived(true)
-      }, 3000)
+    if (!kayakStore.connected || getQueryParam('manual')) {
+      checkIfKayakArrived()
     }
   },
 )
@@ -145,12 +143,12 @@ defineExpose({
       recoBoxRef.value.animateIn(0.4),
     ])
 
-    if (!kayakStore.connected) {
+    if (!kayakStore.connected || getQueryParam('manual')) {
       await sendPrompt()
 
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      useKayakStore().setIsMoving(true)
+      moveKayakAndGetCode()
     }
   },
   animateOut: async () => {
@@ -190,9 +188,9 @@ defineExpose({
 
   .code-block {
     position: absolute;
-    top: px-to-vw(144, 4k);
-    right: px-to-vw(144, 4k);
-    bottom: px-to-vw(144, 4k);
+    top: 0;
+    right: 0;
+    bottom: 0;
     width: 35vw;
     pointer-events: none;
   }

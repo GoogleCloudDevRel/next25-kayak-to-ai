@@ -20,7 +20,7 @@
             :textVariant="isTv ? 'tv-medium-34' : 'medium-18'"
           />
         </div>
-        <div :class="['title-container', isTv ? 'text-tv-bold-120' : 'text-medium-80']">
+        <div :class="['title-container', isTv ? 'text-tv-bold-180' : 'text-medium-80']">
           <div
             class="skeleton"
             :ref="setSkeletonRef"
@@ -28,7 +28,7 @@
           <VText
             ref="titleRef"
             :text="locationName"
-            :variant="isTv ? 'tv-bold-120' : 'medium-80'"
+            :variant="isTv ? 'tv-bold-180' : 'medium-80'"
             :min-lines="2"
           />
         </div>
@@ -44,7 +44,7 @@
           />
         </div>
         <div
-          class="skeleton"
+          class="skeleton image-skeleton"
           :ref="setSkeletonRef"
         />
       </div>
@@ -181,7 +181,7 @@ async function changeSubtitle(text) {
   const subtitle = subtitleRef.value.text()
   await subtitle.prepare(false)
   await subtitle.animateSet(false)
-  subtitle.animateOut().then(async () => {
+  subtitle.animateOut(0, { duration: 0.6 }).then(async () => {
     await subtitle.setText(text)
     subtitle.animateIn()
   })
@@ -195,19 +195,25 @@ watch(
     await titleRef.value.setText(location.value.name)
 
     await Promise.all([
-      titleRef.value.animateIn(),
       subtitleRef.value.animateIn(),
+      titleRef.value.animateIn(0.1),
       gsap.to(imageRef.value, {
         opacity: 1,
         scale: 1,
         duration: 1,
         ease: 'power2.inOut',
       }),
-      gsap.to(skeletonRef.value, {
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.inOut',
-      }),
+      gsap.fromTo(
+        skeletonRef.value,
+        {
+          clipPath: `inset(0% 0% 0% 0% round ${pxToVw(32)})`,
+        },
+        {
+          clipPath: `inset(0% 0% 0% 100% round ${pxToVw(32)})`,
+          duration: 1,
+          ease: 'power2.inOut',
+        },
+      ),
     ])
 
     if (!props.isTv) {
@@ -296,6 +302,8 @@ watch(
     gsap.killTweensOf(progressRef.value)
     gsap.killTweensOf(kayakIconRef.value.ref())
 
+    changeSubtitle('Arrived at:')
+
     await Promise.all([
       gsap.to(progressRef.value, {
         width: 72 + '%',
@@ -308,7 +316,6 @@ watch(
         duration: 1,
         ease: 'power2.inOut',
       }),
-      await changeSubtitle('Arrived at:'),
     ])
 
     gsap.to(collapse2Ref.value, {
@@ -354,7 +361,10 @@ defineExpose({
         opacity: 0,
         scale: 1.2,
       }),
-      gsap.set(skeletonRef.value, { height: (_, el) => el.scrollHeight }),
+      gsap.set(skeletonRef.value, {
+        height: (_, el) => el.scrollHeight,
+        clipPath: `inset(0% 100% 0% 0% round ${pxToVw(32)})`,
+      }),
     ])
   },
   animateIn: async (delay = 0) => {
@@ -365,6 +375,13 @@ defineExpose({
         duration: 1.2,
         ease: 'power2.inOut',
         delay,
+      }),
+      gsap.to(skeletonRef.value, {
+        clipPath: `inset(0% 0% 0% 0% round ${pxToVw(32)})`,
+        duration: 1.2,
+        ease: 'power2.inOut',
+        delay: delay + 0.6,
+        stagger: 0.1,
       }),
     ])
   },
@@ -539,8 +556,8 @@ defineExpose({
     width: 100%;
     height: 100%;
     background: linear-gradient(58.9deg, rgba(230, 244, 234, 0.6) 7%, rgba(52, 168, 83, 0.6) 120%);
-    border-radius: px-to-vw(32);
     z-index: 10;
+    clip-path: inset(0% 0% 0% 100% round px-to-vw(32));
   }
 
   .pin {

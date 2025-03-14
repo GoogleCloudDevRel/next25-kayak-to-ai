@@ -11,9 +11,7 @@
         title="Code Execution"
       />
     </div>
-    <pre class="line-numbers">
-      <code ref="codeRef" />
-    </pre>
+    <pre class="line-numbers"><code ref="codeRef" /></pre>
   </div>
 </template>
 
@@ -111,16 +109,6 @@ defineExpose({
 </script>
 
 <style lang="scss">
-.is-tv {
-  .codeblock {
-    border-radius: px-to-vw(32);
-
-    &:before {
-      border-radius: px-to-vw(32);
-    }
-  }
-}
-
 .codeblock {
   height: 100%;
 
@@ -159,9 +147,9 @@ defineExpose({
 
   pre {
     border-top: 1px solid rgba(38, 53, 47, 0.35);
-
     margin: 0 !important;
     padding: 0 !important;
+    padding-top: px-to-vw(40) !important;
     overflow-x: hidden;
     word-wrap: break-word;
     white-space: pre !important; // Force preserve whitespace
@@ -174,6 +162,8 @@ defineExpose({
   }
 
   code {
+    margin: 0 !important;
+    padding: 0 !important;
     font-size: px-to-vw(18);
     line-height: 1.5;
     display: block;
