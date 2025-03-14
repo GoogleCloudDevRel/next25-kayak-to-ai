@@ -17,12 +17,16 @@
           ref="moveAgainButtonRef"
           text="Move Again"
           variant="outline"
+          text-variant="bold-24"
+          size="large"
           :onClick="() => navigateTo('prompt')"
         />
         <VButton
           ref="finishButtonRef"
           text="Finish"
           variant="primary"
+          text-variant="bold-24"
+          size="large"
           :onClick="() => navigateTo('intro')"
         />
       </div>
@@ -183,10 +187,6 @@ defineExpose({
     gap: px-to-vw(16);
     padding-top: px-to-vw(54);
     overflow: hidden;
-
-    .VButton {
-      min-width: px-to-vw(180);
-    }
   }
 
   &.reco-with-code-exec,

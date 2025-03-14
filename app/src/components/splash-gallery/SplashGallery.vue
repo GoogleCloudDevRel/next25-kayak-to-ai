@@ -74,7 +74,7 @@ const props = defineProps({
         caption: 'Caption 1',
         position: {
           left: '10%',
-          top: '10%',
+          top: '-10%',
           right: 'auto',
           bottom: 'auto',
         },
@@ -85,8 +85,8 @@ const props = defineProps({
         caption: 'Caption 2',
         position: {
           left: 'auto',
-          top: '10%',
-          right: '10%',
+          top: '-7%',
+          right: '7%',
           bottom: 'auto',
         },
       },
@@ -95,10 +95,10 @@ const props = defineProps({
         alt: 'Image 3',
         caption: 'Caption 3 testing long caption',
         position: {
-          left: '10%',
+          left: '3%',
           right: 'auto',
           top: 'auto',
-          bottom: '10%',
+          bottom: '-8%',
         },
       },
       {
@@ -108,8 +108,8 @@ const props = defineProps({
         position: {
           left: 'auto',
           top: 'auto',
-          right: '10%',
-          bottom: '0%',
+          right: '5%',
+          bottom: '-5%',
         },
       },
       {
@@ -120,7 +120,7 @@ const props = defineProps({
           left: 'auto',
           top: 'auto',
           right: '30%',
-          bottom: '10%',
+          bottom: '-8%',
         },
       },
       {
@@ -128,8 +128,8 @@ const props = defineProps({
         alt: 'Image 6',
         caption: 'Caption 6',
         position: {
-          top: '0%',
-          left: '30%',
+          top: '-5%',
+          left: '40%',
           right: 'auto',
           bottom: 'auto',
         },
@@ -170,7 +170,7 @@ async function spawnImage() {
 function startInterval() {
   if (!intervalId.value) {
     spawnImage()
-    intervalId.value = setInterval(spawnImage, 1500)
+    intervalId.value = setInterval(spawnImage, 2000)
   }
 }
 
@@ -198,12 +198,6 @@ function handleItemDone(id) {
   if (index !== -1) {
     images.value.splice(index, 1)
   }
-
-  setTimeout(() => {
-    if (imagesMap.value.size < maxImagesDisplayed.value && intervalId.value) {
-      spawnImage()
-    }
-  }, 0)
 }
 
 async function animateIn(delay = 0) {
@@ -227,9 +221,10 @@ function animateOut() {
 
   gsap.to([logoRef.value, titleRef.value.$el, subTitleRef.value.$el], {
     opacity: 0,
-    duration: 1,
+    duration: 1.6,
     z: (index) => 100 + index * 50,
-    ease: 'power2.out',
+    ease: 'power2.inOut',
+    stagger: 0.1,
   })
 
   // Animate out all gallery items
@@ -239,9 +234,9 @@ function animateOut() {
       ? galleryItemsRef.value
       : Object.values(galleryItemsRef.value)
 
-    itemsArray.forEach((item) => {
+    itemsArray.forEach((item, i) => {
       if (item && typeof item.animateOut === 'function') {
-        item.animateOut()
+        item.animateOut(i * 0.1)
       }
     })
   }
@@ -300,6 +295,7 @@ onUnmounted(() => {
   justify-content: center;
   z-index: 1000;
   perspective: 600px;
+  padding-bottom: 3%;
   .title,
   .sub-title {
     line-height: 1.2;

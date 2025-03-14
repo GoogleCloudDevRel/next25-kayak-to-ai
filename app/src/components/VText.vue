@@ -114,7 +114,7 @@ const animateSet = async (force = true, { yPercent = 115 } = {}) => {
 
 const animateIn = async (
   delay = 0,
-  { ease = 'power2.inOut', duration = 0.7, stagger = 0.1, yPercent = 115 } = {},
+  { ease = 'power2.inOut', duration = 1.2, stagger = 0.1, yPercent = 115 } = {},
 ) => {
   if (isAnimated.value) return
   isAnimated.value = true
@@ -157,7 +157,7 @@ const animateIn = async (
 
 const animateOut = async (
   delay = 0,
-  { ease = 'power2.inOut', duration = 0.7, stagger = 0.1, yPercent = -115 } = {},
+  { ease = 'power2.inOut', duration = 1, stagger = 0.05, yPercent = -115 } = {},
 ) => {
   if (!isAnimated.value) return
   isAnimated.value = false

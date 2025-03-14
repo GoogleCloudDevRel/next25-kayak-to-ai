@@ -41,11 +41,15 @@ const animateIn = () => {
     duration: 0.75,
     ease: 'power2.out',
   })
-    .to(icon.value.$el, {
-      rotate: 360,
-      duration: 0.75,
-      ease: 'power2.inOut',
-    })
+    .to(
+      icon.value.$el,
+      {
+        rotate: 360,
+        duration: 0.75,
+        ease: 'power2.inOut',
+      },
+      0,
+    )
     .to(captionDiv.value, {
       width: targetWidth.value,
       duration: 0.75,
@@ -94,7 +98,7 @@ onMounted(async () => {
 
   @include larger(xxxl) {
     font-size: 40px !important;
-    padding: 26px 50px;
+    padding: 0 50px;
     height: 130px;
   }
 

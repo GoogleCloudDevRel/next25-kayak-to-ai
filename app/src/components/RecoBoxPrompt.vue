@@ -47,7 +47,8 @@ defineExpose({
   animateSet: async () => {
     await titleRef.value.prepare()
     gsap.set(wrapperRef.value, {
-      clipPath: `inset(50% round ${pxToVw(32)})`,
+      clipPath: `inset(33% round ${pxToVw(32)})`,
+      opacity: 0,
     })
   },
   animateIn: async (delay = 0) => {
@@ -55,7 +56,8 @@ defineExpose({
       titleRef.value.animateIn(delay),
       gsap.to(wrapperRef.value, {
         clipPath: `inset(-1px round ${pxToVw(32)})`,
-        duration: 1,
+        opacity: 1,
+        duration: 1.2,
         ease: 'power2.inOut',
         delay,
       }),
@@ -63,8 +65,9 @@ defineExpose({
   },
   animateOut: async () => {
     await gsap.to(wrapperRef.value, {
-      clipPath: `inset(50% round ${pxToVw(32)})`,
-      duration: 1,
+      clipPath: `inset(33% round ${pxToVw(32)})`,
+      opacity: 0,
+      duration: 0.8,
       ease: 'power2.inOut',
     })
   },

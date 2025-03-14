@@ -58,7 +58,7 @@ function animateIn() {
   }
 }
 
-function animateOut() {
+function animateOut(delay = 0) {
   // Prevent multiple animate out calls
   if (isAnimatingOut.value) return
   isAnimatingOut.value = true
@@ -77,10 +77,11 @@ function animateOut() {
   })
 
   outTl.to(imageContainer.value, {
-    z: 500,
+    z: 300,
     opacity: 0,
-    duration: 1,
-    ease: 'power2.in',
+    duration: 1.6,
+    ease: 'power2.inOut',
+    delay: delay,
   })
 }
 
@@ -123,6 +124,11 @@ function initAnimate() {
     .set(image.value, {
       scale: 4,
     })
+    .call(() => {
+      if (captionRef.value) {
+        captionRef.value.animateIn()
+      }
+    })
     .to(
       imageInner.value,
       {
@@ -130,7 +136,7 @@ function initAnimate() {
         duration: 2,
         ease: 'power1.out',
       },
-      '<',
+      1,
     )
     .to(
       image.value,
@@ -138,20 +144,13 @@ function initAnimate() {
         scale: 1,
         duration: 2,
         ease: 'power1.out',
-        onStart: () => {
-          if (captionRef.value) {
-            setTimeout(() => {
-              captionRef.value.animateIn()
-            }, 1500)
-          }
-        },
       },
-      '<',
+      1,
     )
     .to(
       imageContainer.value,
       {
-        z: 50,
+        z: 0,
         duration: 10,
       },
       '<',
@@ -211,6 +210,7 @@ const props = defineProps({
   will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  opacity: 0;
 
   @include fluid(
     'width',

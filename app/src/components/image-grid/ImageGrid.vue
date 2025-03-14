@@ -66,7 +66,7 @@ const animateOut = () => {
 
 const initInfiniteScroll = () => {
   // Get the width of a single set of items
-  wrapperWidth = gridWrapper.value.offsetWidth / 2
+  wrapperWidth = gridWrapper.value.scrollWidth / 2
 
   // Set initial position
   gsap.set(gridWrapper.value, {
@@ -106,7 +106,6 @@ defineExpose({
 
   &__wrapper {
     display: flex;
-    gap: 2.39vh;
   }
 }
 </style>

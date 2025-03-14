@@ -1,6 +1,9 @@
 <template>
   <div class="center">
-    <div class="logo" ref="logoRef" />
+    <div
+      class="logo"
+      ref="logoRef"
+    />
     <div class="title">
       <VText
         ref="titleRef"
@@ -22,47 +25,49 @@
         ref="buttonRef"
         text="Start Adventure"
         variant="primary"
+        text-variant="bold-24"
+        size="large"
         :onClick="() => navigateTo('prompt')"
       />
     </div>
   </div>
 </template>
 <script setup>
-import VButton from "@/components/VButton.vue";
-import VText from "@/components/VText.vue";
-import { ref } from "vue";
-import { useRouteManager } from "@/router/useRouteManager";
-import { gsap } from "@/utils/gsap";
+import VButton from '@/components/VButton.vue'
+import VText from '@/components/VText.vue'
+import { ref } from 'vue'
+import { useRouteManager } from '@/router/useRouteManager'
+import { gsap } from '@/utils/gsap'
 
-const { navigateTo } = useRouteManager();
+const { navigateTo } = useRouteManager()
 
-const titleRef = ref(null);
-const subtitleRef = ref(null);
-const buttonRef = ref(null);
-const logoRef = ref(null);
+const titleRef = ref(null)
+const subtitleRef = ref(null)
+const buttonRef = ref(null)
+const logoRef = ref(null)
 defineExpose({
   animateSet: async () => {
-    buttonRef.value.animateSet();
-    await titleRef.value.prepare();
-    await subtitleRef.value.prepare();
+    buttonRef.value.animateSet()
+    await titleRef.value.prepare()
+    await subtitleRef.value.prepare()
     gsap.set(logoRef.value, {
       scale: 0,
       rotate: 180,
-    });
+    })
   },
   animateIn: async (to, from) => {
-    if (from?.id === "final") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (from?.id === 'final') {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
     gsap.to(logoRef.value, {
-      duration: 1,
-      ease: "power2.inOut",
+      duration: 1.2,
+      ease: 'power2.inOut',
       scale: 1,
       rotate: 0,
-    });
-    titleRef.value.animateIn(0.3);
-    subtitleRef.value.animateIn(0.8);
-    buttonRef.value.animateIn(1.2);
+    })
+    titleRef.value.animateIn(0.2)
+    subtitleRef.value.animateIn(0.8, { stagger: 0.2 })
+    buttonRef.value.animateIn(1.2)
   },
   animateOut: async () => {
     await Promise.all([
@@ -70,14 +75,14 @@ defineExpose({
         scale: 0,
         rotate: -180,
         duration: 1,
-        ease: "power2.inOut",
+        ease: 'power2.inOut',
       }),
       titleRef.value.animateOut(),
       subtitleRef.value.animateOut(),
       buttonRef.value.animateOut(),
-    ]);
+    ])
   },
-});
+})
 </script>
 
 <style lang="scss" scoped>

@@ -7,20 +7,20 @@
 </template>
 
 <script setup>
-import SplashGallery from "@/components/splash-gallery/SplashGallery.vue";
-import { ref } from "vue";
+import SplashGallery from '@/components/splash-gallery/SplashGallery.vue'
+import { ref } from 'vue'
 
-const galleryRef = ref(null);
+const galleryRef = ref(null)
 
 defineExpose({
   animateIn: async (to, from) => {
-    if (from?.id === "final") {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (from?.id === 'final') {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
-    galleryRef.value.animateIn();
+    galleryRef.value.animateIn()
   },
   animateOut: async () => {
-    await galleryRef.value.animateOut();
+    await galleryRef.value.animateOut()
   },
-});
+})
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <div class="multiChoiceMenuItemWrapper" :class="{ square }">
+  <div
+    class="multiChoiceMenuItemWrapper"
+    :class="{ square }"
+  >
     <div
       class="multiChoiceMenuItem"
       :class="{ selected }"
@@ -7,7 +10,10 @@
       ref="innerItem"
     >
       <div class="multiChoiceMenuItem__icon">
-        <IconBase class="multiChoiceMenuItem__icon__icon" :variant="icon" />
+        <IconBase
+          class="multiChoiceMenuItem__icon__icon"
+          :variant="icon"
+        />
       </div>
       <div class="multiChoiceMenuItem__label">
         <VText
@@ -22,18 +28,19 @@
 </template>
 
 <script setup>
-import IconBase from "@/components/IconBase.vue";
-import VText from "@/components/VText.vue";
-import gsap from "gsap";
-import { ref, onMounted } from "vue";
+import IconBase from '@/components/IconBase.vue'
+import VText from '@/components/VText.vue'
+import { pxToVw } from '@/utils/px'
+import gsap from 'gsap'
+import { ref, onMounted } from 'vue'
 
-const innerItem = ref(null);
-const vtext = ref(null);
+const innerItem = ref(null)
+const vtext = ref(null)
 
 const props = defineProps({
   value: {
     type: String,
-    default: "",
+    default: '',
     required: true,
   },
   square: {
@@ -42,67 +49,69 @@ const props = defineProps({
   },
   label: {
     type: String,
-    default: "",
+    default: '',
     required: true,
   },
   icon: {
     type: String,
-    default: "",
+    default: '',
     required: false,
   },
   solidColor: {
     type: String,
     required: false,
-    validator: (value) => ["red", "greeb", "yellow", "blue"].includes(value),
+    validator: (value) => ['red', 'greeb', 'yellow', 'blue'].includes(value),
   },
   selected: {
     type: Boolean,
     default: false,
   },
-});
+})
 
 onMounted(() => {
-  vtext.value.prepare();
-});
+  vtext.value.prepare()
+})
 
 const animateSet = () => {
   gsap.set(innerItem.value, {
-    y: "105%",
-  });
-  vtext.value.animateSet();
-};
+    clipPath: `inset(33% round ${pxToVw(24)})`,
+    opacity: 0,
+  })
+  vtext.value.animateSet()
+}
 
-const animateIn = (delay) => {
+const animateIn = (delay = 0) => {
   gsap.to(innerItem.value, {
-    y: "0",
-    duration: 0.5,
-    ease: "power2.out",
+    clipPath: `inset(-1px round ${pxToVw(24)})`,
+    opacity: 1,
+    duration: 0.8,
+    ease: 'power2.out',
     delay,
-  });
-  vtext.value.animateIn(delay / 5);
-};
+  })
+  vtext.value.animateIn(delay - 0.4)
+}
 
 const animateOut = (delay) => {
   gsap.to(innerItem.value, {
-    y: "105%",
-    duration: 0.5,
-    ease: "power2.out",
+    clipPath: `inset(33% round ${pxToVw(24)})`,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.inOut',
     delay,
-  });
-  vtext.value.animateOut(delay - 0.1);
-};
+  })
+}
 
-const emit = defineEmits(["select"]);
+const emit = defineEmits(['select'])
 
 const handleClick = () => {
-  emit("select", { value: props.value, label: props.label });
-};
+  emit('select', { value: props.value, label: props.label })
+}
 
 defineExpose({
   animateIn,
   animateSet,
   animateOut,
-});
+})
 </script>
 
 <style lang="scss" scoped>
@@ -110,11 +119,7 @@ defineExpose({
   .multiChoiceMenuItemWrapper {
     .multiChoiceMenuItem {
       background:
-        linear-gradient(
-          61.53deg,
-          rgba(72, 87, 113, 0.1) -39.88%,
-          rgba(137, 166, 215, 0.1) 121.44%
-        ),
+        linear-gradient(61.53deg, rgba(72, 87, 113, 0.1) -39.88%, rgba(137, 166, 215, 0.1) 121.44%),
         linear-gradient(0deg, rgba(37, 49, 75, 0.15), rgba(37, 49, 75, 0.15));
 
       &__label {
@@ -150,16 +155,9 @@ defineExpose({
         ),
         linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
 
-      border-image-source: linear-gradient(
-        222.58deg,
-        rgba(78, 78, 78, 0.2) 7.2%,
-        100.18%
-      );
+      border-image-source: linear-gradient(222.58deg, rgba(78, 78, 78, 0.2) 7.2%, 100.18%);
 
-      @include gradient-border(
-        (45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)),
-        1px
-      );
+      @include gradient-border((45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)), 1px);
 
       &:hover,
       &.selected {

@@ -111,6 +111,7 @@ defineExpose({
 .imageGridItem {
   position: relative;
   text-align: center;
+  padding: 0 1.2vh;
 
   &__image {
     height: 45vh;

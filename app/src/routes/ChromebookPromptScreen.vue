@@ -47,49 +47,49 @@
 </template>
 
 <script setup>
-import InputMicrophone from "@/components/input-microphone/InputMicrophone.vue";
-import MultiChoiceMenu from "@/components/multi-choice/MultiChoiceMenu.vue";
-import VText from "@/components/VText.vue";
-import { ref } from "vue";
-import { useKayakStore } from "@/store";
-import { useRouteManager } from "@/router/useRouteManager";
+import InputMicrophone from '@/components/input-microphone/InputMicrophone.vue'
+import MultiChoiceMenu from '@/components/multi-choice/MultiChoiceMenu.vue'
+import VText from '@/components/VText.vue'
+import { ref } from 'vue'
+import { useKayakStore } from '@/store'
+import { useRouteManager } from '@/router/useRouteManager'
 
-const titleRef = ref(null);
-const multiChoiceMenuRef = ref(null);
-const inputMicrophoneRef = ref(null);
+const titleRef = ref(null)
+const multiChoiceMenuRef = ref(null)
+const inputMicrophoneRef = ref(null)
 
-const { navigateTo } = useRouteManager();
+const { navigateTo } = useRouteManager()
 
 const handleSelectionChange = ({ label }) => {
-  useKayakStore().setPrompt(label);
-  navigateTo("final");
-};
+  useKayakStore().setPrompt(label)
+  navigateTo('final')
+}
 
 const handleInputMicrophoneSend = ({ speechText }) => {
-  useKayakStore().setPrompt(speechText);
-  navigateTo("final");
-};
+  useKayakStore().setPrompt(speechText)
+  navigateTo('final')
+}
 
 defineExpose({
   animateSet: async () => {
-    await titleRef.value.prepare();
-    multiChoiceMenuRef.value.animateSet();
-    inputMicrophoneRef.value.animateSet();
+    await titleRef.value.prepare()
+    multiChoiceMenuRef.value.animateSet()
+    inputMicrophoneRef.value.animateSet()
   },
   animateIn: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    titleRef.value.animateIn();
-    multiChoiceMenuRef.value.animateIn(0.5);
-    inputMicrophoneRef.value.animateIn(1);
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    titleRef.value.animateIn()
+    multiChoiceMenuRef.value.animateIn(1.2)
+    inputMicrophoneRef.value.animateIn(1.2)
   },
   animateOut: async () => {
     await Promise.all([
       titleRef.value.animateOut(),
       multiChoiceMenuRef.value.animateOut(),
       inputMicrophoneRef.value.animateOut(),
-    ]);
+    ])
   },
-});
+})
 </script>
 
 <style lang="scss" scoped>

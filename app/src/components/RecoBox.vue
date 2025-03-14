@@ -347,7 +347,8 @@ defineExpose({
       titleRef.value.prepare(),
       subtitleRef.value.prepare(),
       gsap.set(wrapperRef.value, {
-        clipPath: `inset(50% round ${pxToVw(32)})`,
+        clipPath: `inset(33% round ${pxToVw(32)})`,
+        opacity: 0,
       }),
       gsap.set(imageRef.value, {
         opacity: 0,
@@ -357,17 +358,21 @@ defineExpose({
     ])
   },
   animateIn: async (delay = 0) => {
-    await gsap.to(wrapperRef.value, {
-      clipPath: `inset(-1px round ${pxToVw(32)})`,
-      duration: 1,
-      ease: 'power2.inOut',
-      delay,
-    })
+    await Promise.all([
+      gsap.to(wrapperRef.value, {
+        clipPath: `inset(-1px round ${pxToVw(32)})`,
+        opacity: 1,
+        duration: 1.2,
+        ease: 'power2.inOut',
+        delay,
+      }),
+    ])
   },
   animateOut: async () => {
     await gsap.to(wrapperRef.value, {
-      clipPath: `inset(50% round ${pxToVw(32)})`,
-      duration: 1,
+      clipPath: `inset(33% round ${pxToVw(32)})`,
+      opacity: 0,
+      duration: 0.8,
       ease: 'power2.inOut',
     })
   },
@@ -383,6 +388,7 @@ defineExpose({
   border-radius: px-to-vw(32);
   background: rgba(230, 244, 234, 0.1);
   @include gradient-border((45deg, rgba(78, 78, 78, 0.2), rgba(225, 225, 225, 0.2)), 2px);
+  clip-path: inset(0% 0% round px-to-vw(32));
 
   &::before {
     border-radius: px-to-vw(32);

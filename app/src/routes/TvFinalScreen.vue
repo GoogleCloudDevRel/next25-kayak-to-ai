@@ -133,6 +133,9 @@ defineExpose({
       codeBlockRef.value.animateSet(),
       titleRef.value.prepare(),
     ])
+    gsap.set(centerRef.value, {
+      opacity: 1,
+    })
   },
   animateIn: async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -171,6 +174,7 @@ defineExpose({
   flex-direction: column;
   padding-left: px-to-vw(1000, 4k);
   padding-right: px-to-vw(1000, 4k);
+  opacity: 0;
 
   .box {
     text-align: initial;
