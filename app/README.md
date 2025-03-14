@@ -44,3 +44,10 @@ npm run dev:server
 ## queryParams
   - `?manual` to control of the navigation by clicking to go next
   - `?view` to start from a specific route
+
+## Useful files
+  - `app/src/utils/api.js` -> where mock API calls are placed
+  - `app/src/store/index.js` -> the store definition
+  - `app/src/views` -> main entrypoints for chromebook/tv routers
+  - `app/src/routes` -> chromebook/tv screens
+  - `app/server.js` -> WSS definition
