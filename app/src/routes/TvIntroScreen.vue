@@ -2,7 +2,7 @@
   <SplashGallery
     ref="galleryRef"
     title="Kayak to AI"
-    subtitle="Let Gemini guide your adventures"
+    subtitle="Take a virtual kayaking adventure guided by Gemini"
   />
 </template>
 

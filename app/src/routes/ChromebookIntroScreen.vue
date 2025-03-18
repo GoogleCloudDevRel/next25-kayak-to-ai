@@ -23,7 +23,7 @@
     <div class="button">
       <VButton
         ref="buttonRef"
-        text="Start Adventure"
+        text="Start your adventure"
         variant="primary"
         text-variant="bold-24"
         size="large"
