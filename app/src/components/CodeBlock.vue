@@ -53,18 +53,8 @@ watch(
       codeRef.value.classList.add(codeClass)
     }
 
-    gsap.to(codeRef.value, {
-      text: {
-        value: props.codeSnippet,
-        preserveSpaces: true,
-        speed: 8,
-      },
-      duration: 2,
-      ease: 'none',
-      onUpdate: () => {
-        Prism.highlightElement(codeRef.value)
-      },
-    })
+    codeRef.value.innerHTML = props.codeSnippet
+    Prism.highlightElement(codeRef.value)
   },
 )
 

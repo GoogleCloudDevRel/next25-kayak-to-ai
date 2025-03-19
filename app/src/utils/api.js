@@ -59,8 +59,10 @@ export const moveKayakAndGetCode = async () => {
   // TODO: call API to get code
   // fetch(...)
 
+  // TODO: to be removed
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
+  // TODO: to be removed
   const code = /*python */ `
 # Example 1: List comprehension and string manipulation
 names = ['alice', 'bob', 'charlie']
@@ -81,7 +83,12 @@ numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
 print(f"Even numbers: {even_numbers}")`
 
-  useKayakStore().setCode(code)
+  // TODO: to be removed
+  // simulate a stream response
+  for (let i = 0; i < code.length; i++) {
+    useKayakStore().setCode(code.slice(0, i + 1));
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
 
   moveKayakAndGetCodePromise.resolve();
   moveKayakAndGetCodePromise = null;
