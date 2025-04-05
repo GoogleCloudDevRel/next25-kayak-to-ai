@@ -24,4 +24,4 @@ FROM python:3.12-slim
 COPY --from=builder /app /app
 
 # Run the application
-CMD ['gunicorn','--bind :$PORT' --workers 1 --threads 1 --timeout 0 main:app
+CMD gunicorn --bind :$PORT --workers 1 --threads 1 --timeout 0 main:app

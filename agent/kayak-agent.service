@@ -4,9 +4,8 @@ After=network.target
 
 [Service]
 User=myuser
-Group=mygroup
-WorkingDirectory=/path/to/your/app
-ExecStart=/usr/bin/python3 /path/to/your/app/my_app.py
+WorkingDirectory={{pwd}}
+ExecStart={{path_to_uv}} {{pwd}} /my_app.py
 Restart=always
 RestartSec=10
 StandardOutput=syslog
