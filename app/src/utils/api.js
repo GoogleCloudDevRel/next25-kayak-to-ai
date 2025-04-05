@@ -9,6 +9,9 @@ const locationNames = [
   "Lake Sammamish"
 ];
 
+// Define the base URL for your API endpoints
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api";
+
 let sendPromptPromise = null;
 
 export const sendPrompt = async () => {
@@ -18,29 +21,59 @@ export const sendPrompt = async () => {
 
   const { prompt } = useKayakStore();
 
-  console.log("prompt", prompt);
+  console.log("Initial prompt", prompt);
 
   if (!prompt) return;
 
   const defer = deferred();
   sendPromptPromise = defer;
 
-  // TODO: implement this
-  // fetch(...)
+  try {
+    // Step 1: Send the initial prompt to get intermediate data
+    const promptResponse = await fetch(`${API_BASE_URL}/process-prompt`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (!promptResponse.ok) {
+      throw new Error(`HTTP error during prompt processing! status: ${promptResponse.status}`);
+    }
 
-  const locationName = locationNames[Math.floor(Math.random() * locationNames.length)];
+    const promptData = await promptResponse.json();
+    console.log("Prompt processing data", promptData);
 
-  useKayakStore().setLocation({
-    name: locationName,
-    description: "The lighthouse keeper, Silas, was a man woven from the sea itself. His skin was tanned and weathered like driftwood, his eyes the grey-green of a stormy horizon, and his beard, a tangled mess of white and salt, whispered secrets of the deep. He'd been tending the beacon on Gull Island for forty years, a solitary sentinel against the relentless ocean.",
-    image: "/images/kayak/image-grid-1.jpg",
-  });
+    // Step 2: Use the intermediate data to fetch location data
+    const locationResponse = await fetch(`${API_BASE_URL}/generate-location`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ dataFromPrompt: promptData }), // Send the data from the first API call
+    });
 
-  sendPromptPromise.resolve();
-  sendPromptPromise = null;
-}
+    if (!locationResponse.ok) {
+      throw new Error(`HTTP error during location generation! status: ${locationResponse.status}`);
+    }
+
+    const locationData = await locationResponse.json();
+    console.log("Location data", locationData);
+
+    useKayakStore().setLocation(locationData);
+
+    sendPromptPromise.resolve();
+  } catch (error) {
+    console.error("Error during prompt and location processing:", error);
+    sendPromptPromise.reject(error);
+  } finally {
+    sendPromptPromise = null;
+  }
+};  
+// Step 3: Check if kayak has arrived
+await checkIfKayakArrived();
+
 
 let moveKayakAndGetCodePromise = null;
 export const moveKayakAndGetCode = async () => {
@@ -51,52 +84,55 @@ export const moveKayakAndGetCode = async () => {
   const defer = deferred();
   moveKayakAndGetCodePromise = defer;
 
-  useKayakStore().setIsMoving(true)
+  useKayakStore().setIsMoving(true);
 
-  // TODO: call API to move kayak
-  // fetch(...)
+  try {
+    // Move Kayak API Call
+    const moveResponse = await fetch(`${API_BASE_URL}/move-kayak`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}), // Add any necessary data for moving the kayak
+    });
 
-  // TODO: call API to get code
-  // fetch(...)
+    if (!moveResponse.ok) {
+      throw new Error(`HTTP error! status: ${moveResponse.status}`);
+    }
 
-  // TODO: to be removed
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Get Code API Call
+    const codeResponse = await fetch(`${API_BASE_URL}/get-code`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}), // Add any necessary data for getting the code
+    });
 
-  // TODO: to be removed
-  const code = /*python */ `
-# Example 1: List comprehension and string manipulation
-names = ['alice', 'bob', 'charlie']
-capitalized = [name.title() for name in names]
-print(f"Capitalized names: {capitalized}")
+    if (!codeResponse.ok) {
+      throw new Error(`HTTP error! status: ${codeResponse.status}`);
+    }
 
-# Example 2: Working with dictionaries
-student_scores = {
-    'Alice': 95,
-    'Bob': 87,
-    'Charlie': 92
-}
-avg_score = sum(student_scores.values()) / len(student_scores)
-print(f"Average score: {avg_score:.2f}")
+    const codeData = await codeResponse.json();
+    const code = codeData.code;
 
-# Example 3: Using lambda and filter
-numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
-print(f"Even numbers: {even_numbers}")`
+    // Simulate a stream response
+    for (let i = 0; i < code.length; i++) {
+      useKayakStore().setCode(code.slice(0, i + 1));
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
 
-  // TODO: to be removed
-  // simulate a stream response
-  for (let i = 0; i < code.length; i++) {
-    useKayakStore().setCode(code.slice(0, i + 1));
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    moveKayakAndGetCodePromise.resolve();
+  } catch (error) {
+    console.error("Error moving kayak or getting code:", error);
+    moveKayakAndGetCodePromise.reject(error);
+  } finally {
+    moveKayakAndGetCodePromise = null;
   }
-
-  moveKayakAndGetCodePromise.resolve();
-  moveKayakAndGetCodePromise = null;
-}
+};
 
 let isKayakArrivedPromise = null;
 export const checkIfKayakArrived = async () => {
-
   if (isKayakArrivedPromise) {
     return isKayakArrivedPromise;
   }
@@ -105,28 +141,37 @@ export const checkIfKayakArrived = async () => {
   isKayakArrivedPromise = defer;
 
   let interval = null;
-  let debugMaxTries = 4;
-  let debugTries = 0;
 
   // create a polling function that checks if the kayak has arrived
-  const isKayakArrived = () => {
-    // TODO: implement this
-    // fetch(...)
-    // if (/* kayak has arrived */) {
+  const isKayakArrived = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/check-kayak-arrival`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (debugTries >= debugMaxTries) {
-      clearInterval(interval);
-      useKayakStore().setArrived(true);
-      isKayakArrivedPromise.resolve(true);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("data", data);
+
+      if (data.arrived) {
+        clearInterval(interval);
+        useKayakStore().setArrived(true);
+        isKayakArrivedPromise.resolve(true);
+        isKayakArrivedPromise = null;
+      }
+    } catch (error) {
+      console.error("Error checking kayak arrival:", error);
+      clearInterval(interval); // Stop polling on error
+      isKayakArrivedPromise.reject(error);
       isKayakArrivedPromise = null;
-      return;
     }
-
-    debugTries++;
-    console.log("debugTries", debugTries);
-  }
+  };
 
   interval = setInterval(isKayakArrived, 1000);
-
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-}
+};

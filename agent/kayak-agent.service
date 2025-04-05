@@ -1,0 +1,17 @@
+[Unit]
+Description=My Python Application Service
+After=network.target
+
+[Service]
+User=myuser
+Group=mygroup
+WorkingDirectory=/path/to/your/app
+ExecStart=/usr/bin/python3 /path/to/your/app/my_app.py
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=my_app
+
+[Install]
+WantedBy=multi-user.target

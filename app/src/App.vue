@@ -55,7 +55,7 @@ import "@/styles/global.scss";
 
 import { ref, computed } from "vue";
 
-import TvView from "@/views/TvView.vue";
+import TvView from "@/views/TVView.vue";
 import ChromebookView from "@/views/ChromebookView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import BackgroundBase from "@/components/background/BackgroundBase.vue";

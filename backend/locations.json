@@ -1,0 +1,29 @@
+[
+    {
+        "location": "Seward Park",
+        "description": "A killer location",
+        "image_url": "",
+        "coordinates": [
+            {
+                "step"  : 1,
+                "axis"  : "X",
+                "value" : -3
+            },
+            {
+                "step"  : 2,
+                "axis"  : "Y",
+                "value" : 1
+            },
+            {
+                "step"  : 3,
+                "axis"  : "X",
+                "value" : 2
+            },
+            {
+                "step"  : 4,
+                "axis"  : "Y",
+                "value" : -4
+            }
+        ]
+    }
+]
