@@ -1,5 +1,6 @@
-uv.lock
 __pycache__/
 __pycache__/*
 .venv/*
 .venv/
+
+uv.lock
