@@ -1,20 +1,27 @@
-# Use Python 3.12 slim versus the full version for smaller Cloud Run instances
-FROM python:3.12-slim
+# Install uv
+FROM python:3.12-slim AS builder
 
-# Allow statements and log messages to immediately appear in the Cloud Run logs, this is great for debugging
 ENV PYTHONUNBUFFERED True
 
-# Copy the requirements.txt file to the container image, otherwise pip install will fail
-COPY requirements.txt ./
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Install the requirements
-RUN pip install -r requirements.txt
-
-# Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
-COPY . ./
 
-# Using the same settings as Google here
-# If using a larger Cloud Run instance then increase these numbers
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 1 --timeout 0 main:app
+COPY uv.lock pyproject.toml ./
+
+# Install dependencies
+RUN uv sync --frozen --no-install-project --no-editable
+
+COPY . .
+
+# Sync the project
+RUN uv sync --frozen --no-editable
+
+FROM python:3.12-slim
+
+# Copy the environment, but not the source code
+COPY --from=builder /app /app
+
+# Run the application
+CMD ['gunicorn','--bind :$PORT' --workers 1 --threads 1 --timeout 0 main:app
