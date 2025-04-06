@@ -5,23 +5,22 @@ ENV PYTHONUNBUFFERED True
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-ENV APP_HOME /app
-WORKDIR $APP_HOME
+WORKDIR /app
 
 COPY uv.lock pyproject.toml ./
 
 # Install dependencies
-RUN uv sync --frozen --no-install-project --no-editable
+RUN uv sync --frozen --no-install-project
 
 COPY . .
 
-# Sync the project
-RUN uv sync --frozen --no-editable
+RUN uv sync --frozen
 
-FROM python:3.12-slim
+# FROM python:3.12-slim
 
-# Copy the environment, but not the source code
-COPY --from=builder /app /app
+# COPY --from=builder /app /app
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Run the application
-CMD gunicorn --bind :$PORT --workers 1 --threads 1 --timeout 0 main:app
+CMD ["gunicorn", "main:app", "--bind :$PORT", "--workers 1", "--threads 1", "--timeout 0"]

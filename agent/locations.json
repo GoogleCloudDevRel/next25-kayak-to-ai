@@ -1,0 +1,18 @@
+[
+    {
+        "location": "daniels_broiler",
+        "location_id": 1,
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y+",
+                "duration": 1000
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 100
+            }
+        ]
+    }
+]
