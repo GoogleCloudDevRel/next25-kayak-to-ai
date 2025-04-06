@@ -3,5 +3,7 @@ __pycache__/*
 .venv/*
 .venv/
 
+scratch*
+
 uv.lock
 .env
