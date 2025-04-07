@@ -2,9 +2,11 @@ import pyfirmata2
 import time
 import os
 import json
+from dotenv import load_dotenv
 
+load_dotenv()  # Load environment variables from .env
 # Modem Controller port for Arduino (modify for mac or Pi)
-port = '/dev/cu.usbmodem1101'
+port = os.environ.get("ARDUINO_BOARD")
 
 # Pin Mapping
 dirYPin = 6
@@ -130,5 +132,6 @@ def move_motor(location:str):
 
 
 if __name__ == "__main__":
-    move_motor()
+    
+    move_motor(location="daniels_broiler")
 
