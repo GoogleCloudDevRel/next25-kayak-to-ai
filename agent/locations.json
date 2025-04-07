@@ -20,7 +20,7 @@
             },
             {
                 "number": 4,
-                "dir": "X+",
+                "dir": "X-",
                 "duration": 1000
             }
         ]
