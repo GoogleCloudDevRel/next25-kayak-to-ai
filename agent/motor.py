@@ -87,22 +87,22 @@ def move_motor(target_location:str):
                 stepYPin.write(LOW)
                 time.sleep(0.000005)
             time.sleep(.1)
-        elif step['dir'] == 'X+':
-            dirXPin.write(LOW) # RIGHT (bottom motor mount)
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'X-':
-            dirXPin.write(HIGH) # LEFT (bottom motor mount)
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
+        # elif step['dir'] == 'X+':
+        #     dirXPin.write(LOW) # RIGHT (bottom motor mount)
+        #     for i in range(step['duration']):
+        #         stepXPin.write(HIGH)
+        #         time.sleep(0.000005)
+        #         stepXPin.write(LOW)
+        #         time.sleep(0.000005)
+        #     time.sleep(.1)
+        # elif step['dir'] == 'X-':
+        #     dirXPin.write(HIGH) # LEFT (bottom motor mount)
+        #     for i in range(step['duration']):
+        #         stepXPin.write(HIGH)
+        #         time.sleep(0.000005)
+        #         stepXPin.write(LOW)
+        #         time.sleep(0.000005)
+        #     time.sleep(.1)
         else:
             raise ValueError('valid direction not found')
     
