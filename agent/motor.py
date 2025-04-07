@@ -58,8 +58,8 @@ def move_motor(target_location:str):
     brakePin = board.get_pin(f'd:{def_brakePin}:o')
     dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
     stepYPin = board.get_pin(f'd:{def_stepXPin}:o')
-    dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
-    stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
+    # dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
+    # stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
     print('Board Instantiated')
 
     # Prepare to move
