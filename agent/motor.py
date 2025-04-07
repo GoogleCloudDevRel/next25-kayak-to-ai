@@ -42,12 +42,13 @@ def move_motor(target_location:str):
     with open('current_location','r') as file:
         current_location = file.read()
     
-    if location != current_location and current_location == 'reset':
+    if location['location'] != current_location and current_location == 'reset':
         pass
-    elif location == current_location:
+    elif location['location'] == current_location:
         pass
-    elif location != current_location and current_location != 'reset':
-        reset_motor(location)
+    elif location['location'] != current_location and current_location != 'reset':
+        pass
+        # reset_motor(location)
 
     # Instantiate motor
     board = pyfirmata2.Arduino(port)
@@ -121,7 +122,7 @@ def move_motor(target_location:str):
 
     # write current location
     with open('current_location','w') as file:
-       file.write(location)
+       file.write(location['location'])
         
 
     board.exit()
