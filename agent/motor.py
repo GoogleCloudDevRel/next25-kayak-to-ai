@@ -132,5 +132,5 @@ def move_motor(target_location:str):
 
 if __name__ == "__main__":
     
-    move_motor(location="daniels_broiler")
+    move_motor(target_location="daniels_broiler")
 
