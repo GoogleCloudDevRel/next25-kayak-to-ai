@@ -82,6 +82,7 @@ def move_motor(target_location:str):
             time.sleep(.1)
         elif step['dir'] == 'Y-':
             dirYPin.write(LOW) # Left motor mount
+            print('run Y-')
             for i in range(step['duration']):
                 stepYPin.write(HIGH)
                 time.sleep(0.000005)
