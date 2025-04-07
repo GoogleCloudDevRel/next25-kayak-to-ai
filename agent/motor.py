@@ -89,7 +89,7 @@ def move_motor(target_location:str):
                 time.sleep(0.000005)
             time.sleep(.1)
         elif step['dir'] == 'X+':
-            continue
+            print('skipping step')
             # dirXPin.write(LOW) # RIGHT (bottom motor mount)
             # for i in range(step['duration']):
             #     stepXPin.write(HIGH)
@@ -98,7 +98,7 @@ def move_motor(target_location:str):
             #     time.sleep(0.000005)
             # time.sleep(.1)
         elif step['dir'] == 'X-':
-            continue
+            print('skipping step')
             # dirXPin.write(HIGH) # LEFT (bottom motor mount)
             # for i in range(step['duration']):
             #     stepXPin.write(HIGH)
