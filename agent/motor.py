@@ -71,6 +71,7 @@ def move_motor(target_location:str):
         
     # get the entry from path_maps
     for step in location['steps']:
+        print(step)
         if step['dir'] == 'Y+':
             dirYPin.write(HIGH) # Left motor mount
             for i in range(step['duration']):
@@ -88,7 +89,7 @@ def move_motor(target_location:str):
                 time.sleep(0.000005)
             time.sleep(.1)
         elif step['dir'] == 'X+':
-            pass
+            continue
             # dirXPin.write(LOW) # RIGHT (bottom motor mount)
             # for i in range(step['duration']):
             #     stepXPin.write(HIGH)
@@ -97,7 +98,7 @@ def move_motor(target_location:str):
             #     time.sleep(0.000005)
             # time.sleep(.1)
         elif step['dir'] == 'X-':
-            pass
+            continue
             # dirXPin.write(HIGH) # LEFT (bottom motor mount)
             # for i in range(step['duration']):
             #     stepXPin.write(HIGH)
