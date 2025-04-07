@@ -30,13 +30,13 @@ def reset_motor(location:str):
     pass
 
 
-def move_motor(location:str):
+def move_motor(target_location:str):
     
-    # validate location is valid
-    if location in locations:
-        pass
-    else:
-        raise ValueError('location not found')
+    for l in locations:
+        if l['location'] == target_location:
+            location = l
+        else:
+            raise ValueError('location not found')
 
     # check current location:
     with open('current_location','r') as file:
@@ -70,42 +70,41 @@ def move_motor(location:str):
     print('Ready to move')
         
     # get the entry from path_maps
-    for location in locations:
-        for step in location['steps']:
-            if step['dir'] == 'Y+':
-                dirYPin.write(HIGH) # Left motor mount
-                for i in range(step['duration']):
-                    stepYPin.write(HIGH)
-                    time.sleep(0.000005)
-                    stepYPin.write(LOW)
-                    time.sleep(0.000005)
-                time.sleep(.1)
-            elif step['dir'] == 'Y-':
-                dirYPin.write(LOW) # Left motor mount
-                for i in range(step['duration']):
-                    stepYPin.write(HIGH)
-                    time.sleep(0.000005)
-                    stepYPin.write(LOW)
-                    time.sleep(0.000005)
-                time.sleep(.1)
-            elif step['dir'] == 'X+':
-                dirXPin.write(LOW) # RIGHT (bottom motor mount)
-                for i in range(step['duration']):
-                    stepXPin.write(HIGH)
-                    time.sleep(0.000005)
-                    stepXPin.write(LOW)
-                    time.sleep(0.000005)
-                time.sleep(.1)
-            elif step['dir'] == 'X-':
-                dirXPin.write(HIGH) # LEFT (bottom motor mount)
-                for i in range(step['duration']):
-                    stepXPin.write(HIGH)
-                    time.sleep(0.000005)
-                    stepXPin.write(LOW)
-                    time.sleep(0.000005)
-                time.sleep(.1)
-            else:
-                raise ValueError('valid direction not found')
+    for step in location['steps']:
+        if step['dir'] == 'Y+':
+            dirYPin.write(HIGH) # Left motor mount
+            for i in range(step['duration']):
+                stepYPin.write(HIGH)
+                time.sleep(0.000005)
+                stepYPin.write(LOW)
+                time.sleep(0.000005)
+            time.sleep(.1)
+        elif step['dir'] == 'Y-':
+            dirYPin.write(LOW) # Left motor mount
+            for i in range(step['duration']):
+                stepYPin.write(HIGH)
+                time.sleep(0.000005)
+                stepYPin.write(LOW)
+                time.sleep(0.000005)
+            time.sleep(.1)
+        elif step['dir'] == 'X+':
+            dirXPin.write(LOW) # RIGHT (bottom motor mount)
+            for i in range(step['duration']):
+                stepXPin.write(HIGH)
+                time.sleep(0.000005)
+                stepXPin.write(LOW)
+                time.sleep(0.000005)
+            time.sleep(.1)
+        elif step['dir'] == 'X-':
+            dirXPin.write(HIGH) # LEFT (bottom motor mount)
+            for i in range(step['duration']):
+                stepXPin.write(HIGH)
+                time.sleep(0.000005)
+                stepXPin.write(LOW)
+                time.sleep(0.000005)
+            time.sleep(.1)
+        else:
+            raise ValueError('valid direction not found')
     
     print('Move Complete')
 
