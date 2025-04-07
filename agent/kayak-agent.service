@@ -1,11 +1,11 @@
 [Unit]
-Description=My Python Application Service
+Description=Kayak Agent
 After=network.target
 
 [Service]
-User=myuser
-WorkingDirectory={{pwd}}
-ExecStart={{path_to_uv}} {{pwd}} /my_app.py
+User=jasondavenport
+WorkingDirectory=/home/jasondavenport/Github/next25-kayak-to-ai/agent
+ExecStart=/home/jasondavenport/.local/bin/uv run /home/jasondavenport/Github/next25-kayak-to-ai/agent/my_app.py
 Restart=always
 RestartSec=10
 StandardOutput=syslog

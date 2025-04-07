@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from google import genai
 from google.genai.types import HttpOptions, Part
 from dotenv import load_dotenv
@@ -20,6 +21,7 @@ PUBSUB_TOPIC_ID = os.environ.get("PUBSUB_TOPIC_ID")
 GOOGLE_CLOUD_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT")
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://kayak-frontend-78192108242.us-central1.run.app"]}})
 
 
 def publish_message(topic_path, message):

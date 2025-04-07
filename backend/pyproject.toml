@@ -10,4 +10,5 @@ dependencies = [
     "google-genai",
     "python-dotenv",
     "google-cloud-pubsub",
+    "flask-cors",
 ]

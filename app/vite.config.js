@@ -43,7 +43,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'https://kayak-backend-78192108242.us-central1.run.app',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
       },

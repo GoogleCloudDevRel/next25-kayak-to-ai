@@ -1,6 +1,7 @@
 import { useKayakStore } from "@/store";
 import { deferred } from "./deferred";
 
+
 const locationNames = [
   "Lake Union",
   "Green Lake",
@@ -10,7 +11,7 @@ const locationNames = [
 ];
 
 // Define the base URL for your API endpoints
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api";
+const API_BASE_URL = import.meta.env.API_BASE_URL || "https://kayak-backend-78192108242.us-central1.run.app/api";
 
 let sendPromptPromise = null;
 
@@ -71,9 +72,6 @@ export const sendPrompt = async () => {
     sendPromptPromise = null;
   }
 };  
-// Step 3: Check if kayak has arrived
-await checkIfKayakArrived();
-
 
 let moveKayakAndGetCodePromise = null;
 export const moveKayakAndGetCode = async () => {
@@ -121,7 +119,7 @@ export const moveKayakAndGetCode = async () => {
       useKayakStore().setCode(code.slice(0, i + 1));
       await new Promise((resolve) => setTimeout(resolve, 5));
     }
-
+    
     moveKayakAndGetCodePromise.resolve();
   } catch (error) {
     console.error("Error moving kayak or getting code:", error);
