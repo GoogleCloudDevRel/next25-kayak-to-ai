@@ -9,12 +9,12 @@ load_dotenv()  # Load environment variables from .env
 port = os.environ.get("ARDUINO_BOARD")
 
 # Pin Mapping
-dirYPin = 6
-stepYPin = 3
-dirXPin = 5
-stepXPin = 2
-enPin = 8
-brakePin = 7
+def_dirYPin = 6
+def_stepYPin = 3
+def_dirXPin = 5
+def_stepXPin = 2
+def_enPin = 8
+def_brakePin = 7
 
 # High / Low controls
 HIGH = True
@@ -54,12 +54,12 @@ def move_motor(target_location:str):
     
     # d = digital, 13 = pin number, o = output
 
-    enPin = board.get_pin(f'd:{enPin}:o')
-    brakePin = board.get_pin(f'd:{brakePin}:o')
-    dirYPin = board.get_pin(f'd:{dirYPin}:o')
-    stepYPin = board.get_pin(f'd:{stepXPin}:o')
-    dirXPin = board.get_pin(f'd:{dirXPin}:o')
-    stepXPin = board.get_pin(f'd:{stepXPin}:o')
+    enPin = board.get_pin(f'd:{def_enPin}:o')
+    brakePin = board.get_pin(f'd:{def_brakePin}:o')
+    dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
+    stepYPin = board.get_pin(f'd:{def_stepXPin}:o')
+    dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
+    stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
     print('Board Instantiated')
 
     # Prepare to move
