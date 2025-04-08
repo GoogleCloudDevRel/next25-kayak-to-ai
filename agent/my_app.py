@@ -42,7 +42,7 @@ def process_message(message):
     if data["location"]:
         print(f" Received location: {data['location']}, location_id: {data['location_id']}")
         move_motor(data["location"]["location_id"])
-        control_light(data["location"]["location_id"]"])
+        control_light(data["location"]["location_id"])
     else:
         raise ValueError('no location data was sent')
 
