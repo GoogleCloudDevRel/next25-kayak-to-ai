@@ -147,7 +147,7 @@ def move_kayak():
         return jsonify({"error": "Destination is required"}), 400
 
     submit_data = {
-        "location": destination["location"],
+        "location": destination,
         "location_id": destination["location_id"],
         "uuid": uuid4().hex,
     }
