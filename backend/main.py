@@ -141,12 +141,13 @@ def get_code():
 def move_kayak():
     data = request.get_json()
     destination = data.get("location")
+    print(destination)
 
     if not destination:
         return jsonify({"error": "Destination is required"}), 400
 
     submit_data = {
-        "location": destination["location"],
+        # "location": destination["location"],
         "location_id": destination["location_id"],
         "uuid": uuid4().hex,
     }
