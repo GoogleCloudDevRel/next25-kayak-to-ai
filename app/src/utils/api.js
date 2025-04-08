@@ -55,7 +55,8 @@ export const sendPrompt = async () => {
     console.log("Prompt processing data", promptData);
 
     useKayakStore().setLocation({
-      name: promptData.response,
+      name: promptData.location,
+      location_id: promptData.location_id,
       description: "The lighthouse keeper, Silas, was a man woven from the sea itself. His skin was tanned and weathered like driftwood, his eyes the grey-green of a stormy horizon, and his beard, a tangled mess of white and salt, whispered secrets of the deep. He'd been tending the beacon on Gull Island for forty years, a solitary sentinel against the relentless ocean.",
       image: "/images/kayak/image-grid-1.jpg",
     });
@@ -77,8 +78,30 @@ export const moveKayakAndGetCode = async () => {
 
   const defer = deferred();
   moveKayakAndGetCodePromise = defer;
-
+  const { prompt, location_id , location } = useKayakStore();
   useKayakStore().setIsMoving(true);
+
+  // Get Code API Call
+  const codeResponse = await fetch(`${API_BASE_URL}/get-code`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({prompt, location_id}), // Add any necessary data for getting the code
+  });
+
+  if (!codeResponse.ok) {
+    throw new Error(`HTTP error! status: ${codeResponse.status}`);
+  }
+
+  const codeData = await codeResponse.json();
+  const code = codeData.code;
+
+  // Simulate a stream response
+  for (let i = 0; i < code.length; i++) {
+    useKayakStore().setCode(code.slice(0, i + 1));
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
 
   try {
     // Move Kayak API Call
@@ -87,33 +110,11 @@ export const moveKayakAndGetCode = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}), // Add any necessary data for moving the kayak
+      body: JSON.stringify({ location, location_id }),
     });
 
     if (!moveResponse.ok) {
       throw new Error(`HTTP error! status: ${moveResponse.status}`);
-    }
-
-    // Get Code API Call
-    const codeResponse = await fetch(`${API_BASE_URL}/get-code`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}), // Add any necessary data for getting the code
-    });
-
-    if (!codeResponse.ok) {
-      throw new Error(`HTTP error! status: ${codeResponse.status}`);
-    }
-
-    const codeData = await codeResponse.json();
-    const code = codeData.code;
-
-    // Simulate a stream response
-    for (let i = 0; i < code.length; i++) {
-      useKayakStore().setCode(code.slice(0, i + 1));
-      await new Promise((resolve) => setTimeout(resolve, 5));
     }
     
     moveKayakAndGetCodePromise.resolve();
@@ -136,36 +137,13 @@ export const checkIfKayakArrived = async () => {
 
   let interval = null;
 
-  // create a polling function that checks if the kayak has arrived
-  const isKayakArrived = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/check-kayak-arrival`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("data", data);
-
-      if (data.arrived) {
-        clearInterval(interval);
-        useKayakStore().setArrived(true);
-        isKayakArrivedPromise.resolve(true);
-        isKayakArrivedPromise = null;
-      }
-    } catch (error) {
-      console.error("Error checking kayak arrival:", error);
-      clearInterval(interval); // Stop polling on error
-      isKayakArrivedPromise.reject(error);
-      isKayakArrivedPromise = null;
-    }
-  };
+  {
+    clearInterval(interval);
+    useKayakStore().setArrived(true);
+    isKayakArrivedPromise.resolve(true);
+    isKayakArrivedPromise = null;
+  }
 
   interval = setInterval(isKayakArrived, 1000);
 };
+

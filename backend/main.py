@@ -119,6 +119,15 @@ def process_prompt():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/api/get-code", methods=["POST"])
+def get_code():
+    data = request.get_json()
+    location = data.get("location")
+    prompt = data.get("prompt")
+
+    return jsonify({"message": "Sample Code"})
+
+
 @app.route("/api/move-kayak", methods=["POST"])
 def move_kayak():
     data = request.get_json()
@@ -162,9 +171,6 @@ if __name__ == "__main__":
     # You can specify host='0.0.0.0' if you want it accessible externally
     app.run(debug=True, port=5000)
 
-# 1. user prompts to ask questions about where something is from
-# 2. gemini returns responses
-# 3. user picks location to go to
+
 # 4. based on the location information, run the kayak
 # 5. return complete when complete
-# 6. display informaiton about the location@app.route('/api/start-kayak', methods=['POST'])

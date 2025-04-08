@@ -69,9 +69,9 @@ const props = defineProps({
     type: Array,
     default: () => [
       {
-        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        src: 'https://storage.cloud.google.com/next-25-kayak-images/daniels_broiler.jpeg',
         alt: 'Image 1',
-        caption: 'Caption 1',
+        caption: 'Have lunch',
         position: {
           left: '10%',
           top: '-10%',
@@ -80,9 +80,9 @@ const props = defineProps({
         },
       },
       {
-        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
+        src: 'https://storage.cloud.google.com/next-25-kayak-images/fremont_troll.jpeg',
         alt: 'Image 2',
-        caption: 'Caption 2',
+        caption: 'See local art',
         position: {
           left: 'auto',
           top: '-7%',
@@ -91,9 +91,9 @@ const props = defineProps({
         },
       },
       {
-        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        src: 'https://storage.cloud.google.com/next-25-kayak-images/husky_stadium.jpeg',
         alt: 'Image 3',
-        caption: 'Caption 3 testing long caption',
+        caption: 'Watch American football',
         position: {
           left: '3%',
           right: 'auto',
@@ -102,9 +102,9 @@ const props = defineProps({
         },
       },
       {
-        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
+        src: 'https://storage.cloud.google.com/next-25-kayak-images/kirkland_urban.jpeg',
         alt: 'Image 4',
-        caption: 'Caption 4',
+        caption: 'Go shopping!',
         position: {
           left: 'auto',
           top: 'auto',
@@ -113,25 +113,14 @@ const props = defineProps({
         },
       },
       {
-        src: 'https://fastly.picsum.photos/id/813/300/300.jpg?hmac=P1QaCX9HgZK2OE_XcRiYdFI9wkhiSmgYKor-9yDp00c',
+        src: 'https://storage.cloud.google.com/next-25-kayak-images/luther_burbank.jpeg',
         alt: 'Image 5',
-        caption: 'Caption 5',
+        caption: 'Enjoy a park day',
         position: {
           left: 'auto',
           top: 'auto',
           right: '30%',
           bottom: '-8%',
-        },
-      },
-      {
-        src: 'https://fastly.picsum.photos/id/960/300/300.jpg?hmac=33HCKWbjLrPghX-xdgDHytx4nbiWfmdQdI-Fwsgj_00',
-        alt: 'Image 6',
-        caption: 'Caption 6',
-        position: {
-          top: '-5%',
-          left: '40%',
-          right: 'auto',
-          bottom: 'auto',
         },
       },
     ],
