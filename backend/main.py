@@ -160,7 +160,7 @@ def move_kayak():
     )
     logging.info(f"Listening for messages on {subscription_path}...")
 
-    return jsonify({"message": f"Moved kayak to {destination["name"]}"})
+    return jsonify({"message": f"Moved kayak to {destination['name']}"})
 
 def callback(message):
     """
