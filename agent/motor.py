@@ -42,6 +42,8 @@ def reset_motor(current_location_id:int):
     if MOTOR_ENABLED == 1:
         
         # Instantiate motor
+        print('instantiating')
+        print(f"port: {port}")
         board = pyfirmata2.Arduino(port)
         
         # d = digital, 13 = pin number, o = output
