@@ -30,8 +30,6 @@ with open('locations.json','r') as file:
 
 def find_location(location:str):
     for l in locations:
-        print(l)
-        print(location)
         if l['location'] == location:
             return l
     
