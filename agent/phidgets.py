@@ -12,19 +12,19 @@ PHIDGET_ENABLED = os.environ.get("PHIDGET_ENABLED",0)
 with open("locations.json", "r") as file:
     locations = json.load(file)
 
-def find_location(location:str):
+def find_location(location_id:int):
     for l in locations:
-        if l['location'] == location:
+        if l['location_id'] == location_id:
             return l
     
-    raise ValueError(f"PhidgetController: location {location} not found")
+    raise ValueError(f"PhidgetController: location {location_id} not found")
 
-def control_light(target_location: str):
+def control_light(target_location_id: int):
     """
     Controls an LED connected to a Phidget VINT Hub.
     """
 
-    location = find_location(target_location)
+    location = find_location(target_location_id)
     
     LED_PORT = location["location_id"]
 

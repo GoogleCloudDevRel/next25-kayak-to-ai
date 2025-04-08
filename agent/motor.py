@@ -28,16 +28,16 @@ LOW = False
 with open('locations.json','r') as file:
     locations = json.load(file)
 
-def find_location(location:str):
+def find_location(location_id:int):
     for l in locations:
-        if l['location'] == location:
+        if l['location_id'] == location_id:
             return l
     
-    raise ValueError(f"MotorController: location {location} not found")
+    raise ValueError(f"MotorController: location {location_id} not found")
 
-def reset_motor(current_location:str):
+def reset_motor(current_location_id:int):
     print('resetting')
-    location = find_location(current_location)
+    location = find_location(current_location_id)
 
     if MOTOR_ENABLED == 1:
         
@@ -121,22 +121,22 @@ def reset_motor(current_location:str):
 
 
 
-def move_motor(target_location:str):
+def move_motor(target_location_id:int):
     
-    location = find_location(target_location)
+    location = find_location(target_location_id)
 
     # check current location:
     try:
         with open('current_location','r') as file:
             current_location = file.read()
     except FileNotFoundError:
-        current_location = 'reset'
+        current_location = 6 # reset location
         
 
     if location['location'] == current_location:
         return  f"Kayak stayed at {location['location']}"
     elif location['location'] != current_location and current_location != 'reset':
-        reset_motor(location['location'])
+        reset_motor(location['location_id'])
     elif location['location'] != current_location and current_location == 'reset':
         print('continue to move')
         pass

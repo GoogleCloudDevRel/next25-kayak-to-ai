@@ -146,8 +146,8 @@ def move_kayak():
         return jsonify({"error": "Destination is required"}), 400
 
     submit_data = {
-        "location": data.get("location"),
-        "location_id": data.get("location_id"),
+        "location": destination["location"],
+        "location_id": destination["location_id"],
         "uuid": uuid4().hex,
     }
 
@@ -160,7 +160,7 @@ def move_kayak():
     )
     logging.info(f"Listening for messages on {subscription_path}...")
 
-    return jsonify({"message": "Moved kayak to " + destination})
+    return jsonify({"message": f"Moved kayak to {destination["name"]}"})
 
 def callback(message):
     """
