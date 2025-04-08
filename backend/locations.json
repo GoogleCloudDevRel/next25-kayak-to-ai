@@ -3,42 +3,56 @@
         "location": "virginia_mason",
         "name": "Virginia Mason Athletic Center",
         "location_id": 0,
+        "description": "Is the Seattle Seahawks' state-of-the-art training facility on Lake Washington. It houses practice fields, workout areas, and offices, fostering a championship-winning environment for the team.",
+        "image_url": "/images/kayak/virginia_mason.jpeg",
         "steps": []
     },
     {
         "location": "seward_park",
         "name": "Seward Park",
         "location_id": 1,
+        "description": "A peninsula on Lake Washington, offers lush forests, walking trails, beaches, and stunning views of Mount Rainier. A serene escape within Seattle.",
+        "image_url": "/images/kayak/seward_park.jpeg",
         "steps": []
     },
     {
         "location": "kirkland_urban",
         "name": "Kirkland Urban",
         "location_id": 2,
+        "description": "A vibrant mixed-use development in Seattle's Eastside, featuring modern apartments, diverse restaurants, upscale shops, and lively entertainment options, creating a dynamic urban experience.",
+        "image_url": "/images/kayak/kirkland_urban.jpeg",
         "steps": []
     },
     {
         "location": "magnuson_cafe_and_brewery",
         "name": "Magnuson Cafe and Brewery",
         "location_id": 3,
+        "description": "Seattle's spot for craft beer and delicious food with a playful, nautical theme. Enjoy brews and bites with lake views in a family-friendly atmosphere.",
+        "image_url": "/images/kayak/magnuson.jpeg",
         "steps": []
     },
     {
         "location": "luther_burbank_park",
         "name": "Luther Burbank Park",
         "location_id": 4,
+        "description": "Offers stunning Lake Washington views, winding trails, picnic spots, and a quaint beach. A popular destination for families and nature lovers alike.",
+        "image_url": "/images/kayak/luther_burbank.jpeg",
         "steps": []
     },
     {
         "location": "woodmark_hotel",
         "name": "Woodmark Hotel and Spa",
         "location_id": 5,
+        "description": "Nestled on Lake Washington's shores, The Woodmark Hotel & Spa offers luxurious lakeside retreats with Northwest-inspired decor, pampering spa treatments, and stunning Seattle skyline views.",
+        "image_url": "/images/kayak/woodmark_hotel.jpeg",
         "steps": []
     },
     {                
         "location": "daniels_broiler",
         "name": "Daniel's Broiler",
         "location_id": 7,
+        "description": "Offers a luxurious dining experience with stunning lake views, prime steaks cooked to perfection, and an extensive wine list. Perfect for special occasions.",
+        "image_url": "/images/kayak/daniels_broiler.jpeg",
         "steps": [
             {
                 "number": 1,
@@ -66,12 +80,16 @@
         "location": "husky_stadium",
         "name": "University of Washington Husky Stadium",
         "location_id": 8,
+        "description": "Boasts stunning lake views and roaring crowds. Home to the Washington Huskies, it's a legendary open-air venue steeped in Pacific Northwest football tradition.",
+        "image_url": "/images/kayak/husky_stadium.jpeg",
         "steps": []
     },
     {
         "location": "fremont_troll",
         "name": "Fremont Troll",
         "location_id": 9,
+        "description": "Beneath a Seattle bridge lurks the Fremont Troll, a colossal concrete sculpture clutching a real Volkswagen Beetle. A quirky landmark, it invites climbing and embodies the neighborhood's artistic spirit.",
+        "image_url": "/images/kayak/fremont_troll.jpeg",
         "steps": []
     }
 ]

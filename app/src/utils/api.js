@@ -57,8 +57,8 @@ export const sendPrompt = async () => {
     useKayakStore().setLocation({
       name: promptData.location,
       location_id: promptData.location_id,
-      description: "The lighthouse keeper, Silas, was a man woven from the sea itself. His skin was tanned and weathered like driftwood, his eyes the grey-green of a stormy horizon, and his beard, a tangled mess of white and salt, whispered secrets of the deep. He'd been tending the beacon on Gull Island for forty years, a solitary sentinel against the relentless ocean.",
-      image: "/images/kayak/image-grid-1.jpg",
+      description: promptData.description, // "The lighthouse keeper, Silas, was a man woven from the sea itself. His skin was tanned and weathered like driftwood, his eyes the grey-green of a stormy horizon, and his beard, a tangled mess of white and salt, whispered secrets of the deep. He'd been tending the beacon on Gull Island for forty years, a solitary sentinel against the relentless ocean.",
+      image: promptData.image_url, //"/images/kayak/image-grid-1.jpg",
     });
 
     sendPromptPromise.resolve();
@@ -87,7 +87,7 @@ export const moveKayakAndGetCode = async () => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({prompt, location_id}), // Add any necessary data for getting the code
+    body: JSON.stringify({prompt, location_id, location}), // Add any necessary data for getting the code
   });
 
   if (!codeResponse.ok) {
@@ -136,14 +136,29 @@ export const checkIfKayakArrived = async () => {
   isKayakArrivedPromise = defer;
 
   let interval = null;
+  let debugMaxTries = 4;
+  let debugTries = 0;
 
-  {
-    clearInterval(interval);
-    useKayakStore().setArrived(true);
-    isKayakArrivedPromise.resolve(true);
-    isKayakArrivedPromise = null;
+  const isKayakArrived = () => {
+    // TODO: implement this
+    // fetch(...)
+    // if (/* kayak has arrived */) {
+
+    if (debugTries >= debugMaxTries) {
+      clearInterval(interval);
+      useKayakStore().setArrived(true);
+      isKayakArrivedPromise.resolve(true);
+      isKayakArrivedPromise = null;
+      return;
+    }
+
+    debugTries++;
+    console.log("debugTries", debugTries);
   }
 
+
   interval = setInterval(isKayakArrived, 1000);
+
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 };
 

@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env
 # Modem Controller port for Arduino (modify for mac or Pi)
+
+MOTOR_ENABLED = os.environ.get("MOTOR_ENABLED",0)
 port = os.environ.get("ARDUINO_BOARD")
 
 # Pin Mapping
@@ -37,76 +39,78 @@ def reset_motor(current_location:str):
     print('resetting')
     location = find_location(current_location)
 
-    # Instantiate motor
-    board = pyfirmata2.Arduino(port)
-    
-    # d = digital, 13 = pin number, o = output
-
-    enPin = board.get_pin(f'd:{def_enPin}:o')
-    brakePin = board.get_pin(f'd:{def_brakePin}:o')
-    dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
-    stepYPin = board.get_pin(f'd:{def_stepYPin}:o')
-    dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
-    stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
-    print('Board Instantiated')
+    if MOTOR_ENABLED == 1:
         
-    # Prepare to move
-    enPin.write(HIGH)
-    time.sleep(.1)
-    brakePin.write(HIGH)
-    time.sleep(.1)
-    print('Ready to move')
+        # Instantiate motor
+        board = pyfirmata2.Arduino(port)
+        
+        # d = digital, 13 = pin number, o = output
 
-    # get the entry from path_maps
-    for step in reversed(location['steps']):
-        print(step)
-        if step['dir'] == 'Y+': 
-            dirYPin.write(HIGH) # Left motor mount # reverse from y+ LOW
-            print ('run Y+')
-            for i in range(step['duration']):
-                stepYPin.write(HIGH)
-                time.sleep(0.000005)
-                stepYPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'Y-':           
-            dirYPin.write(LOW) # Left motor mount # reverse from y- HIGH
-            print('run Y-')
-            for i in range(step['duration']):
-                stepYPin.write(HIGH)
-                time.sleep(0.000005)
-                stepYPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'X-':
-            dirXPin.write(LOW) # RIGHT (bottom motor mount) # reverse from X- HIGH
-            print ('run X-')
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'X+':
-            dirXPin.write(HIGH) # LEFT (bottom motor mount) # reverse from X+ low
-            print ('run X+')
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        else:
-            raise ValueError('valid direction not found')
-    
-    print('Reset Complete')
+        enPin = board.get_pin(f'd:{def_enPin}:o')
+        brakePin = board.get_pin(f'd:{def_brakePin}:o')
+        dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
+        stepYPin = board.get_pin(f'd:{def_stepYPin}:o')
+        dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
+        stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
+        print('Board Instantiated')
+            
+        # Prepare to move
+        enPin.write(HIGH)
+        time.sleep(.1)
+        brakePin.write(HIGH)
+        time.sleep(.1)
+        print('Ready to move')
 
-    # Lock location
-    brakePin.write(LOW)
-    time.sleep(.1)
-    enPin.write(LOW)
-    time.sleep(.1)
-    print('Locked')
+        # get the entry from path_maps
+        for step in reversed(location['steps']):
+            print(step)
+            if step['dir'] == 'Y+': 
+                dirYPin.write(HIGH) # Left motor mount # reverse from y+ LOW
+                print ('run Y+')
+                for i in range(step['duration']):
+                    stepYPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepYPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'Y-':           
+                dirYPin.write(LOW) # Left motor mount # reverse from y- HIGH
+                print('run Y-')
+                for i in range(step['duration']):
+                    stepYPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepYPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'X-':
+                dirXPin.write(LOW) # RIGHT (bottom motor mount) # reverse from X- HIGH
+                print ('run X-')
+                for i in range(step['duration']):
+                    stepXPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepXPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'X+':
+                dirXPin.write(HIGH) # LEFT (bottom motor mount) # reverse from X+ low
+                print ('run X+')
+                for i in range(step['duration']):
+                    stepXPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepXPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            else:
+                raise ValueError('valid direction not found')
+        
+        print('Reset Complete')
+
+        # Lock location
+        brakePin.write(LOW)
+        time.sleep(.1)
+        enPin.write(LOW)
+        time.sleep(.1)
+        print('Locked')
 
     # write current location
     with open('current_location','w') as file:
@@ -139,77 +143,77 @@ def move_motor(target_location:str):
     else:
         raise KeyError('unknown move handler')
         
-
-    # Instantiate motor
-    board = pyfirmata2.Arduino(port)
-    
-    # d = digital, 13 = pin number, o = output
-
-    enPin = board.get_pin(f'd:{def_enPin}:o')
-    brakePin = board.get_pin(f'd:{def_brakePin}:o')
-    dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
-    stepYPin = board.get_pin(f'd:{def_stepYPin}:o')
-    dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
-    stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
-    print('Board Instantiated')
-
-    # Prepare to move
-    enPin.write(HIGH)
-    time.sleep(.1)
-    brakePin.write(HIGH)
-    time.sleep(.1)
-    print('Ready to move')
+    if MOTOR_ENABLED == 1:  
+        # Instantiate motor
+        board = pyfirmata2.Arduino(port)
         
-    # get the entry from path_maps
-    for step in location['steps']:
-        print(step)
-        if step['dir'] == 'Y+':
-            dirYPin.write(LOW) # Left motor mount
-            print ('run Y+')
-            for i in range(step['duration']):
-                stepYPin.write(HIGH)
-                time.sleep(0.000005)
-                stepYPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'Y-':           
-            dirYPin.write(HIGH) # Left motor mount
-            print('run Y-')
-            for i in range(step['duration']):
-                stepYPin.write(HIGH)
-                time.sleep(0.000005)
-                stepYPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'X-':
-            dirXPin.write(HIGH) # RIGHT (bottom motor mount)
-            print ('run X-')
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        elif step['dir'] == 'X+':
-            dirXPin.write(LOW) # LEFT (bottom motor mount)
-            print ('run X+')
-            for i in range(step['duration']):
-                stepXPin.write(HIGH)
-                time.sleep(0.000005)
-                stepXPin.write(LOW)
-                time.sleep(0.000005)
-            time.sleep(.1)
-        else:
-            raise ValueError('valid direction not found')
-    
-    print('Move Complete')
+        # d = digital, 13 = pin number, o = output
 
-    # Lock location
-    brakePin.write(LOW)
-    time.sleep(.1)
-    enPin.write(LOW)
-    time.sleep(.1)
-    print('Locked')
+        enPin = board.get_pin(f'd:{def_enPin}:o')
+        brakePin = board.get_pin(f'd:{def_brakePin}:o')
+        dirYPin = board.get_pin(f'd:{def_dirYPin}:o')
+        stepYPin = board.get_pin(f'd:{def_stepYPin}:o')
+        dirXPin = board.get_pin(f'd:{def_dirXPin}:o')
+        stepXPin = board.get_pin(f'd:{def_stepXPin}:o')
+        print('Board Instantiated')
+
+        # Prepare to move
+        enPin.write(HIGH)
+        time.sleep(.1)
+        brakePin.write(HIGH)
+        time.sleep(.1)
+        print('Ready to move')
+            
+        # get the entry from path_maps
+        for step in location['steps']:
+            print(step)
+            if step['dir'] == 'Y+':
+                dirYPin.write(LOW) # Left motor mount
+                print ('run Y+')
+                for i in range(step['duration']):
+                    stepYPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepYPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'Y-':           
+                dirYPin.write(HIGH) # Left motor mount
+                print('run Y-')
+                for i in range(step['duration']):
+                    stepYPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepYPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'X-':
+                dirXPin.write(HIGH) # RIGHT (bottom motor mount)
+                print ('run X-')
+                for i in range(step['duration']):
+                    stepXPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepXPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            elif step['dir'] == 'X+':
+                dirXPin.write(LOW) # LEFT (bottom motor mount)
+                print ('run X+')
+                for i in range(step['duration']):
+                    stepXPin.write(HIGH)
+                    time.sleep(0.000005)
+                    stepXPin.write(LOW)
+                    time.sleep(0.000005)
+                time.sleep(.1)
+            else:
+                raise ValueError('valid direction not found')
+        
+        print('Move Complete')
+
+        # Lock location
+        brakePin.write(LOW)
+        time.sleep(.1)
+        enPin.write(LOW)
+        time.sleep(.1)
+        print('Locked')
 
     # write current location
     with open('current_location','w') as file:

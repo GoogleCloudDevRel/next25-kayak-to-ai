@@ -103,6 +103,9 @@ def process_prompt():
                 if text_response.rstrip().lstrip() == l['name']:
                     print(f"found {text_response}")
                     location_requested = l['name']
+                    image_url = l['image_url']
+                    location_id = l['location_id']
+                    description = l['description']
                     break
             response = client.models.generate_content(
             model=GEMINI_MODEL,
@@ -113,7 +116,10 @@ def process_prompt():
             if counter >= 5:
                 break
 
-        return jsonify({"location": location_requested})
+        return jsonify({"location": location_requested,
+                        "location_id": location_id,
+                        "image_url": image_url,
+                        "description": description,})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -125,40 +131,44 @@ def get_code():
     location = data.get("location")
     prompt = data.get("prompt")
 
-    return jsonify({"message": "Sample Code"})
+    with open ('code_template','r') as t:
+        code = t.read().format(prompt=prompt, location=location)
+
+    return jsonify({"code": code})
 
 
 @app.route("/api/move-kayak", methods=["POST"])
 def move_kayak():
     data = request.get_json()
-    destination = data.get("destination")
+    destination = data.get("location")
 
     if not destination:
         return jsonify({"error": "Destination is required"}), 400
-    
+
     submit_data = {
-        "location": data.get("destination"),
-        "uuid": uuid4().hex
+        "location": data.get("location"),
+        "location_id": data.get("location_id"),
+        "uuid": uuid4().hex,
     }
 
     topic_path = publisher.topic_path(GOOGLE_CLOUD_PROJECT, PUBSUB_TOPIC_ID)
-    message_id = publish_message(topic_path, submit_data)
+    message_id = publish_message(topic_path, json.dumps(submit_data))
 
     # listen for the message back
     streaming_pull_future = subscriber.subscribe(
-        subscription_path, callback=callback(message_id)
+        subscription_path, callback=callback
     )
     logging.info(f"Listening for messages on {subscription_path}...")
 
     return jsonify({"message": "Moved kayak to " + destination})
 
-def callback(message, message_id):
+def callback(message):
     """
     Callback function to handle received messages.
     """
     logging.info(f"Received message: {message.data.decode('utf-8')}")
     try:
-        if message.message_id == message_id:
+        if message.message_id:
             message.ack()
         else: 
             message.nack()
