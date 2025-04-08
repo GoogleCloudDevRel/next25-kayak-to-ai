@@ -1,28 +1,68 @@
 [
     {
-        "location": "daniels_broiler",
+        "location": "virginia_mason",
+        "location_id": 0,
+        "steps": []
+    },
+    {
+        "location": "seward_park",
         "location_id": 1,
+        "steps": []
+    },
+    {
+        "location": "kirkland_urban",
+        "location_id": 2,
+        "steps": []
+    },
+    {
+        "location": "magnuson_cafe_and_brewery",
+        "location_id": 3,
+        "steps": []
+    },
+    {
+        "location": "luther_burbank_park",
+        "location_id": 4,
+        "steps": []
+    },
+    {
+        "location": "woodmark_hotel",
+        "location_id": 5,
+        "steps": []
+    },
+    {                
+        "location": "daniels_broiler",
+        "location_id": 7,
         "steps": [
             {
                 "number": 1,
-                "dir": "Y+",
-                "duration": 10000
+                "dir": "Y-",
+                "duration": 5000
             },
             {
                 "number": 2,
                 "dir": "X+",
-                "duration": 1000
+                "duration": 5000
             },
             {
                 "number": 3,
-                "dir": "Y-",
-                "duration": 10000
+                "dir": "Y+",
+                "duration": 5000
             },
             {
                 "number": 4,
                 "dir": "X-",
-                "duration": 1000
+                "duration": 5000
             }
         ]
+    },
+    {
+        "location": "husky_stadium",
+        "location_id": 8,
+        "steps": []
+    },
+    {
+        "location": "fremont_troll",
+        "location_id": 9,
+        "steps": []
     }
 ]

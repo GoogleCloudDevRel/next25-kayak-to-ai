@@ -37,19 +37,15 @@ def process_message(message):
     Placeholder for actions to be performed based on the message content.
     """
     logging.info(f"Processing message: {message.data.decode('utf-8')}")
-    # Add your custom logic here to process the message
-    # Example:
+
     data = json.loads(message.data.decode("utf-8"))
     if data["location"]:
+        print(data["location"])
         move_motor(data["location"])
         control_light(data["location"])
-    elif data["reset"]:
-        control_light(data["reset"])
-        move_motor("reset")
     else:
         raise ValueError('no location data was sent')
 
-    time.sleep(2)  # Simulate some work
     logging.info(f"Finished processing message: {message.data.decode('utf-8')}")
 
 

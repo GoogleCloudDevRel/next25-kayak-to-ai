@@ -1,72 +1,61 @@
+from Phidget22.Devices.DigitalInput import *
+from Phidget22.PhidgetException import *
+from Phidget22.Phidget import *
 from Phidget22.Devices.DigitalOutput import *
-from Phidget22.Net import *
 import time
 import json
+import os
 
-# Replace with your VINT Hub's IP address or hostname if using a network connection
-# If using a USB connection, leave this as None
-HUB_IP_ADDRESS = None  # Example: "192.168.1.100"
-
-# Replace with the serial number of your VINT Hub (optional, but recommended)
-HUB_SERIAL_NUMBER = None  # Example: 654321
+PHIDGET_ENABLED = os.environ.get("PHIDGET_ENABLED",0)
 
 # load locations
-with open('locations.json','r') as file:
+with open("locations.json", "r") as file:
     locations = json.load(file)
 
-# Replace with the port number where your LED is connected
-LED_PORT = 0
+def find_location(location:str):
+    for l in locations:
+        if l['location'] == location:
+            return l
+    
+    raise ValueError(f"location {location} not found")
 
-def control_light(location:str):
+def control_light(target_location: str):
     """
     Controls an LED connected to a Phidget VINT Hub.
     """
 
-    for location in locations:
-        LED_PORT = location["location_id"]
+    location = find_location(target_location)
+    
+    LED_PORT = location["location_id"]
 
-    try:
-        # Create a DigitalOutput object
-        led = DigitalOutput()
+    if PHIDGET_ENABLED == 1:
+        try:
+            # Create your Phidget channels
+            digitalOutput0 = DigitalOutput()
+            digitalOutput0.setHubPort(0)
+            digitalOutput0.setChannel(LED_PORT)
+            digitalOutput0.openWaitForAttachment(5000)
 
-        # Set the hub connection parameters if using a network connection
-        if HUB_IP_ADDRESS:
-            Net.enableServerDiscovery(PhidgetServerType.PHIDGETSERVER_DEVICEREMOTE)
-            led.setHubPort(LED_PORT)
-            led.setDeviceSerialNumber(HUB_SERIAL_NUMBER)
-            led.setHub(HUB_IP_ADDRESS)
-        else:
-            led.setHubPort(LED_PORT)
-            if HUB_SERIAL_NUMBER:
-                led.setDeviceSerialNumber(HUB_SERIAL_NUMBER)
+            # Do stuff with your Phidgets here or in your event handlers.
+            digitalOutput0.setDutyCycle(1)
+            print("open")
+            time.sleep(10)
+            digitalOutput0.setDutyCycle(0)
+            time.sleep(1)
+            print("closed")
+            digitalOutput0.close()
 
-        # Open the LED connection
-        led.openWaitForAttachment(5000)  # Wait up to 5 seconds for connection
+        except PhidgetException as e:
+            print(f"Phidget Exception {e.code}: {e.details}")
+            print(f"Exiting....")
+            exit(1)
+        except RuntimeError as e:
+            print(f"Runtime Exception: {e}")
+            print(f"Exiting....")
+            exit(1)
+    else:
+        pass
 
-        print("LED connected successfully!")
-
-        # Turn the LED on
-        print("Turning LED on...")
-        led.setDutyCycle(1)  # Set duty cycle to 1 (full on)
-        time.sleep(2)  # Keep the LED on for 2 seconds
-
-        # Turn the LED off
-        print("Turning LED off...")
-        led.setDutyCycle(0)  # Set duty cycle to 0 (off)
-        time.sleep(2)  # Keep the LED off for 2 seconds
-
-        # Close the connection
-        led.close()
-        print("LED connection closed.")
-
-    except PhidgetException as e:
-        print(f"Phidget Exception {e.code}: {e.details}")
-        print(f"Exiting....")
-        exit(1)
-    except RuntimeError as e:
-        print(f"Runtime Exception: {e}")
-        print(f"Exiting....")
-        exit(1)
 
 if __name__ == "__main__":
-    control_light()
+    control_light(target_location="daniels_broiler")
