@@ -136,7 +136,7 @@ def move_motor(target_location:str):
     if location['location'] == current_location:
         return  f"Kayak stayed at {location['location']}"
     elif location['location'] != current_location and current_location != 'reset':
-        reset_motor(location)
+        reset_motor(location['location'])
     elif location['location'] != current_location and current_location == 'reset':
         print('continue to move')
         pass
