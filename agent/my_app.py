@@ -40,7 +40,7 @@ def process_message(message):
 
     data = json.loads(message.data.decode("utf-8"))
     if data["location"]:
-        print(data["location"])
+        print(f" Received location: {data['location']}")
         move_motor(data["location"])
         control_light(data["location"])
     else:

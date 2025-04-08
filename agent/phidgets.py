@@ -17,7 +17,7 @@ def find_location(location:str):
         if l['location'] == location:
             return l
     
-    raise ValueError(f"location {location} not found")
+    raise ValueError(f"PhidgetController: location {location} not found")
 
 def control_light(target_location: str):
     """

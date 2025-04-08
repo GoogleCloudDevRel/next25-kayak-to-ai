@@ -33,7 +33,7 @@ def find_location(location:str):
         if l['location'] == location:
             return l
     
-    raise ValueError(f"location {location} not found")
+    raise ValueError(f"MotorController: location {location} not found")
 
 def reset_motor(current_location:str):
     print('resetting')
