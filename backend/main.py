@@ -75,17 +75,23 @@ def process_prompt():
     try:
         data = request.get_json()
         prompt = data.get("prompt")
+        print(f"prompt: {prompt}")
 
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
         
+        formatted_template = prompt_template.format(prompt=prompt)
+        
+
         response = client.models.generate_content(
             model=GEMINI_MODEL,
-            contents=prompt_template.format(prompt),
+            contents=formatted_template,
         )
 
         # Extract the text content from the response
         text_response = response.text
+
+        print(text_response)
 
         with open('locations.json','r') as file:
             locations = json.load(file)
@@ -93,20 +99,21 @@ def process_prompt():
         counter = 0
         while True:
             for l in locations:
-                if text_response in l['location']:
+                print(l)
+                if text_response.rstrip().lstrip() == l['name']:
                     print(f"found {text_response}")
-                    location_requested = l['location']
+                    location_requested = l['name']
                     break
             response = client.models.generate_content(
             model=GEMINI_MODEL,
-            contents=f"{prompt_template.format(prompt)}. The value {text_response} was not in the list, try again.",
+            contents=f"{formatted_template}. The value {text_response} was not in the list, try again.",
             )
             text_response = response.text
             counter += 1
             if counter >= 5:
                 break
 
-        return jsonify({"response": location_requested})
+        return jsonify({"location": location_requested})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
