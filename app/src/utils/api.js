@@ -13,6 +13,14 @@ const locationNames = [
 // Define the base URL for your API endpoints
 const API_BASE_URL = import.meta.env.API_BASE_URL || "https://kayak-backend-78192108242.us-central1.run.app/api";
 
+const promptTemplate = (prompt) => {
+  return `
+    You are an expert kayak guide. 
+    A user has requested the following: ${prompt}. 
+    Provide a detailed plan for a kayak trip that fulfills the user's request.
+  `;
+};
+
 let sendPromptPromise = null;
 
 export const sendPrompt = async () => {
@@ -46,23 +54,11 @@ export const sendPrompt = async () => {
     const promptData = await promptResponse.json();
     console.log("Prompt processing data", promptData);
 
-    // Step 2: Use the intermediate data to fetch location data
-    const locationResponse = await fetch(`${API_BASE_URL}/generate-location`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ dataFromPrompt: promptData }), // Send the data from the first API call
+    useKayakStore().setLocation({
+      name: promptData.response,
+      description: "The lighthouse keeper, Silas, was a man woven from the sea itself. His skin was tanned and weathered like driftwood, his eyes the grey-green of a stormy horizon, and his beard, a tangled mess of white and salt, whispered secrets of the deep. He'd been tending the beacon on Gull Island for forty years, a solitary sentinel against the relentless ocean.",
+      image: "/images/kayak/image-grid-1.jpg",
     });
-
-    if (!locationResponse.ok) {
-      throw new Error(`HTTP error during location generation! status: ${locationResponse.status}`);
-    }
-
-    const locationData = await locationResponse.json();
-    console.log("Location data", locationData);
-
-    useKayakStore().setLocation(locationData);
 
     sendPromptPromise.resolve();
   } catch (error) {

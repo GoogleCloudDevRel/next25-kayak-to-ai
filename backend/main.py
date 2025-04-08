@@ -5,10 +5,21 @@ from google.genai.types import HttpOptions, Part
 from dotenv import load_dotenv
 import os
 from google.cloud import pubsub_v1
+from uuid import uuid4
+import logging
+import sys
+import json
 
 
 # Load environment variables from .env
 load_dotenv()
+
+# Configure logging to only use stdout/stderr
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],  # Log to console (stdout)
+)
 
 # Initialize Gemini client
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -20,6 +31,12 @@ publisher = pubsub_v1.PublisherClient()
 PUBSUB_TOPIC_ID = os.environ.get("PUBSUB_TOPIC_ID")
 GOOGLE_CLOUD_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT")
 
+# initialize sub client
+subscriber = pubsub_v1.SubscriberClient()
+SUBSCRIPTION_ID = os.environ.get("PUBSUB_SUBSCRIPTION_ID")
+subscription_path = subscriber.subscription_path(GOOGLE_CLOUD_PROJECT, SUBSCRIPTION_ID)
+
+
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "https://kayak-frontend-78192108242.us-central1.run.app"]}})
 
@@ -29,31 +46,29 @@ def publish_message(topic_path, message):
     future = publisher.publish(topic_path, message.encode("utf-8"))
     print(f"Published message id {future.result()}")
 
+    return future.result()
 
 @app.route("/")
 def index():
     return jsonify({"message": "Root endpoint"})
 
 
-@app.route("/api/generate-location", methods=["POST"])
-def test():
-    return jsonify({"message": "Test endpoint"})
-
-
-@app.route("/api/move-kayak", methods=["POST"])
-def move_kayak():
-    data = request.get_json()
-    destination = data.get("destination")
-
-    if not destination:
-        return jsonify({"error": "Destination is required"}), 400
-
-    topic_path = publisher.topic_path(GOOGLE_CLOUD_PROJECT, PUBSUB_TOPIC_ID)
-    publish_message(topic_path, destination)
-
-    # TODO: Implement logic to move the kayak
-    return jsonify({"message": "Moving kayak to " + destination})
-
+prompt_template = """
+    You are an expert kayak guide around Lake Washington in Seattle, WA.
+    A user has requested the following: {prompt}. 
+    Using your best knowledge about the 9 locations that you can kayak to below,
+    return the single best location from the list, name only. The available list
+    of locations is:
+    - Virginia Mason Athletic Center,
+    - Seward Park,
+    - Magnuson Cafe and Brewery,
+    - Luther Burbank Park,
+    - Kirkland Urban,
+    - Woodmark Hotel and Spa,
+    - Daniel's Broiler,
+    - University of Washington Husky Stadium,
+    - Fremont Troll
+    """
 
 @app.route("/api/process-prompt", methods=["POST"])
 def process_prompt():
@@ -63,47 +78,78 @@ def process_prompt():
 
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
-
+        
         response = client.models.generate_content(
             model=GEMINI_MODEL,
-            contents=prompt,
+            contents=prompt_template.format(prompt),
         )
 
         # Extract the text content from the response
         text_response = response.text
 
-        return jsonify({"response": text_response})
+        with open('locations.json','r') as file:
+            locations = json.load(file)
+        
+        counter = 0
+        while True:
+            for l in locations:
+                if text_response in l['location']:
+                    print(f"found {text_response}")
+                    location_requested = l['location']
+                    break
+            response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=f"{prompt_template.format(prompt)}. The value {text_response} was not in the list, try again.",
+            )
+            text_response = response.text
+            counter += 1
+            if counter >= 5:
+                break
+
+        return jsonify({"response": location_requested})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-def start_kayak():
-    # TODO: Implement logic to start the kayak
-    return jsonify({"message": "Kayak started"})
-
-
-@app.route("/api/stop-kayak", methods=["POST"])
-def stop_kayak():
-    # TODO: Implement logic to stop the kayak
-    return jsonify({"message": "Kayak stopped"})
-
-
-@app.route("/api/get-status", methods=["GET"])
-def get_status():
-    # TODO: Implement logic to get the kayak status
-    return jsonify({"status": "idle"})
-
-
-@app.route("/api/get-location-details", methods=["POST"])
-def get_location_details():
+@app.route("/api/move-kayak", methods=["POST"])
+def move_kayak():
     data = request.get_json()
-    location = data.get("location")
-    if not location:
-        return jsonify({"error": "Location is required"}), 400
-    # TODO: Implement logic to get location details
-    return jsonify({"location": location, "details": "Details for " + location})
+    destination = data.get("destination")
 
+    if not destination:
+        return jsonify({"error": "Destination is required"}), 400
+    
+    submit_data = {
+        "location": data.get("destination"),
+        "uuid": uuid4().hex
+    }
+
+    topic_path = publisher.topic_path(GOOGLE_CLOUD_PROJECT, PUBSUB_TOPIC_ID)
+    message_id = publish_message(topic_path, submit_data)
+
+    # listen for the message back
+    streaming_pull_future = subscriber.subscribe(
+        subscription_path, callback=callback(message_id)
+    )
+    logging.info(f"Listening for messages on {subscription_path}...")
+
+    return jsonify({"message": "Moved kayak to " + destination})
+
+def callback(message, message_id):
+    """
+    Callback function to handle received messages.
+    """
+    logging.info(f"Received message: {message.data.decode('utf-8')}")
+    try:
+        if message.message_id == message_id:
+            message.ack()
+        else: 
+            message.nack()
+        logging.info(f"Message {message.message_id} acknowledged.")
+    except Exception as e:
+        logging.error(f"Error processing message {message.message_id}: {e}")
+        message.nack()
 
 if __name__ == "__main__":
     # You can specify host='0.0.0.0' if you want it accessible externally

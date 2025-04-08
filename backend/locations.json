@@ -1,29 +1,77 @@
 [
     {
-        "location": "Seward Park",
-        "description": "A killer location",
-        "image_url": "",
-        "coordinates": [
+        "location": "virginia_mason",
+        "name": "Virginia Mason Athletic Center",
+        "location_id": 0,
+        "steps": []
+    },
+    {
+        "location": "seward_park",
+        "name": "Seward Park",
+        "location_id": 1,
+        "steps": []
+    },
+    {
+        "location": "kirkland_urban",
+        "name": "Kirkland Urban",
+        "location_id": 2,
+        "steps": []
+    },
+    {
+        "location": "magnuson_cafe_and_brewery",
+        "name": "Magnuson Cafe and Brewery",
+        "location_id": 3,
+        "steps": []
+    },
+    {
+        "location": "luther_burbank_park",
+        "name": "Luther Burbank Park",
+        "location_id": 4,
+        "steps": []
+    },
+    {
+        "location": "woodmark_hotel",
+        "name": "Woodmark Hotel and Spa",
+        "location_id": 5,
+        "steps": []
+    },
+    {                
+        "location": "daniels_broiler",
+        "name": "Daniel's Broiler",
+        "location_id": 7,
+        "steps": [
             {
-                "step"  : 1,
-                "axis"  : "X",
-                "value" : -3
+                "number": 1,
+                "dir": "Y-",
+                "duration": 5000
             },
             {
-                "step"  : 2,
-                "axis"  : "Y",
-                "value" : 1
+                "number": 2,
+                "dir": "X+",
+                "duration": 5000
             },
             {
-                "step"  : 3,
-                "axis"  : "X",
-                "value" : 2
+                "number": 3,
+                "dir": "Y+",
+                "duration": 5000
             },
             {
-                "step"  : 4,
-                "axis"  : "Y",
-                "value" : -4
+                "number": 4,
+                "dir": "X-",
+                "duration": 5000
             }
         ]
+    },
+    {
+        "location": "husky_stadium",
+        "name": "University of Washington Husky Stadium",
+        "location_id": 8,
+        "steps": []
+    },
+    {
+        "location": "fremont_troll",
+        "name": "Fremont Troll",
+        "location_id": 9,
+        "steps": []
     }
 ]
