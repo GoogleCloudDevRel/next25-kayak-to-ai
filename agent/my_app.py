@@ -41,8 +41,8 @@ def process_message(message):
     data = json.loads(message.data.decode("utf-8"))
     if data["location"]:
         print(f" Received location: {data['location']}, location_id: {data['location_id']}")
-        move_motor(data["location_id"])
-        control_light(data["location)d "])
+        move_motor(data["location"]["location_id"])
+        control_light(data["location"]["location_id"]"])
     else:
         raise ValueError('no location data was sent')
 
