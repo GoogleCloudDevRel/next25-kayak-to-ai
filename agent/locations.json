@@ -2,32 +2,123 @@
     {
         "location": "virginia_mason",
         "location_id": 0,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y-",
+                "duration": 36700   
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 20900   
+            },
+            {
+                "number": 3,
+                "dir": "Y-",
+                "duration": 28300   
+            },
+            {
+                "number": 4,
+                "dir": "X+",
+                "duration": 6500   
+            }
+        ]
     },
     {
         "location": "seward_park",
         "location_id": 1,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y-",
+                "duration": 55125  
+            }
+        ]
     },
     {
         "location": "kirkland_urban",
         "location_id": 2,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y+",
+                "duration": 7000   
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 10720   
+            },
+            {
+                "number": 3,
+                "dir": "Y+",
+                "duration": 18150   
+            },
+            {
+                "number": 4,
+                "dir": "X+",
+                "duration": 6000   
+            }
+        ]
     },
     {
         "location": "magnuson_cafe_and_brewery",
         "location_id": 3,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y+",
+                "duration": 7000   
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 10720   
+            },
+            {
+                "number": 3,
+                "dir": "Y+",
+                "duration": 18150   
+            },
+            {
+                "number": 4,
+                "dir": "X-",
+                "duration": 12700   
+            }
+        ]
     },
     {
         "location": "luther_burbank_park",
         "location_id": 4,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y-",
+                "duration": 36700   
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 13500   
+            }
+        ]
     },
     {
         "location": "woodmark_hotel",
         "location_id": 5,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "Y+",
+                "duration": 7000  
+            },
+            {
+                "number": 2,
+                "dir": "X+",
+                "duration": 19500   
+            }
+        ]
     },
     {                
         "location": "daniels_broiler",
@@ -36,33 +127,75 @@
             {
                 "number": 1,
                 "dir": "Y-",
-                "duration": 5000
+                "duration": 28200
             },
             {
                 "number": 2,
-                "dir": "X+",
-                "duration": 5000
-            },
-            {
-                "number": 3,
-                "dir": "Y+",
-                "duration": 5000
-            },
-            {
-                "number": 4,
                 "dir": "X-",
-                "duration": 5000
+                "duration": 8000
             }
         ]
     },
     {
         "location": "husky_stadium",
         "location_id": 8,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "X-",
+                "duration": 15900
+            },
+            {
+                "number": 2,
+                "dir": "Y-",
+                "duration": 4000
+            },
+            {
+                "number": 3,
+                "dir": "X-",
+                "duration": 5000
+            }
+        ]
     },
     {
         "location": "fremont_troll",
         "location_id": 9,
-        "steps": []
+        "steps": [
+            {
+                "number": 1,
+                "dir": "X-",
+                "duration": 15900
+            },
+            {
+                "number": 2,
+                "dir": "Y-",
+                "duration": 4000
+            },
+            {
+                "number": 3,
+                "dir": "X-",
+                "duration": 8900
+            },
+            {
+                "number": 4,
+                "dir": "Y+",
+                "duration": 3400
+            },
+            {
+                "number": 5,
+                "dir": "X-",
+                "duration": 5600
+            },
+            {
+                "number": 6,
+                "dir": "Y-",
+                "duration": 4400
+            },
+            {
+                "number": 7,
+                "dir": "X-",
+                "duration": 5500
+            }
+        ]
     }
 ]
