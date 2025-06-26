@@ -1,0 +1,16 @@
+[Unit]
+Description=Kayak Agent
+After=network.target
+
+[Service]
+User=jasondavenport
+WorkingDirectory=/home/jasondavenport/Github/next25-kayak-to-ai/agent
+ExecStart=/home/jasondavenport/.local/bin/uv run /home/jasondavenport/Github/next25-kayak-to-ai/agent/my_app.py
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=my_app
+
+[Install]
+WantedBy=multi-user.target

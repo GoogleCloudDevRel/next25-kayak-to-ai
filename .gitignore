@@ -1,3 +1,5 @@
-*.DS_Store
+*.DS_Store``
 *.tfvars
 *terraform/*
+
+*package_lock.json

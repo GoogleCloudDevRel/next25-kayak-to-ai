@@ -1,0 +1,7 @@
+Request Location:
+Call Gemini Flash with your question and a prompt template and {prompt}.
+Send your message to Cloud Pub/Sub for the agent.
+Agent processes request using Arduino and Phidgets for location: {location}.
+Agent sends a complete message.
+Complete message is received by backend and acked.
+Browser marks complete.
